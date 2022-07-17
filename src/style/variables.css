@@ -1,0 +1,48 @@
+:root {
+  --primary: #517ABF;
+  --secondary: #F5958E;
+  --third: #51BFA1;
+  --text: #444444;
+
+  --blue_700: #517ABF;
+
+  --lightblue_600: #1DA1F2;
+  --lightblue_500: #4EACEC;
+  --lightblue_400: #84C2EB;
+  --lightblue_300: #82BBE0;
+  --lightblue_200: #B2D9E8;
+
+  --yellow_500: #EAC81F;
+
+  --green_600: #8EB34F;
+  --green_500: #51BFA1;
+
+  --red_600: #F5958E;
+  --red_100: #FAEFED;
+
+  --black_100: #444444;
+
+  --white_100: #FFFFFF;
+}
+
+:root {
+  --title-1: 22px;
+  --title-2: 20px;
+  --title-3: 18px;
+  --title-4: 16px;
+
+  --text-1: 22px;
+  --text-2: 20px;
+  --text-3: 18px;
+  --text-4: 16px;
+
+  --boton-1: 20px;
+  --boton-2: 18px;
+  --boton-3: 16px;
+  --boton-4: 14px;
+  
+  --paragraph-1: 18px;
+  --paragraph-2: 16px;
+  --paragraph-3: 14px;
+  --paragraph-4: 12px;
+}

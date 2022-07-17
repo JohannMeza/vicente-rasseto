@@ -1,0 +1,29 @@
+.content {
+  background: url(../../assets/resources/patron-fondo.webp) repeat center / 650px;
+  min-height: 100vh;
+  display: flex;
+  align-items: center;
+}
+
+  .content__form {
+    width: 100%;
+    height: 90vh;
+    background: url(../../assets/resources/form-fondo.png) no-repeat center / contain;
+  }
+
+  .logotipo {
+    width: 150px;
+    margin: -20px 0 10px 0;
+  }
+
+  .inputStyle {
+    width: 100%;
+    height: 60px;
+    border: 3px solid var(--blue_700);
+    background: var(--lightblue_300);
+    border-radius: 10px;
+    box-shadow: -4px 4px 0px 0px #426299;
+    color: var(--black_100);
+    text-align: center;
+    font-size: var(--text-2);
+  }
