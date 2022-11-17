@@ -1,5 +1,5 @@
 /* eslint-disable no-throw-literal */
-const MessageConstants = require("../../constants/Message");
+const MessageConstants = require("../../constants/message");
 const AdministracionEtiquetas = require("../../models/administracion/administracion_etiquetas.model");
 const UtilComponents = require("../../utils/UtilsComponents");
 

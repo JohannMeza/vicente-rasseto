@@ -1,5 +1,5 @@
 /* eslint-disable no-throw-literal */
-const MessageConstants = require("../../constants/Message");
+const MessageConstants = require("../../constants/message");
 const SeguridadUsuarios = require("../../models/seguridad/seguridad_usuarios.model");
 const AdministracionNivelEstudio = require("../../models/administracion/administracion_nivel_estudio.model");
 const Login = require("../../models/auth/login.model");

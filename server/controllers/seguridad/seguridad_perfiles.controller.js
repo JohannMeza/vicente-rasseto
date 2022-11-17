@@ -1,5 +1,5 @@
 /* eslint-disable no-throw-literal */
-const MessageConstants = require("../../constants/Message");
+const MessageConstants = require("../../constants/message");
 const SeguridadPerfiles = require("../../models/seguridad/seguridad_perfiles.model");
 const UtilComponents = require("../../utils/UtilsComponents");
 

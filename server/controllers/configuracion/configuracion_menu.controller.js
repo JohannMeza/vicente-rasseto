@@ -1,5 +1,5 @@
 /* eslint-disable no-throw-literal */
-const MessageConstants = require("../../constants/Message");
+const MessageConstants = require("../../constants/message");
 const ConfiguracionMenu = require("../../models/configuracion/configuracion_menu.model");
 const ConfiguracionSubmenu = require("../../models/configuracion/configuracion_submenu.model");
 const UtilComponents = require("../../utils/UtilsComponents");

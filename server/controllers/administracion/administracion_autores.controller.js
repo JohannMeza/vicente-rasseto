@@ -1,4 +1,4 @@
-const MessageConstants = require("../../constants/Message");
+const MessageConstants = require("../../constants/,essage");
 const AdministracionAutores = require("../../models/administracion/administracion_autores.model");
 const UtilComponents = require("../../utils/UtilsComponents");
 

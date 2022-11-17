@@ -1,4 +1,4 @@
-const MessageConstants = require("../../constants/Message");
+const MessageConstants = require("../../constants/message");
 const AdministracionMultimedia = require("../../models/administracion/administracion_multimedia.model");
 
 const index = async (req, res) => {
