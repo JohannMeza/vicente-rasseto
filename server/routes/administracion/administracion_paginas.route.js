@@ -1,7 +1,4 @@
-const { Router } = require("express")
-const router = Router();
-const indexController = require("../../controllers/administracion/administracion_paginas.controller");
-
-router.get("/", indexController.index)
-
-module.exports = router;
+const AdministracionPaginas = require("express").Router();
+const AdministracionPaginasController = require("../../controllers/administracion/administracion_paginas.controller");
+AdministracionPaginas.get("/", AdministracionPaginasController.index)
+module.exports = AdministracionPaginas;

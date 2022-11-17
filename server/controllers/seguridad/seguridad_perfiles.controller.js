@@ -1,14 +1,23 @@
 /* eslint-disable no-throw-literal */
+const MessageConstants = require("../../constants/Message");
 const SeguridadPerfiles = require("../../models/seguridad/seguridad_perfiles.model");
+const UtilComponents = require("../../utils/UtilsComponents");
 
 const index = async (req, res) => {
   try {
-    const perfilesList = await SeguridadPerfiles.find();
+    const { rowsPerPage, page } = req.body;
+    const { NOMBRE_PERFIL, ESTADO } = req.body;
+    const dataFilter = UtilComponents.ValidarObjectForFilter({ NOMBRE_PERFIL, ESTADO })
+    const data = await SeguridadPerfiles.paginate(dataFilter, {limit: rowsPerPage, page});
+
     res.status(201).json({
       error: false,
       status: 201,
       statusText: "Request successfully",
-      data: perfilesList
+      data: data.docs,
+      rowsPerPage: data.limit,
+      page: data.page,
+      count: data.totalDocs
     })
   } catch (err) {
     return res.status(500).json({...err})
@@ -17,21 +26,27 @@ const index = async (req, res) => {
 
 const store = async (req, res) => {
   try {
-    const { NOMBRE_PERFIL } = req.body;
-    if (!NOMBRE_PERFIL) throw({
-      error: true,
-      status: 401,
-      statusText: "El campo NOMBRE DE PERFIL es obligatorio"
-    })
+    const { NOMBRE_PERFIL, IS_MANAGEABLE, ESTADO, _id } = req.body;
+    const validData = UtilComponents.ValidarParametrosObligatorios({NOMBRE_PERFIL, IS_MANAGEABLE, ESTADO}); if (validData) throw(validData)
     
-    const savePerfil = new SeguridadPerfiles({ ...req.body });
-    await savePerfil.save();
-    res.status(201).json({
-      error: false,
-      status: 201,
-      statusText: "Se registró el perfil con éxito"
-    })
-
+    if (_id) { // EDITAR
+      const validId = UtilComponents.ValidarObjectIdValido(_id); if (validId) throw(validId)
+      
+      await SeguridadPerfiles.findByIdAndUpdate({ _id }, { NOMBRE_PERFIL, IS_MANAGEABLE, ESTADO })
+      res.status(201).json({
+        error: false,
+        status: 201,
+        statusText: MessageConstants.MESSAGE_SUCCESS_UPDATE
+      })  
+    } else { // SAVE
+      const dataSave = new SeguridadPerfiles({NOMBRE_PERFIL, IS_MANAGEABLE, ESTADO});
+      await dataSave.save();
+      res.status(201).json({
+        error: false,
+        status: 201,
+        statusText: MessageConstants.MESSAGE_SUCCESS_SAVE
+      })
+    }
   } catch (err) {
     return res.status(err.status || 500).json({ ...err })
   }

@@ -51,11 +51,13 @@ export default function Modal({
   children,
   title = "Sin título",
   fullWidth,
-  maxWidth
+  maxWidth,
+  resetForm
 }) {
   const handleClose = () => {
     setOpen(false);
-  };
+    resetForm && resetForm()
+  }
 
   return (
     <div>

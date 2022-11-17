@@ -21,6 +21,7 @@ export default function InputComponent({
   placeholder = "",
   style,
   iconClick,
+  sx
 }) {
   const handleChange = (e) => {
     const valueAnt = value;
@@ -78,6 +79,7 @@ export default function InputComponent({
       autoComplete={autocomplete || "off"}
       required={required || false}
       placeholder={placeholder}
+      sx={sx}
       InputProps={{
         inputProps: {
           max,

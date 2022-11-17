@@ -25,7 +25,6 @@ const NavbarComponent = ({ DrawerHeader }) => {
     if (user) {
       setRole(user.userAccess.ID_PERFILES.NOMBRE_PERFIL)
       setMenus(user.menusAndSubmenus)
-      console.log(user.menusAndSubmenus)
     }
   }, [user])
 

@@ -3,7 +3,16 @@ const ConfiguracionSubmenu = require("./configuracion_submenu.model");
 const mongoosePaginate = require('mongoose-paginate-v2');
 
 const configuracionMenuSchema = new Schema({
+  ID_CONFIGURACION_SUBMENU: {
+    type: [Schema.Types.ObjectId],
+    ref: "ConfiguracionSubmenu"
+  },
   NOMBRE_MENU: {
+    type: String,
+    trim: true,
+    required: true
+  },
+  PATH: {
     type: String,
     trim: true,
     required: true
@@ -13,6 +22,10 @@ const configuracionMenuSchema = new Schema({
     trim: true,
     required: true
   },
+  ESTADO: {
+    type: Boolean,
+    required: true
+  }
 },{
   versionKey: false,
   timestamps: true

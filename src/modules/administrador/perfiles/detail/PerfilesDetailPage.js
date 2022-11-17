@@ -13,13 +13,15 @@ import { ICON } from "../../../../framework/components/icons/Icon";
 import { useNavigate, useParams } from "react-router-dom";
 import useLoaderContext from "../../../../hooks/useLoaderContext";
 import { SaveRequestData } from "../../../../helpers/helpRequestBackend";
-import { CONFIG_INDEX, CONFIG_SHOW, SEGURIDAD_PERFILES_MENU_SUBMENU_SHOW, SEGURIDAD_PERFILES_MENU_SUBMENU_STORE, SEGURIDAD_PERFILES_SHOW } from "../../../../config/router/path";
-import { listMenu, showMenu } from "../../../../services/configuracion_menu.axios";
+import { pathServer, SEGURIDAD_PERFILES_MENU_SUBMENU_SHOW, SEGURIDAD_PERFILES_MENU_SUBMENU_STORE, SEGURIDAD_PERFILES_SHOW } from "../../../../config/router/path";
 import Checkbox from "@mui/material/Checkbox";
 import FormControlLabel from "@mui/material/FormControlLabel";
 import { SEGURIDAD_PERFILES_SHOW_AXIOS } from "../../../../services/seguridad_perfiles.axios";
 import { useFormValidation } from "../../../../hooks/useFormValidation"
 import { SEGURIDAD_PERFILES_MENU_SUBMENU_SHOW_AXIOS, SEGURIDAD_PERFILES_MENU_SUBMENU_STORE_AXIOS } from "../../../../services/seguridad_perfiles_menu_submenu.axios";
+import { SERVICES_POST } from "../../../../services/services.axios";
+import { MessageUtil } from "../../../../util/MessageUtil";
+import { pathFront } from "../../../../config/router/pathFront";
 
 const dataInitial = {}
 
@@ -48,9 +50,9 @@ export default function PerfilesDetailPage() {
     (rowsPerPage = 10, page = 1) => {
       setLoader(true);
       SaveRequestData({
-        path: CONFIG_INDEX,
+        path: pathServer.CONFIGURACION.MENU.INDEX,
         body: {},
-        fnRequest: listMenu,
+        fnRequest: SERVICES_POST,
         pagination: true,
         rowsPerPage,
         page,
@@ -59,7 +61,8 @@ export default function PerfilesDetailPage() {
           setPaginas(resp.data);
         },
         error: (err) => {
-          console.log(err);
+          setLoader(false);
+          MessageUtil({ message: err.statusText, type: 'error', seg: 10})
         },
       });
     },
@@ -67,46 +70,57 @@ export default function PerfilesDetailPage() {
   );
 
   const getSubpaginas = (id) => {
+    setLoader(true);
     SaveRequestData({
-      path: `${CONFIG_SHOW}${id}`,
+      path: pathServer.CONFIG_MENU.SEARCH_SUBPAGINAS + id,
       body: {},
-      fnRequest: showMenu,
+      fnRequest: SERVICES_POST,
       success: (resp) => {
-        setSubpaginas(resp.data.submenu);
+        let arrSubmenus = resp.data?.ID_CONFIGURACION_SUBMENU;
+        setSubpaginas(arrSubmenus)
+        setLoader(false);
       },
-      error: (err) => {},
+      error: (err) => {
+        setLoader(false);
+        MessageUtil({ message: err.statusText, type: "error", seg: 10 });
+      },
     });
   };
-
   const getPaginasByPerfil = (id) => {
+    setLoader(true)
     SaveRequestData({
       path: `${SEGURIDAD_PERFILES_MENU_SUBMENU_SHOW}/${id}`,
       body: {},
       fnRequest: SEGURIDAD_PERFILES_MENU_SUBMENU_SHOW_AXIOS,
       success: (resp) => {
         let dataPage = {};
-        resp.data.forEach(el => {
+        resp.data?.forEach(el => {
           let arrIdSubmenus = Array.from(el.ID_CONFIGURACION_SUBMENU, el => el._id)
           dataPage[el.ID_CONFIGURACION_MENU._id] = arrIdSubmenus
         })
         setData(dataPage)
+        setLoader(false)
       },
       error: (err) => {
-        console.log(err)
+        setLoader(false)
+        MessageUtil({ message: err.statusText, type: 'error', seg: 10 })
       }
     })
   }
 
   const getPerfil = useCallback(() => {
+    setLoader(true)
     SaveRequestData({
       path: `${SEGURIDAD_PERFILES_SHOW}/${id}`,
       body: {},
       fnRequest: SEGURIDAD_PERFILES_SHOW_AXIOS,
       success: (resp) => {
         setPerfil(resp.data)
+        setLoader(false)
       },
       error: (err) => {
-        console.log(err)
+        setLoader(false)
+        MessageUtil({ message: err.statusText, type: 'error', seg: 10 })
       },
     });
   }, [id])
@@ -176,19 +190,23 @@ export default function PerfilesDetailPage() {
         ID_SEGURIDAD_PERFILES: perfil._id,
         ID_CONFIGURACION_SUBMENU: data[value],
         ID_CONFIGURACION_MENU: value,
-      }      
+      }
       arrData.push(arr)
     }
 
+    setLoader(true)
     SaveRequestData({
       path: SEGURIDAD_PERFILES_MENU_SUBMENU_STORE,
       body: { PAGINAS_PERFIL: arrData, ID_PERFIL: perfil._id },
       fnRequest: SEGURIDAD_PERFILES_MENU_SUBMENU_STORE_AXIOS,
       success: (resp) => {
-        console.log(resp)
+        setLoader(false)
+        MessageUtil({ message: resp.statusText, type: 'success', seg: 10 })
+        navigate(pathFront.PERFILES_ADMIN)
       },
       error: (err) => {
-        console.log(err)
+        setLoader(false)
+        MessageUtil({ message: err.statusText, type: 'error', seg: 10 })
       }
     })
   }
@@ -232,10 +250,9 @@ export default function PerfilesDetailPage() {
                 {paginas.length > 0 ? (
                   paginas.map((el, index) => (
                     <TableRow 
-                      hover 
                       role="checkbox" 
                       tabIndex={-1} key={index}
-                      className={paginaSelect && paginaSelect._id === el._id ? "background-primary" : ""}
+                      className={paginaSelect && paginaSelect._id === el._id ? "background-gris_500" : ""}
                     >
                       <TableCell>
                         <FormControlLabel
@@ -324,7 +341,7 @@ export default function PerfilesDetailPage() {
           variant="secondary-normal"
           type="admin"
           icon={ICON.BACK}
-          onClick={() => navigate("/seguridad/perfiles/admin")}
+          onClick={() => navigate(pathFront.PERFILES_ADMIN)}
         />
         <Controls.ButtonComponent
           title="Guardar"

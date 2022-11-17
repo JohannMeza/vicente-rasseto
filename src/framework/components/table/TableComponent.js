@@ -9,19 +9,19 @@ export default function TableComponents({ children, pagination, setPagination, f
     if (dataId === "KeyboardArrowRightIcon") {
       setPagination({ ...pagination, page: newPage })
       let { rowsPerPage, page } = pagination;
-      fnPagination(rowsPerPage, page + 2)
+      fnPagination && fnPagination(rowsPerPage, page + 2)
     } 
     
     if (dataId === "KeyboardArrowLeftIcon") {
       setPagination({ ...pagination, page: newPage })
       let { rowsPerPage, page } = pagination;
-      fnPagination(rowsPerPage, page - 2)
+      fnPagination && fnPagination(rowsPerPage, page - 2)
     }
   };
 
   const handleChangeRowsPerPage = (event) => {
     setPagination({ ...pagination, rowsPerPage: +event.target.value, page: 0 })
-    fnPagination(event.target.value, 1)
+    fnPagination && fnPagination(event.target.value, 1)
   };
 
   return (

@@ -1,12 +1,7 @@
-const { Router } = require("express");
-const router = Router();
+const express = require("express");
+const AuthRoute = express();
+const AuthUsuario = require("./auth_usuario.route");
 
-const AuthController = require("../../controllers/auth/auth");
-const IndexMiddleware = require("../../middleware/index.middleware")
+AuthRoute.use("/usuario", AuthUsuario)
 
-router.post("/login", AuthController.signIn);
-router.post("/register", AuthController.signUp);
-router.get("/access", [IndexMiddleware.verifyToken, IndexMiddleware.auth], AuthController.isLogin);
-router.delete("/delete/:id", AuthController.signRemove);
-
-module.exports = router;
+module.exports = AuthRoute

@@ -1,9 +1,9 @@
-import React from 'react';
+import React, { memo } from 'react';
 import { Routes, Route } from 'react-router-dom';
 import PerfilesAdminPage from './admin/PerfilesAdminPage';
 import PerfilesDetailPage from './detail/PerfilesDetailPage';
 
-export default function PerfilesRoutes () {
+const PerfilesRoutes = () => {
   return (
     <Routes>
       <Route path="/admin" element={<PerfilesAdminPage />} />
@@ -11,3 +11,5 @@ export default function PerfilesRoutes () {
     </Routes>
   )
 }
+
+export default memo(PerfilesRoutes)

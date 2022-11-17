@@ -12,6 +12,7 @@
 # production
 # /build
 /public
+/src
 /server/node_modules
 
 # misc

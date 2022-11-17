@@ -1,11 +1,7 @@
 const { Schema, model } = require("mongoose");
+const mongoosePaginate = require('mongoose-paginate-v2');
 
 const configuracionSubmenuSchema = new Schema({
-  ID_MENU: {
-    ref: "SeguridadMenu",
-    type: Schema.Types.ObjectId,
-    trim: true
-  },
   PATH: {
     type: String,
     required: true,
@@ -20,11 +16,18 @@ const configuracionSubmenuSchema = new Schema({
     type: String,
     trim: true,
     required: true,
+  },
+  ESTADO: {
+    type: Boolean,
+    required: true
   }
 },{
   versionKey: false,
-  timestamps: true
+  timestamps: true,
+  id: true
 })
+
+configuracionSubmenuSchema.plugin(mongoosePaginate);
 
 const ConfiguracionSubmenu = model("ConfiguracionSubmenu", configuracionSubmenuSchema);
 module.exports = ConfiguracionSubmenu;

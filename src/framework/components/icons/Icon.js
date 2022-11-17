@@ -8,6 +8,14 @@ import RemoveRedEyeIcon from '@mui/icons-material/RemoveRedEye';
 import VisibilityOffIcon from '@mui/icons-material/VisibilityOff';
 import KeyboardBackspaceIcon from '@mui/icons-material/KeyboardBackspace';
 import ArrowForwardIosIcon from '@mui/icons-material/ArrowForwardIos';
+import ArrowLeftIcon from '@mui/icons-material/ArrowLeft';
+import ArrowRightIcon from '@mui/icons-material/ArrowRight';
+import KeyboardArrowDownIcon from '@mui/icons-material/KeyboardArrowDown';
+import KeyboardArrowUpIcon from '@mui/icons-material/KeyboardArrowUp';
+import FindInPageIcon from '@mui/icons-material/FindInPage';
+import AddIcon from '@mui/icons-material/Add';
+import RemoveIcon from '@mui/icons-material/Remove';
+import DocumentScannerIcon from '@mui/icons-material/DocumentScanner';
 
 export const ICON = {
   CLOSE: <CloseIcon />,
@@ -19,5 +27,13 @@ export const ICON = {
   PASS_VISIBLE: <RemoveRedEyeIcon />,
   PASS_INVISIBLE: <VisibilityOffIcon />,
   BACK: <KeyboardBackspaceIcon />,
-  ARROW_RIGHT: <ArrowForwardIosIcon />
+  ARROW_RIGHT: <ArrowForwardIosIcon />,
+  ARROW_SMALL_LEFT: <ArrowLeftIcon />,
+  ARROW_SMALL_RIGHT: <ArrowRightIcon />,
+  ARROW_SMALL_BOTTOM: <KeyboardArrowDownIcon />,
+  ARROW_SMALL_TOP: <KeyboardArrowUpIcon />,
+  SEARCH_PAGE: <FindInPageIcon />,
+  ADD: <AddIcon />,
+  REMOVE: <RemoveIcon />,
+  SCANNER: <DocumentScannerIcon />,
 }

@@ -18,9 +18,9 @@ import {
   saveMenu,
   showMenu,
 } from "../../../../services/configuracion_menu.axios";
-import { CONFIG, CONFIG_SHOW } from "../../../../config/router/path";
+import { CONFIG_NEW, CONFIG_SHOW } from "../../../../config/router/path";
 import { MessageUtil } from "../../../../util/MessageUtil";
-import PaginasDetailModalPage from "./PaginasDetailModalPage";
+import PaginasDetailModalPage from "./PaginasDetail";
 import { AlertUtilDelete } from "../../../../util/AlertUtil";
 import useLoaderContext from "../../../../hooks/useLoaderContext";
 
@@ -62,7 +62,7 @@ export default function PaginasAdminPage() {
     if (validate()) {
       setLoader(true)
       SaveRequestData({
-        path: CONFIG,
+        path: CONFIG_NEW,
         body: { ...data, SUBMENUS: listSubPaginas },
         fnRequest: saveMenu,
         success: (resp) => {
@@ -83,7 +83,6 @@ export default function PaginasAdminPage() {
       body: {},
       fnRequest: showMenu,
       success: (resp) => {
-        console.log(resp)
         setData(resp.data.menu);
         setListSubPaginas(resp.data.submenu);
       },
@@ -235,7 +234,7 @@ export default function PaginasAdminPage() {
         />
       </Stack>
 
-      <PaginasDetailModalPage
+      {/* <PaginasDetailModalPage
         open={open}
         setOpen={setOpen}
         listSubPaginas={listSubPaginas}
@@ -243,7 +242,7 @@ export default function PaginasAdminPage() {
         dataSubmenu={dataSubmenu}
         setDataSubmenu={setDataSubmenu}
         id={id}
-      />
+      /> */}
     </Box>
   );
 }
