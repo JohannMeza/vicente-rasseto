@@ -85,28 +85,28 @@ const NavbarComponent = ({ DrawerHeader }) => {
         menus && 
         menus.map((menu, indexMenu) => 
           <List key={indexMenu}>
-            <ListItem button sx={{ padding: "0 16px" }} onClick={() => handleOpenSettings(menu.ID_CONFIGURACION_MENU.NOMBRE_MENU)}>
+            <ListItem button sx={{ padding: "0 16px" }} onClick={() => handleOpenSettings(menu.ID_CONFIGURACION_MENU?.NOMBRE_MENU)}>
               <Stack 
               direction="row" 
               spacing={1} 
               alignItems="center" 
-              sx={openCollapse === menu.ID_CONFIGURACION_MENU.NOMBRE_MENU ? styleMenu : styleBaseMenu}
+              sx={openCollapse === menu?.ID_CONFIGURACION_MENU?.NOMBRE_MENU ? styleMenu : styleBaseMenu}
               >
-                <ListItemIcon sx={openCollapse === menu.ID_CONFIGURACION_MENU.NOMBRE_MENU ? styleMenuActive : styleMenuInactive}>
-                  <i className={`fa-solid ${menu.ID_CONFIGURACION_MENU.NOMBRE_ICON || "fa-file-circle-exclamation"}`}></i>
+                <ListItemIcon sx={openCollapse === menu.ID_CONFIGURACION_MENU?.NOMBRE_MENU ? styleMenuActive : styleMenuInactive}>
+                  <i className={`fa-solid ${menu.ID_CONFIGURACION_MENU?.NOMBRE_ICON || "fa-file-circle-exclamation"}`}></i>
                 </ListItemIcon>
                 <ListItemText 
-                  primary={menu.ID_CONFIGURACION_MENU.NOMBRE_MENU}
-                  sx={openCollapse === menu.ID_CONFIGURACION_MENU.NOMBRE_MENU ? styleMenuActive : styleMenuInactive}
+                  primary={menu.ID_CONFIGURACION_MENU?.NOMBRE_MENU}
+                  sx={openCollapse === menu.ID_CONFIGURACION_MENU?.NOMBRE_MENU ? styleMenuActive : styleMenuInactive}
                 />
-                {openCollapse === menu.ID_CONFIGURACION_MENU.NOMBRE_MENU 
-                ? <ExpandLess sx={openCollapse === menu.ID_CONFIGURACION_MENU.NOMBRE_MENU ? styleMenuActive : styleMenuInactive} /> 
-                : <ExpandMore sx={openCollapse === menu.ID_CONFIGURACION_MENU.NOMBRE_MENU ? styleMenuActive : styleMenuInactive} />}
+                {openCollapse === menu.ID_CONFIGURACION_MENU?.NOMBRE_MENU 
+                ? <ExpandLess sx={openCollapse === menu.ID_CONFIGURACION_MENU?.NOMBRE_MENU ? styleMenuActive : styleMenuInactive} /> 
+                : <ExpandMore sx={openCollapse === menu.ID_CONFIGURACION_MENU?.NOMBRE_MENU ? styleMenuActive : styleMenuInactive} />}
               </Stack>
             </ListItem>
-            <Collapse in={openCollapse === menu.ID_CONFIGURACION_MENU.NOMBRE_MENU} timeout="auto" unmountOnExit>
+            <Collapse in={openCollapse === menu.ID_CONFIGURACION_MENU?.NOMBRE_MENU} timeout="auto" unmountOnExit>
               {
-                menu.ID_CONFIGURACION_SUBMENU && menu.ID_CONFIGURACION_SUBMENU.map((submenu, indexSubmenu) => 
+                menu.ID_CONFIGURACION_SUBMENU && menu.ID_CONFIGURACION_SUBMENU?.map((submenu, indexSubmenu) => 
                   <List component="div" disablePadding onClick={() => navigate(submenu.PATH)} key={indexSubmenu}>
                     <ListItem button sx={{ padding: "5px 16px" }} >
                       <Stack 

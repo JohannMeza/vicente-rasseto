@@ -1,7 +1,7 @@
 {
   "files": {
     "main.css": "/static/css/main.1589d5de.css",
-    "main.js": "/static/js/main.a45ba991.js",
+    "main.js": "/static/js/main.92b22015.js",
     "static/js/787.74fe51f3.chunk.js": "/static/js/787.74fe51f3.chunk.js",
     "static/media/logo.png": "/static/media/logo.86f0c1d8c5898026a419.png",
     "static/media/interrogacion.png": "/static/media/interrogacion.04b63d8fbd7752c246d8.png",
@@ -12,11 +12,11 @@
     "static/media/audiolibro-card.png": "/static/media/audiolibro-card.5be71d19ce1a49d4bc83.png",
     "index.html": "/index.html",
     "main.1589d5de.css.map": "/static/css/main.1589d5de.css.map",
-    "main.a45ba991.js.map": "/static/js/main.a45ba991.js.map",
+    "main.92b22015.js.map": "/static/js/main.92b22015.js.map",
     "787.74fe51f3.chunk.js.map": "/static/js/787.74fe51f3.chunk.js.map"
   },
   "entrypoints": [
     "static/css/main.1589d5de.css",
-    "static/js/main.a45ba991.js"
+    "static/js/main.92b22015.js"
   ]
 }

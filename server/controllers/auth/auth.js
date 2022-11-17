@@ -115,7 +115,7 @@ const signUp = async (req, res) => {
     const userRegister = new SeguridadUsuarios({ 
       ID_LOGIN: lastLoginRegister._id,
       ID_PERFILES,
-      PASSWORD,
+      PASSWORD: req.body.PASSWORD,
       NOMBRE_USUARIO
     });
 
