@@ -1,0 +1,18 @@
+.card-main {
+  padding: 25px;
+  border-radius: 15px;
+  min-height: 300px;
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 25px
+}
+
+.card-main__img {
+  background: white;
+  border-radius: 15px;
+}
+
+.card-main__img img {
+  width: 100%;
+  max-width: 200px;
+}

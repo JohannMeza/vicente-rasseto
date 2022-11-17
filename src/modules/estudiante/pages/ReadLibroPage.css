@@ -1,0 +1,41 @@
+.readlibropage {
+  width: 100%;
+  position: absolute;
+  left: 0;
+  top: 64px;
+}
+
+.readlibropage__header {
+  display: grid;
+  grid-template-columns: 1fr 1fr 1fr;
+  align-items: center;
+  width: 100%;
+  height: 40px;
+  position: fixed;
+  left: 0;
+  z-index: 1000;
+  padding: 0 10px;
+  background: var(--black_100);
+  color: white;
+}
+
+.readlibropage__header > div {
+  height: inherit;
+  padding: 5px 0;
+}
+
+.readlibropage__header__input {
+  background: #535252;
+  color: white;
+  height: -webkit-fill-available;
+  text-align: right;
+  border-radius: 5px;
+  padding: 0 15px;
+}
+
+.readlibropage__book {
+  position: relative;
+  padding: 25px;
+  text-align: center;
+  top: 40px;
+}

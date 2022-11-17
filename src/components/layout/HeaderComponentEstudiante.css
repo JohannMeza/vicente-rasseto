@@ -1,0 +1,31 @@
+.content-header {
+  justify-content: space-between;
+}
+
+.header__buttons {
+  display: flex;
+  gap: 15px;
+}
+
+.header__buttons__link {
+  user-select: none;
+  width: 45px;
+  height: 45px;
+  background: var(--primary);
+  border-radius: 50%;
+  display: flex;
+  justify-content: center;
+  border: 3px solid var(--black_100);
+  align-items: center; 
+  transition: transform .5s linear;
+  cursor: pointer;
+}
+
+.header__buttons__link:hover {
+  transform: scale(1.15);
+}
+
+.header__buttons__link:active {
+  transform: scale(.9);
+  transition: transform 0s linear;
+}
