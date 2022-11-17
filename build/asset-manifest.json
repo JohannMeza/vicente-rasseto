@@ -1,18 +1,22 @@
 {
   "files": {
-    "main.css": "/static/css/main.b9fface0.css",
-    "main.js": "/static/js/main.17f2b89d.js",
+    "main.css": "/static/css/main.1589d5de.css",
+    "main.js": "/static/js/main.a45ba991.js",
     "static/js/787.74fe51f3.chunk.js": "/static/js/787.74fe51f3.chunk.js",
     "static/media/logo.png": "/static/media/logo.86f0c1d8c5898026a419.png",
+    "static/media/interrogacion.png": "/static/media/interrogacion.04b63d8fbd7752c246d8.png",
     "static/media/patron-fondo.webp": "/static/media/patron-fondo.e135c9b41ae42254cd6f.webp",
+    "static/media/biblioteca-card.png": "/static/media/biblioteca-card.fd4bb1bd7404aa725763.png",
     "static/media/form-fondo.png": "/static/media/form-fondo.d037b289433dbbb8961d.png",
+    "static/media/user-niño.png": "/static/media/user-niño.30f31831956d3935c0f0.png",
+    "static/media/audiolibro-card.png": "/static/media/audiolibro-card.5be71d19ce1a49d4bc83.png",
     "index.html": "/index.html",
-    "main.b9fface0.css.map": "/static/css/main.b9fface0.css.map",
-    "main.17f2b89d.js.map": "/static/js/main.17f2b89d.js.map",
+    "main.1589d5de.css.map": "/static/css/main.1589d5de.css.map",
+    "main.a45ba991.js.map": "/static/js/main.a45ba991.js.map",
     "787.74fe51f3.chunk.js.map": "/static/js/787.74fe51f3.chunk.js.map"
   },
   "entrypoints": [
-    "static/css/main.b9fface0.css",
-    "static/js/main.17f2b89d.js"
+    "static/css/main.1589d5de.css",
+    "static/js/main.a45ba991.js"
   ]
 }
