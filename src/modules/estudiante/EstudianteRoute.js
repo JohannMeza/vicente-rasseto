@@ -10,6 +10,9 @@ import AudiolibroPage from './pages/AudiolibroPage';
 import BibliotecaPage from './pages/BibliotecaPage';
 import PreviewLibroPage from './pages/PreviewLibroPage';
 import ReadLibroPage from './pages/ReadLibroPage';
+import QuestionsPage from './pages/QuestionsPage';
+import BusquedaCategoriasPage from './pages/BusquedaCategoriasPage';
+import BusquedaLibrosPage from './pages/BusquedaLibrosPage';
 
 
 const drawerWidth = 296;
@@ -41,6 +44,9 @@ const EstudianteRoutes = () => {
           <Route path="/biblioteca" element={<BibliotecaPage />} />
           <Route path="/preview/libro/:id" element={<PreviewLibroPage />} />
           <Route path="/read/libro/:id" element={<ReadLibroPage />} />
+          <Route path="/questions" element={<QuestionsPage />} />
+          <Route path="/search/categorias" element={<BusquedaCategoriasPage />} />
+          <Route path="/search/libros" element={<BusquedaLibrosPage />} />
         </Routes>
       </Box>
     </Box>

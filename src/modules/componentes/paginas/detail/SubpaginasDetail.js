@@ -47,9 +47,31 @@ const listEstado = [
 ]
 
 export default function SubpaginasDetail() {
+
+  const validate = (fieldValues = data) =>  {
+    let temp = {...errors};
+    
+    if ("NOMBRE_SUBMENU" in fieldValues) {
+      temp.NOMBRE_SUBMENU = !fieldValues.NOMBRE_SUBMENU ? "El campo Nombre de la Sub - Página es requerido" : "";
+    } 
+
+    if ("NOMBRE_ICON" in fieldValues) {
+      temp.NOMBRE_ICON = !fieldValues.NOMBRE_ICON ? "El campo Nombre Icono es requerido" : "";
+    } 
+
+    if ("PATH" in fieldValues) {
+      temp.PATH = !fieldValues.PATH ? "El campo Ruta es requerido" : "";
+    } 
+    
+    setErrors({...temp});
+    if (fieldValues === data) {
+      return Object.values(temp).every((x) => x === '');
+    }
+  }
+
   const [paginas, setPaginas] = useState([]);
   const [openModal, setOpenModal] = useState(false)
-  const {data, setData, errors, handleInputFormChange, resetForm} = useFormValidation(dataInitialSubPaginas, true)
+  const {data, setData, errors, setErrors, handleInputFormChange, resetForm} = useFormValidation(dataInitialSubPaginas, true, validate)
   const [dataForm, handleInputChange, resetData] = useForm(dataInitialFilter)
   const [pagination, setPagination] = useState(paginate)
   const setLoader = useLoaderContext()

@@ -1,5 +1,6 @@
 const MessageConstants = require("../../constants/message");
 const AdministracionMultimedia = require("../../models/administracion/administracion_multimedia.model");
+const UtilComponents = require("../../utils/UtilsComponents");
 
 const index = async (req, res) => {
   try {
@@ -30,7 +31,25 @@ const show = async (req, res) => {
   }
 }
 
+const search = async (req, res) => {
+  try {
+    const { TIPO_MULTIMEDIA, TITULO } = req.body;
+
+    const dataFilter = UtilComponents.ValidarObjectForFilter({ TITULO })
+    const data = await AdministracionMultimedia.find({ ...dataFilter, TIPO: TIPO_MULTIMEDIA, ESTADO: "Publicado" })
+    res.status(201).json({
+      error: false,
+      status: 201,
+      statusText: MessageConstants.REQUEST_SUCCESS,
+      data: data
+    })
+  } catch (err) {
+    return res.status(err.status || 500).json({ ...err })
+  }
+}
+
 module.exports = {
   index,
-  show
+  show,
+  search
 }

@@ -7,6 +7,7 @@ import { ICON } from '../../../framework/components/icons/Icon';
 import { SaveRequestData } from '../../../helpers/helpRequestBackend';
 import useLoaderContext from '../../../hooks/useLoaderContext';
 import { SERVICES_GET } from '../../../services/services.axios';
+import { AlertUtilRelease } from '../../../util/AlertUtil';
 import { MessageUtil } from '../../../util/MessageUtil';
 import './ReadLibroPage.css';
 let pdfjsLib = window['pdfjs-dist/build/pdf'];
@@ -48,7 +49,10 @@ const ReadLibroPage = () => {
     if (pdfData && canvasElement) {
       setLoader(true)
       pdfjsLib.getDocument({data: pdfData}).promise.then(function(pdf) {
-        pdf.getPage(pageNumber).then(function(page) {
+        setLoader(false)
+
+        pdf.getPage(pageNumber)
+        .then(function(page) {
           var scale = 1;
           var viewport = page.getViewport({scale: scale});
       
@@ -62,6 +66,11 @@ const ReadLibroPage = () => {
           var renderContext = { canvasContext: context, viewport: viewport};
           var renderTask = page.render(renderContext);
           renderTask.promise.then(function () { setLoader(false) });
+        })
+        .catch(err => {
+          let { message } = err;
+          setPageNumber(1)
+          AlertUtilRelease({title: "Ohh no...!!!", text: message, icon: "warning"})
         });
       }, function (reason) {
         setLoader(false)

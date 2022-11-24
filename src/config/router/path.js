@@ -97,6 +97,10 @@ export const pathServer = {
     BIBLIOTECA: {
       INDEX: "/estudiante/biblioteca",
       SHOW: "/estudiante/biblioteca/libro/",
+      SEARCH: "/estudiante/biblioteca/multimedia",
+    },
+    CATEGORIA: {
+      SEARCH: "/estudiante/categoria"
     }
   }
 }

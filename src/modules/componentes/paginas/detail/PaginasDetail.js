@@ -185,9 +185,31 @@ const listEstado = [
 ]
 
 export default function PaginasDetail() {
+
+  const validate = (fieldValues = data) =>  {
+    let temp = {...errors};
+    
+    if ("NOMBRE_MENU" in fieldValues) {
+      temp.NOMBRE_MENU = !fieldValues.NOMBRE_MENU ? "El campo Nombre de la Página es requerido" : "";
+    } 
+
+    if ("NOMBRE_ICON" in fieldValues) {
+      temp.NOMBRE_ICON = !fieldValues.NOMBRE_ICON ? "El campo Nombre Icono es requerido" : "";
+    } 
+
+    if ("PATH" in fieldValues) {
+      temp.PATH = !fieldValues.PATH ? "El campo Ruta es requerido" : "";
+    } 
+    
+    setErrors({...temp});
+    if (fieldValues === data) {
+      return Object.values(temp).every((x) => x === '');
+    }
+  }
+
   const [paginas, setPaginas] = useState([]);
   const [openModal, setOpenModal] = useState(false)
-  const {data, setData, errors, handleInputFormChange, resetForm} = useFormValidation(dataInitialPaginas, true)
+  const {data, setData, errors, setErrors, handleInputFormChange, resetForm} = useFormValidation(dataInitialPaginas, true, validate)
   const [dataForm, handleDataFormChange, resetData] = useForm(dataInitialFilter)
   const [pagination, setPagination] = useState(paginate)
   const setLoader = useLoaderContext()
@@ -216,7 +238,6 @@ export default function PaginasDetail() {
   };
 
   const agregarPagina = () => {
-    console.log(errors)
     setLoader(true);
     if (data._id) {
       SaveRequestData({ // editar
@@ -224,12 +245,14 @@ export default function PaginasDetail() {
         body: {...data},
         fnRequest: SERVICES_POST,
         success: (resp) => {
+          resetForm()
           getPaginas()
           MessageUtil({ message: resp.statusText, type: "success", seg: 10 });
           setOpenModal(false)
           setLoader(false)
         },
         error: (err) => {
+          resetForm()
           setLoader(false)
           MessageUtil({ message: err.statusText, type: "error", seg: 10 });
         }
@@ -240,12 +263,14 @@ export default function PaginasDetail() {
         body: {...data},
         fnRequest: SERVICES_POST,
         success: (resp) => {
+          resetForm()
           getPaginas()
           MessageUtil({ message: resp.statusText, type: "success", seg: 10 });
           setOpenModal(false)
           setLoader(false)
         },
         error: (err) => {
+          resetForm()
           setLoader(false)
           MessageUtil({ message: err.statusText, type: "error", seg: 10 });
         }

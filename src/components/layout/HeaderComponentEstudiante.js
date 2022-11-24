@@ -15,6 +15,7 @@ import iconSearch from "../../assets/icons/buscar.png"
 import iconUserNiño from "../../assets/icons/user-niño.png"
 import { Tooltip } from '@mui/material';
 import { useNavigate } from 'react-router-dom';
+import { pathFront } from '../../config/router/pathFront';
 
 const drawerWidth = 296;
 const AppBar = styled(MuiAppBar, {
@@ -88,25 +89,25 @@ const HeaderComponentEstudiante = () => {
           </Tooltip>
 
           <Tooltip title="Inicio" placement="bottom">
-            <div className="header__buttons__link">
+            <div className="header__buttons__link" onClick={() => navigate(pathFront.HOME)}>
               <img src={iconHome} style={{ width: "35px" }} alt="" />
             </div>
           </Tooltip>
 
           <Tooltip title="¿Tienes alguna pregunta?" placement="bottom">
-            <div className="header__buttons__link">
+            <div className="header__buttons__link" onClick={() => navigate(pathFront.ESTUDIANTE_QUESTIONS)}>
               <img src={iconInterrogacion} style={{ width: "50%" }} alt="" />
             </div>
           </Tooltip>
 
           <Tooltip title="Busca por categoria" placement="bottom">
-            <div className="header__buttons__link">
+            <div className="header__buttons__link" onClick={() => navigate(pathFront.ESTUDIANTE_BUSCAR_CATEGORIAS)}>
               <img src={iconCategorias} style={{ width: "30px" }} alt="" />
             </div>
           </Tooltip>
 
           <Tooltip title="Buscar..." placement="bottom">
-            <div className="header__buttons__link">
+            <div className="header__buttons__link" onClick={() => navigate(pathFront.ESTUDIANTE_BUSCAR_LIBROS)}>
               <img src={iconSearch} style={{ width: "50%" }} alt="" />
             </div>
           </Tooltip>

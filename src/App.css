@@ -89,6 +89,8 @@ input {
 .display-flex-right-center { justify-content: flex-end; align-items: center; }
 .display-flex-left-center { justify-content: start; align-items: center; }
 
+.display-flex-start-start { justify-content: flex-start; align-items: flex-start; }
+
 
 
 

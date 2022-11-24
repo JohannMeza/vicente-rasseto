@@ -7,8 +7,13 @@ const UtilComponents = require("../../utils/UtilsComponents");
 const index = async (req, res) => {
   try {
     const { rowsPerPage, page } = req.body;
-    const { NOMBRE_MENU, PATH } = req.body
-    const dataFilter = UtilComponents.ValidarObjectForFilter({ NOMBRE_MENU, PATH, ESTADO: true })
+    let { NOMBRE_MENU, PATH, ESTADO } = req.body
+
+    if (typeof ESTADO !== "boolean") {
+      ESTADO = true;
+    }
+
+    const dataFilter = UtilComponents.ValidarObjectForFilter({ NOMBRE_MENU, PATH, ESTADO })
     const data = await ConfiguracionMenu.paginate(dataFilter, {limit: rowsPerPage, page});
     res.status(201).json({
       error: false,
