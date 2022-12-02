@@ -4,6 +4,8 @@ const SeguridadUsuarios = require("../../models/seguridad/seguridad_usuarios.mod
 const AdministracionNivelEstudio = require("../../models/administracion/administracion_nivel_estudio.model");
 const Login = require("../../models/auth/login.model");
 const UtilComponents = require("../../utils/UtilsComponents");
+const SeguridadPerfiles = require("../../models/seguridad/seguridad_perfiles.model");
+const bcrypt = require("bcrypt")
 
 const index = async (req, res) => {
   try {
@@ -11,7 +13,9 @@ const index = async (req, res) => {
     const { rowsPerPage, page } = req.body;
     const { NOMBRE_USUARIO, ESTADO, EMAIL, DNI } = req.body;
     const dataFilter = UtilComponents.ValidarObjectForFilter({ NOMBRE_USUARIO, ESTADO, DNI })
-    let dataAlumnos = await SeguridadUsuarios.paginate({...dataFilter, ID_PERFILES: "62b2a28f2e2f02366f422c1c" }, { limit: rowsPerPage, page, populate: [{path: 'ID_LOGIN'}] })
+
+    const perfilDocente = await SeguridadPerfiles.findOne({ NOMBRE_PERFIL: { $in: [/docente/i ] }});
+    let dataAlumnos = await SeguridadUsuarios.paginate({...dataFilter, ID_PERFILES: perfilDocente._id }, { limit: rowsPerPage, page, populate: [{path: 'ID_LOGIN'}] })
 
     let arrFilterDocentes = dataAlumnos.docs
 
@@ -42,18 +46,51 @@ const index = async (req, res) => {
 
 const store = async (req, res) => {
   try {
-    const { NOMBRE_USUARIO, ESTADO, _id, EMAIL, DNI } = req.body;
-    const validData = UtilComponents.ValidarParametrosObligatorios({ NOMBRE_USUARIO, ESTADO, DNI })
-    if (validData) throw(validData)
+    let { NOMBRE_USUARIO, ESTADO, DNI, EMAIL, _id, ID_GRADO, PASSWORD } = req.body;
+    const { _id: ID_LOGIN } = req.body.ID_LOGIN;
+    if (!PASSWORD) PASSWORD = DNI
+    const validData = UtilComponents.ValidarParametrosObligatorios({ NOMBRE_USUARIO, ESTADO, DNI, PASSWORD })
+    if (validData) throw(validData)    
+    const perfilDocente = await SeguridadPerfiles.findOne({ NOMBRE_PERFIL: { $in: [/docente/i ] }});
+    let PASS_DECRYPT = "";
+
+    if (!perfilDocente) {
+      throw({
+        err: true,
+        statusText: "No existe perfil de Docente, crealo o comuniquese con el administrador",
+        status: 401
+      })
+    }
 
     if (_id) { // UPDATE
-      await SeguridadUsuarios.findOneAndUpdate({ _id }, { NOMBRE_USUARIO, ESTADO, DNI })
+      const salt = await bcrypt.genSalt(10);
+      PASS_DECRYPT = bcrypt.hashSync(PASSWORD, salt);
+      const isValidateLogin = await Login.findOne({ EMAIL: EMAIL, _id: {$ne: ID_LOGIN} });
+      if (isValidateLogin) throw({
+        error: true,
+        status: 401,
+        statusText: "El EMAIL ingresado ya existe",
+      })
+
+      await SeguridadUsuarios.findOneAndUpdate({ _id }, { NOMBRE_USUARIO, ESTADO, DNI, ID_GRADO })
+      await Login.findOneAndUpdate({ _id: ID_LOGIN }, { EMAIL: EMAIL, PASSWORD: PASS_DECRYPT })
+
       return res.status(201).json({
         error: false,
         statusText: MessageConstants.MESSAGE_SUCCESS_UPDATE,
         status: 201
       })
     } else { // SAVE
+      const salt = await bcrypt.genSalt(10);
+      PASS_DECRYPT = bcrypt.hashSync(PASSWORD, salt);
+
+      const isValidateLogin = await Login.findOne({ EMAIL });
+      if (isValidateLogin) throw({
+        error: true,
+        status: 401,
+        statusText: "El EMAIL ingresado ya existe",
+      })
+
       const validarEmail = await Login.findOne({ EMAIL });
       if (validarEmail) throw({
         error: true,
@@ -61,13 +98,13 @@ const store = async (req, res) => {
         status: 401
       })
 
-      const nuevoLogin = new Login({ EMAIL, PASSWORD: '123' })
+      const nuevoLogin = new Login({ EMAIL, PASSWORD })
       await nuevoLogin.save();
 
       const dataLogin = await Login.find().sort({$natural:-1}).limit(1);
       const idLogin = dataLogin[0]._id
       
-      const nuevoUsuario = new SeguridadUsuarios({ NOMBRE_USUARIO, ESTADO, ID_LOGIN: idLogin, ID_PERFILES: "62b2a28f2e2f02366f422c1c", DNI })
+      const nuevoUsuario = new SeguridadUsuarios({ NOMBRE_USUARIO, ESTADO, ID_LOGIN: idLogin, ID_PERFILES: perfilDocente._id, DNI })
       await nuevoUsuario.save()
       return res.status(201).json({
         error: false,
@@ -76,7 +113,6 @@ const store = async (req, res) => {
       })
     }
   } catch (err) {
-    console.log(err)
     return res.status(err.status || 500).json({ ...err })
   }
 }

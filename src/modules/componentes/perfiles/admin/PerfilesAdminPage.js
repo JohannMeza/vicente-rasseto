@@ -13,6 +13,7 @@ import { MessageUtil } from '../../../../util/MessageUtil';
 import useLoaderContext from '../../../../hooks/useLoaderContext';
 import ValidateData from '../../../../hooks/useValidateData';
 import { pathFront } from '../../../../config/router/pathFront';
+import useAuthContext from '../../../../hooks/useAuthContext';
 
 const paginate = {
   rowsPerPage: 10,
@@ -45,7 +46,7 @@ export default function PerfilesAdminPage () {
     } 
     
     setErrors({...temp});
-    console.log(temp, Object.values(temp).every((x) => x === ''))
+
     if (fieldValues === data) {
       return Object.values(temp).every((x) => x === '');
     }
@@ -55,9 +56,10 @@ export default function PerfilesAdminPage () {
   const [perfiles, setPerfiles] = useState([]);
   const [pagination, setPagination] = useState(paginate);  
   const [open, setOpen] = useState(false);
-  const {data, setData, errors, setErrors, handleInputFormChange, resetForm} = useFormValidation(dataInitial, true)
+  const {data, setData, errors, setErrors, handleInputFormChange, resetForm} = useFormValidation(dataInitial, true, validate)
   const [dataForm, handleInputChange, resetData] = useForm(dataFormInitial);
   const navigate = useNavigate();
+  const { user } = useAuthContext();
 
   const getPerfiles = (rowsPerPage = 10, page = 1) => {
     setLoader(true)
@@ -87,7 +89,7 @@ export default function PerfilesAdminPage () {
       setLoader(true)
       SaveRequestData({
         path: pathServer.SEGURIDAD.PERFILES.NEW,
-        body: data,
+        body: {...data, USER: user.userAccess.ID_PERFILES.NOMBRE_PERFIL },
         fnRequest: SERVICES_POST,
         success: (resp) => {
           getPerfiles()
@@ -108,7 +110,7 @@ export default function PerfilesAdminPage () {
 
   const closeModal = () => {
     setOpen(false)
-    resetData()
+    resetForm()
   }
 
   const updatePerfil = (el) => {
@@ -179,6 +181,7 @@ export default function PerfilesAdminPage () {
                     <Stack direction="row" spacing={1}>
                       <Controls.ButtonIconComponent
                         title="Editar"
+                        disabled={el.IS_MANAGEABLE || user.userAccess.ADMIN ? false : true}
                         icon={ICON.EDIT}
                         onClick={() => updatePerfil(el)}
                       />
@@ -191,6 +194,7 @@ export default function PerfilesAdminPage () {
                       <Controls.ButtonComponent
                         title={"CONFIGURAR"}
                         variant="secondary-small"
+                        disabled={el.IS_MANAGEABLE || user.userAccess.ADMIN ? false : true}
                         type="admin"
                         onClick={() => navigate(pathFront.PERFILES_CONFIG + el._id)}
                       />
@@ -223,6 +227,7 @@ export default function PerfilesAdminPage () {
               label="Nombre de la Sub Página"
               name="NOMBRE_PERFIL"
               onChange={handleInputFormChange}
+              disabled={data.IS_MANAGEABLE || user.userAccess.ADMIN ? false : true}
               value={data.NOMBRE_PERFIL}
               error={errors.NOMBRE_PERFIL}
             />
@@ -231,6 +236,7 @@ export default function PerfilesAdminPage () {
             <Controls.SelectComponent
               label="Estado"
               list={estadoList}
+              disabled={data.IS_MANAGEABLE || user.userAccess.ADMIN ? false : true}
               name="ESTADO"
               value={data.ESTADO}
               onChange={handleInputFormChange}
@@ -240,6 +246,7 @@ export default function PerfilesAdminPage () {
             <Controls.SelectComponent
               label="Administrable"
               list={estadoList}
+              disabled={data.IS_MANAGEABLE && user.userAccess.ADMIN ? false : true}
               name="IS_MANAGEABLE"
               value={data.IS_MANAGEABLE}
               onChange={handleInputFormChange}

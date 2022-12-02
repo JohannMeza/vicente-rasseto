@@ -272,6 +272,7 @@ const dataInitial = {
   NOMBRE_USUARIO: "",
   EMAIL: "",
   DNI: "",
+  PASSWORD: "",
   ID_NIVEL_ESTUDIO: "",
   ID_GRADO: "",
   ESTADO: true
@@ -294,6 +295,10 @@ const ModalAlumno = ({ open, setOpen, isDataToEdit, setIsDataToEdit, saveData, l
 
     if ("DNI" in fieldValues) {
       temp.DNI = !fieldValues.DNI ? "El campo Nivel de Estudio es requerido" : "";
+    } 
+
+    if ("PASSWORD" in fieldValues) {
+      temp.PASSWORD = !fieldValues.PASSWORD ? "El campo Contraseña es requerido" : "";
     } 
 
     if ("ID_GRADO" in fieldValues) {
@@ -322,7 +327,7 @@ const ModalAlumno = ({ open, setOpen, isDataToEdit, setIsDataToEdit, saveData, l
       let { value } = e.target;
       getGrados(value)
     }
-    
+
     handleInputFormChange(e)
   }
 
@@ -351,14 +356,12 @@ const ModalAlumno = ({ open, setOpen, isDataToEdit, setIsDataToEdit, saveData, l
 
   useEffect(() => {
     if (isDataToEdit) {
-      setData(isDataToEdit)
+      setData({...isDataToEdit})
       getGrados(isDataToEdit.ID_NIVEL_ESTUDIO)
     }
   }, [isDataToEdit])
 
-  useEffect(() => {
-    setData({ ...data, ID_GRADO: "" })
-  }, [data.ID_NIVEL_ESTUDIO])
+ 
 
   return (
     <Controls.Modal
@@ -367,7 +370,7 @@ const ModalAlumno = ({ open, setOpen, isDataToEdit, setIsDataToEdit, saveData, l
     minWidth={600}
     fullWidth={true}
     maxWidth="sm"
-    title="Nuevo Nivel Estudio"
+    title="Nuevo Alumno"
     >
       <Grid container spacing={3}>
         <Grid item xs={6}>
@@ -425,6 +428,15 @@ const ModalAlumno = ({ open, setOpen, isDataToEdit, setIsDataToEdit, saveData, l
             onChange={handleChange}
             error={errors.ESTADO}
             value={data.ESTADO}
+          />
+        </Grid>
+        <Grid item xs={6}>
+          <Controls.InputComponent
+            label="Ingrese contraseña nueva"
+            name="PASSWORD"
+            onChange={handleChange}
+            error={errors.PASSWORD}
+            value={data.PASSWORD}
           />
         </Grid>
       </Grid>

@@ -253,6 +253,15 @@ export default function LibrosAdminPage() {
                   </TableCell>
                   <TableCell>
                     <Stack direction="row" spacing={1}>
+                      {(el.LINK && el.LINK !== "") &&
+                      <a href={el.LINK} target="_blank" rel="noreferrer">
+                        <Controls.ButtonIconComponent
+                          title="Abrir Link"
+                          icon={ICON.READ}
+                        />
+                      </a>
+                      }
+
                       <Controls.ButtonIconComponent
                         title="Editar"
                         icon={ICON.EDIT}

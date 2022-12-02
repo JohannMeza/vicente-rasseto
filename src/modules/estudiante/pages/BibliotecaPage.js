@@ -56,7 +56,7 @@ const BibliotecaPage = () => {
             <Grid item xs={6} key={index}>
               <CardHorizontal 
                 classNameColor="background-primary"
-                img={`data:image;base64,${libro?.IMAGEN.url}`}
+                img={`data:image;base64,${libro?.IMAGEN?.url}`}
               >
                 <Controls.Title title={libro.TITULO} sx={{ color: "var(--white_100)" }} />
                 <Controls.TextComponent variant="text1" component="p" sx={{ color: "var(--white_100)" }}> 

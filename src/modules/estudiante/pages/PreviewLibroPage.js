@@ -43,7 +43,7 @@ const PreviewLibroPage = () => {
     <Box>
       <Grid container spacing={4}>
         <Grid item xs={6}>
-          <img src={`data:image;base64,${libro?.IMAGEN.url}`} style={{ width: "100%", maxHeight: "750px" }} alt="" />
+          <img src={`data:image;base64,${libro?.IMAGEN?.url}`} style={{ width: "100%", maxHeight: "750px" }} alt="" />
         </Grid>
         <Grid item xs={6}>
           <Controls.Title title={libro?.TITULO} sx={{ color: "var(--blue_700)" }} />

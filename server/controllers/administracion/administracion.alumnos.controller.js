@@ -5,6 +5,8 @@ const AdministracionNivelEstudio = require("../../models/administracion/administ
 const AdministracionGrados = require("../../models/administracion/administracion_grados.model");
 const Login = require("../../models/auth/login.model");
 const UtilComponents = require("../../utils/UtilsComponents");
+const SeguridadPerfiles = require("../../models/seguridad/seguridad_perfiles.model");
+const bcrypt = require("bcrypt")
 
 const index = async (req, res) => {
   try {
@@ -12,8 +14,9 @@ const index = async (req, res) => {
     const { rowsPerPage, page } = req.body;
     const { NOMBRE_USUARIO, DNI, ESTADO, ID_NIVEL_ESTUDIO, EMAIL, ID_GRADO } = req.body;
     const dataFilter = UtilComponents.ValidarObjectForFilter({ NOMBRE_USUARIO, DNI, ESTADO })
-    let dataAlumnos = await SeguridadUsuarios.paginate({...dataFilter, ID_PERFILES: "62b2a2972e2f02366f422c1e" }, { limit: rowsPerPage, page, populate: [{path: 'ID_LOGIN'}, { path: "ID_GRADO", populate: { path: "ID_NIVEL_ESTUDIO" } }] })
 
+    const perfilEstudiante = await SeguridadPerfiles.findOne({ NOMBRE_PERFIL: { $in: [/estudiante/i ] }});
+    let dataAlumnos = await SeguridadUsuarios.paginate({...dataFilter, ID_PERFILES: perfilEstudiante._id }, { limit: rowsPerPage, page, populate: [{path: 'ID_LOGIN'}, { path: "ID_GRADO", populate: { path: "ID_NIVEL_ESTUDIO" } }] })
     let arrFilterAlumnos = dataAlumnos.docs
 
     if (ID_NIVEL_ESTUDIO) {
@@ -70,18 +73,52 @@ const getGradosLabel = async (req, res) => {
 
 const store = async (req, res) => {
   try {
-    const { NOMBRE_USUARIO, ESTADO, DNI, _id, EMAIL, ID_GRADO } = req.body;
-    const validData = UtilComponents.ValidarParametrosObligatorios({ NOMBRE_USUARIO, ESTADO, DNI })
+    let { NOMBRE_USUARIO, ESTADO, DNI, EMAIL, _id, ID_GRADO, PASSWORD } = req.body;
+    const { _id: ID_LOGIN } = req.body.ID_LOGIN;
+    if (!PASSWORD) PASSWORD = DNI
+    
+    const validData = UtilComponents.ValidarParametrosObligatorios({ NOMBRE_USUARIO, ESTADO, DNI, PASSWORD })
     if (validData) throw(validData)
+    const perfilEstudiante = await SeguridadPerfiles.findOne({ NOMBRE_PERFIL: { $in: [/estudiante/i ] }});
+    let PASS_DECRYPT = "";
+
+    if (!perfilEstudiante) {
+      throw({
+        err: true,
+        statusText: "No existe perfil de estudiante, crealo o comuniquese con el administrador",
+        status: 401
+      })
+    }
 
     if (_id) { // UPDATE
+      const salt = await bcrypt.genSalt(10);
+      PASS_DECRYPT = bcrypt.hashSync(PASSWORD, salt);
+      const isValidateLogin = await Login.findOne({ EMAIL: EMAIL, _id: {$ne: ID_LOGIN} });
+      if (isValidateLogin) throw({
+        error: true,
+        status: 401,
+        statusText: "El EMAIL ingresado ya existe",
+      })
+      
       await SeguridadUsuarios.findOneAndUpdate({ _id }, { NOMBRE_USUARIO, ESTADO, DNI, ID_GRADO })
+      await Login.findOneAndUpdate({ _id: ID_LOGIN }, { EMAIL: EMAIL, PASSWORD: PASS_DECRYPT })
+
       return res.status(201).json({
         error: false,
         statusText: MessageConstants.MESSAGE_SUCCESS_UPDATE,
         status: 201
       })
     } else { // SAVE
+      const salt = await bcrypt.genSalt(10);
+      PASS_DECRYPT = bcrypt.hashSync(PASSWORD, salt);
+
+      const isValidateLogin = await Login.findOne({ EMAIL });
+      if (isValidateLogin) throw({
+        error: true,
+        status: 401,
+        statusText: "El EMAIL ingresado ya existe",
+      })
+
       const validarEmail = await Login.findOne({ EMAIL });
       if (validarEmail) throw({
         error: true,
@@ -89,13 +126,13 @@ const store = async (req, res) => {
         status: 401
       })
 
-      const nuevoLogin = new Login({ EMAIL, PASSWORD: DNI })
+      const nuevoLogin = new Login({ EMAIL, PASSWORD: PASS_DECRYPT })
       await nuevoLogin.save();
 
       const dataLogin = await Login.find().sort({$natural:-1}).limit(1);
       const idLogin = dataLogin[0]._id
       
-      const nuevoUsuario = new SeguridadUsuarios({ NOMBRE_USUARIO, ESTADO, DNI, ID_LOGIN: idLogin, ID_PERFILES: "62b2a2972e2f02366f422c1e", ID_GRADO })
+      const nuevoUsuario = new SeguridadUsuarios({ NOMBRE_USUARIO, ESTADO, DNI, ID_LOGIN: idLogin, ID_PERFILES: perfilEstudiante._id, ID_GRADO })
       await nuevoUsuario.save()
       return res.status(201).json({
         error: false,

@@ -24,6 +24,7 @@ const dataInitial = {
   ESTADO: "Publicar",
   CATEGORIA: "",
   ETIQUETA: "",
+  LINK: "",
   AUTOR: "",
   GRADO: "",
   NIVEL_ESTUDIO: "",
@@ -101,35 +102,36 @@ export default function LibrosDetailPage () {
       fnRequest: SERVICES_POST,
       success: async (resp) => {
         let { categoria, etiqueta, autores, nivel_estudio, libro } = resp.data
-
         setListCategorias(categoria)
         setListEtiquetas(etiqueta)
         setListAutores(autores)
         setListNivelEstudio(nivel_estudio)
 
-        if (libro.length > 0) {
+        if (Object.entries(libro || {}).length > 0) {
           setData({
-            ...libro[0],
-            CATEGORIA: libro[0]?.ID_CATEGORIA.join(","),
-            ETIQUETA: libro[0]?.ID_ETIQUETA.join(","),
-            AUTOR: libro[0]?.ID_AUTOR.join(","),
+            ...libro,
+            CATEGORIA: libro?.ID_CATEGORIA.join(","),
+            ETIQUETA: libro?.ID_ETIQUETA.join(","),
+            AUTOR: libro?.ID_AUTOR.join(","),
+            GRADO: libro?.ID_GRADO._id,
+            NIVEL_ESTUDIO: libro?.ID_GRADO.ID_NIVEL_ESTUDIO._id,
           })
-          
-          if (libro[0]?.FILE) {
-            await fetch(`data:application/pdf;base64,${libro[0]?.FILE.url}`).then(result => {  
+          if (libro?.FILE) {
+            if (!pdfFile.current) return;
+            await fetch(`data:application/pdf;base64,${libro?.FILE.url}`).then(result => {  
               pdfFile.current.data = result.url
-              setLibroBase64({ FILE: libro[0].FILE.url })
-              setDataPdf(libro[0].FILE)
+              setLibroBase64({ FILE: libro.FILE.url })
+              setDataPdf(libro.FILE)
             })        
             .catch(err => {
               console.log(err)
             })
           }
 
-          if (libro[0]?.IMAGEN) {
-            imgFile.current.src = `data:image;base64,${libro[0]?.IMAGEN.url}`
-            setImagenBase64({ IMAGEN: libro[0].IMAGEN.url })
-            setDataImage(libro[0].IMAGEN)
+          if (libro?.IMAGEN) {
+            imgFile.current.src = `data:image;base64,${libro?.IMAGEN.url}`
+            setImagenBase64({ IMAGEN: libro.IMAGEN.url })
+            setDataImage(libro.IMAGEN)
           }
         }
 
@@ -252,7 +254,8 @@ export default function LibrosDetailPage () {
   const borrarPdf = () => {
     pdfFile.current.data = "";
     setDataPdf({})
-    setData({ ...data, FILE: "" })
+    setLibroBase64({})
+    setData({ ...data, FILE: { url: "" } })
   }
 
   const saveData = () => {
@@ -280,7 +283,10 @@ export default function LibrosDetailPage () {
   }, [])
 
   useEffect(() => {
-    setData({ ...data, GRADO: "" })
+    if (data._id) {
+      setData({ ...data, GRADO: "" })
+      getDataGrados(data.NIVEL_ESTUDIO)
+    }
   }, [data.NIVEL_ESTUDIO])
 
   return(
@@ -300,6 +306,15 @@ export default function LibrosDetailPage () {
                   onChange={handleChangeInput}
                   value={data.TITULO}
                   error={errors.TITULO}
+                />
+              </Grid>
+              <Grid item xs={12}>
+                <Controls.InputComponent 
+                  label="Link del Libro"
+                  name="LINK"
+                  onChange={handleChangeInput}
+                  value={data.LINK}
+                  error={errors.LINK}
                 />
               </Grid>
               <Grid item xs={12}>
@@ -363,7 +378,7 @@ export default function LibrosDetailPage () {
             <Grid container spacing={3}>
               <Grid item xs={12}>
                 <Controls.SelectComponent
-                  label="Nivel del Libro"
+                  label="Nivel del Estudio"
                   value={data.NIVEL_ESTUDIO}
                   name="NIVEL_ESTUDIO"
                   onChange={handleChangeInput}

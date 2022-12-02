@@ -27,7 +27,8 @@ const dataInitialFilter = {
   NOMBRE_USUARIO: "",
   EMAIL: "",
   DNI: "",
-  ESTADO: true
+  ESTADO: true,
+  PASSWORD: ""
 }
 
 export default function DocentesAdminPage () {
@@ -219,7 +220,7 @@ const dataInitial = {
   ESTADO: true
 }
 
-const ModalDocente = ({ open, setOpen, isDataToEdit, setIsDataToEdit, saveData }) => {
+const ModalDocente = ({ open, setOpen, isDataToEdit, setIsDataToEdit, saveData, listNivelEstudio }) => {
   const validate = (fieldValues = data) =>  {
     let temp = {...errors};
     
@@ -233,6 +234,10 @@ const ModalDocente = ({ open, setOpen, isDataToEdit, setIsDataToEdit, saveData }
 
     if ("DNI" in fieldValues) {
       temp.DNI = !fieldValues.DNI ? "El campo Nivel de Estudio es requerido" : "";
+    } 
+
+    if ("PASSWORD" in fieldValues) {
+      temp.PASSWORD = !fieldValues.PASSWORD ? "El campo Contraseña es requerido" : "";
     } 
 
     if ("ESTADO" in fieldValues) {
@@ -271,7 +276,7 @@ const ModalDocente = ({ open, setOpen, isDataToEdit, setIsDataToEdit, saveData }
     minWidth={600}
     fullWidth={true}
     maxWidth="sm"
-    title="Nuevo Nivel Estudio"
+    title="Nuevo Docente"
     >
       <Grid container spacing={3}>
         <Grid item xs={6}>
@@ -309,6 +314,16 @@ const ModalDocente = ({ open, setOpen, isDataToEdit, setIsDataToEdit, saveData }
             onChange={handleInputFormChange}
             error={errors.ESTADO}
             value={data.ESTADO}
+          />
+        </Grid>
+        <Grid item xs={6}>
+          <Controls.InputComponent
+            label="Ingrese contraseña nueva"
+            list={estadoList}
+            name="PASSWORD"
+            onChange={handleInputFormChange}
+            error={errors.PASSWORD}
+            value={data.PASSWORD}
           />
         </Grid>
       </Grid>

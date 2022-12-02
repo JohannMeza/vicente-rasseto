@@ -82,7 +82,7 @@ const BusquedaLibrosPage = () => {
         <br />
         {librosFiltrados.map((el, index) => (
           <CardLibroFiltrado
-            img={`data:image;base64,${el?.IMAGEN.url}`}
+            img={`data:image;base64,${el?.IMAGEN?.url}`}
             data={el}
             key={index}
           />

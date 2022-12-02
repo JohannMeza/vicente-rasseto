@@ -6,8 +6,8 @@ const UtilComponents = require("../../utils/UtilsComponents")
 const index = async (req, res) => {
   try {
     const { rowsPerPage, page } = req.body;
-    const { NOMBRE_SUBMENU, PATH, ESTADO } = req.body;
-    const dataFilter = UtilComponents.ValidarObjectForFilter({ NOMBRE_SUBMENU, PATH, ESTADO: ESTADO ? true : false })
+    const { NOMBRE_SUBMENU, PATH, PATH_FILE, ESTADO, PATH_BASE } = req.body;
+    const dataFilter = UtilComponents.ValidarObjectForFilter({ NOMBRE_SUBMENU, PATH, PATH_FILE, PATH_BASE, ESTADO: ESTADO ? true : false })
 
     const data = await ConfiguracionSubmenu.paginate(dataFilter, { limit: rowsPerPage, page })
     res.status(201).json({
@@ -26,18 +26,18 @@ const index = async (req, res) => {
 
 const store = async (req, res) => {
   try {
-    const { NOMBRE_SUBMENU, NOMBRE_ICON, PATH, ESTADO, _id } = req.body
-    const validData = UtilComponents.ValidarParametrosObligatorios({NOMBRE_SUBMENU, NOMBRE_ICON, PATH, ESTADO})
+    const { NOMBRE_SUBMENU, NOMBRE_ICON, PATH, PATH_FILE, PATH_BASE, ESTADO, _id } = req.body
+    const validData = UtilComponents.ValidarParametrosObligatorios({NOMBRE_SUBMENU, NOMBRE_ICON, PATH, PATH_FILE, PATH_BASE, ESTADO})
     if (validData) throw(validData);
     if (_id) { // EDITAR
-      await ConfiguracionSubmenu.findByIdAndUpdate({ _id }, { NOMBRE_SUBMENU, NOMBRE_ICON, PATH, ESTADO });
+      await ConfiguracionSubmenu.findByIdAndUpdate({ _id }, { NOMBRE_SUBMENU, NOMBRE_ICON, PATH, PATH_FILE, PATH_BASE, ESTADO });
       res.status(201).json({
         error: false,
         status: 201,
         statusText: MessageConstants.MESSAGE_SUCCESS_UPDATE
       })
     } else { // GUARDAR
-      const saveData = new ConfiguracionSubmenu({ NOMBRE_SUBMENU, NOMBRE_ICON, PATH, ESTADO });
+      const saveData = new ConfiguracionSubmenu({ NOMBRE_SUBMENU, NOMBRE_ICON, PATH, PATH_FILE, PATH_BASE, ESTADO });
       await saveData.save()
       res.status(201).json({
         error: false,
@@ -104,8 +104,8 @@ const searchByIds = async (req, res) => {
 
 const update = async (req, res) => {
   try {
-    const { NOMBRE_SUBMENU, NOMBRE_ICON, PATH, _id } = req.body;
-    const validData = UtilComponents.ValidarParametrosObligatorios({NOMBRE_SUBMENU, NOMBRE_ICON, PATH})
+    const { NOMBRE_SUBMENU, NOMBRE_ICON, PATH, PATH_BASE, PATH_FILE, _id } = req.body;
+    const validData = UtilComponents.ValidarParametrosObligatorios({NOMBRE_SUBMENU, NOMBRE_ICON, PATH, PATH_FILE, PATH_BASE})
     if (validData) throw(validData)
 
     if (_id) { // UPDATE 
@@ -118,7 +118,7 @@ const update = async (req, res) => {
     }
 
     if (!_id) { // SAVE
-      const saveData = new ConfiguracionSubmenu({ NOMBRE_SUBMENU, NOMBRE_ICON, PATH });
+      const saveData = new ConfiguracionSubmenu({ NOMBRE_SUBMENU, NOMBRE_ICON, PATH, PATH_FILE, PATH_BASE });
       await saveData.save()
       res.status(201).json({
         error: false,

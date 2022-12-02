@@ -7,6 +7,16 @@ const configuracionSubmenuSchema = new Schema({
     required: true,
     trim: true,
   },
+  PATH_BASE: {
+    type: String,
+    trim: true,
+    required: true
+  },
+  PATH_FILE: {
+    type: String,
+    trim: true,
+    required: true
+  },
   NOMBRE_ICON: {
     type: String,
     trim: true,

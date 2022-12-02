@@ -26,12 +26,16 @@ const dataInitialSubPaginas = {
   NOMBRE_SUBMENU: null,
   NOMBRE_ICON: null,
   PATH: null,
+  PATH_FILE: null,
+  PATH_BASE: null,
   ESTADO:  true
 };
 
 const dataInitialFilter = {
   NOMBRE_SUBMENU: null,
   PATH: null,
+  PATH_FILE: null,
+  PATH_BASE: null,
   ESTADO:  true
 }
 
@@ -61,6 +65,14 @@ export default function SubpaginasDetail() {
 
     if ("PATH" in fieldValues) {
       temp.PATH = !fieldValues.PATH ? "El campo Ruta es requerido" : "";
+    } 
+
+    if ("PATH_FILE" in fieldValues) {
+      temp.PATH_FILE = !fieldValues.PATH_FILE ? "El campo Ruta de Archivo es requerido" : "";
+    } 
+
+    if ("PATH_BASE" in fieldValues) {
+      temp.PATH_BASE = !fieldValues.PATH_BASE ? "El campo Ruta Base es requerido" : "";
     } 
     
     setErrors({...temp});
@@ -185,6 +197,12 @@ export default function SubpaginasDetail() {
               <Controls.InputComponent label="Ruta" name="PATH" value={dataForm.PATH} onChange={handleInputChange} />
             </Grid>
             <Grid item xs={3}>
+              <Controls.InputComponent label="Ruta Archivo" name="PATH_FILE" value={dataForm.PATH_FILE} onChange={handleInputChange} />
+            </Grid>
+            <Grid item xs={3}>
+              <Controls.InputComponent label="Ruta Base" name="PATH_BASE" value={dataForm.PATH_BASE} onChange={handleInputChange} />
+            </Grid>
+            <Grid item xs={3}>
               <Controls.SelectComponent label="Estado" name="ESTADO" list={listEstado} value={dataForm.ESTADO} onChange={handleInputChange} />
             </Grid>
           </Grid>
@@ -281,6 +299,24 @@ export default function SubpaginasDetail() {
               value={data.PATH}
               onChange={handleInputFormChange}
               error={errors.PATH}
+            />
+          </Grid>
+          <Grid item xs={12}>
+            <Controls.InputComponent
+              label="Nombre de la ruta del archivo"
+              name="PATH_FILE"
+              value={data.PATH_FILE}
+              onChange={handleInputFormChange}
+              error={errors.PATH_FILE}
+            />
+          </Grid>
+          <Grid item xs={12}>
+            <Controls.InputComponent
+              label="Nombre de la ruta base"
+              name="PATH_BASE"
+              value={data.PATH_BASE}
+              onChange={handleInputFormChange}
+              error={errors.PATH_BASE}
             />
           </Grid>
           <Grid item xs={12}>

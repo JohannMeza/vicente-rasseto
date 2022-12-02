@@ -52,7 +52,7 @@ const listDataInitial = async (req, res) => {
     let camposEtiqueta = { ETIQUETA: "label", _id: "value" };
     let camposAutores = { NOMBRE_AUTOR: "label", _id: "value" };
     let camposNivelEstudio = { NIVEL_ESTUDIO: "label", _id: "value" };
-
+    
     const { id_libro } = req.body;  
 
     const multimedia = await AdministracionMultimedia.find();
@@ -60,8 +60,8 @@ const listDataInitial = async (req, res) => {
     const etiquetas = await AdministracionEtiqueta.find({ESTADO: true}, {_id: 1, ETIQUETA: 1});
     const autores = await AdministracionAutores.find({ESTADO: true}, {_id: 1, NOMBRE_AUTOR: 1});
     const nivelEstudio = await AdministracionNivelEstudio.find({ESTADO: true}, {_id: 1, NIVEL_ESTUDIO: 1});
-    const libro = await AdministracionMultimedia.find({_id: id_libro});
-  
+    const libro = await AdministracionMultimedia.findOne({_id: id_libro}).populate({ path: "ID_GRADO", populate: { path: "ID_NIVEL_ESTUDIO" } }); 
+
     const arrCategoria = UtilComponents.CambiarNombreCampos(categorias, camposCategoria)
     const arrEtiqueta = UtilComponents.CambiarNombreCampos(etiquetas, camposEtiqueta)
     const arrAutores = UtilComponents.CambiarNombreCampos(autores, camposAutores)
@@ -114,7 +114,7 @@ const listGrados = async (req, res) => {
 
 const store = async (req, res) => {
   try {
-    const { TITULO, ESTADO, CATEGORIA, ETIQUETA, AUTOR, GRADO, FILE, IMAGEN, _id, TIPO } = req.body;
+    const { TITULO, ESTADO, CATEGORIA, ETIQUETA, AUTOR, GRADO, FILE, IMAGEN, _id, TIPO, LINK } = req.body;
     let arrEstadoValid = ["Publicado", "No Publicado"];
     if (!arrEstadoValid.includes(ESTADO)) {
       throw({
@@ -127,14 +127,14 @@ const store = async (req, res) => {
     const validData = UtilComponents.ValidarParametrosObligatorios({ TITULO, CATEGORIA, ETIQUETA, AUTOR, GRADO })
     if (validData) throw(validData);
     if (_id) { // UPDATE
-      await AdministracionMultimedia.findOneAndUpdate({ _id }, { TITULO, ESTADO, ID_CATEGORIA: CATEGORIA.split(","), ID_ETIQUETA: ETIQUETA.split(","), ID_AUTOR: AUTOR.split(","), ID_GRADO: GRADO, FILE, IMAGEN: IMAGEN, TIPO })
+      await AdministracionMultimedia.findOneAndUpdate({ _id }, { TITULO, ESTADO, ID_CATEGORIA: CATEGORIA.split(","), ID_ETIQUETA: ETIQUETA.split(","), ID_AUTOR: AUTOR.split(","), ID_GRADO: GRADO, FILE, IMAGEN: IMAGEN, TIPO, LINK })
       return res.status(201).json({
         error: false,
         status: 201,
         statusText: MessageConstants.MESSAGE_SUCCESS_UPDATE
       })
     } else { //  SAVE
-      const multimedia = new AdministracionMultimedia({ TITULO, ESTADO, ID_CATEGORIA: CATEGORIA.split(","), ID_ETIQUETA: ETIQUETA.split(","), ID_AUTOR: AUTOR.split(","), ID_GRADO: GRADO, FILE, IMAGEN: IMAGEN, TIPO });
+      const multimedia = new AdministracionMultimedia({ TITULO, ESTADO, ID_CATEGORIA: CATEGORIA.split(","), ID_ETIQUETA: ETIQUETA.split(","), ID_AUTOR: AUTOR.split(","), ID_GRADO: GRADO, FILE, IMAGEN: IMAGEN, TIPO, LINK });
       await multimedia.save();
 
       return res.status(201).json({

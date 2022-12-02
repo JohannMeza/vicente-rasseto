@@ -29,6 +29,10 @@ export const CONFIG_NEW = "/configuracion/menu/new";
 
 
 export const pathServer = {
+  AUTH: {
+    PATH: "/auth/usuario/path/"
+  },
+
   CONFIGURACION: {
     MENU: {
       INDEX: "/configuracion/menu",

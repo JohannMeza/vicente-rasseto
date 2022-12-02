@@ -144,7 +144,7 @@ const isLogin = async (req, res) => {
   try {
     const { EMAIL } = req.body;
     const { _id } = await Login.findOne({ EMAIL });
-    const userAccess = await SeguridadUsuarios.findOne({ ID_LOGIN: _id }).populate('ID_PERFILES');
+    let userAccess = await SeguridadUsuarios.findOne({ ID_LOGIN: _id }).populate('ID_PERFILES');
     if (!userAccess) throw({
       error: true,
       statusText: "Token alterado",
@@ -154,6 +154,20 @@ const isLogin = async (req, res) => {
     const ID_PERFIL = userAccess.ID_PERFILES._id
     const menusAndSubmenus = await SeguridadPerfilesMenuSubmenu.find({ ID_SEGURIDAD_PERFILES: ID_PERFIL }).populate("ID_CONFIGURACION_MENU").populate("ID_CONFIGURACION_SUBMENU")
 
+    let perfil = userAccess.ID_PERFILES.NOMBRE_PERFIL;
+    if (perfil.toLowerCase() === "administrador") {
+      let user = userAccess._doc;
+      userAccess = {
+        ...user,
+        ADMIN: true
+      }
+    } else {
+      let user = userAccess._doc;
+      userAccess = {
+        ...user,
+        ADMIN: false
+      }
+    }
 
     res.status(201).json({ data: {userAccess, menusAndSubmenus} })
   } catch (err) {
@@ -161,6 +175,23 @@ const isLogin = async (req, res) => {
   }
 }
 
+/**
+ * 
+ * @param {*} req 
+ * USER
+ * @return {*}
+ * Trae todas las rutas del usuario
+ */
+
+const getPathUser = async (req, res) => {
+  try {
+    const { id } = req.params;
+    const path = await SeguridadPerfilesMenuSubmenu.find({ ID_SEGURIDAD_PERFILES: id }).populate("ID_CONFIGURACION_SUBMENU")
+    res.status(201).json({ data: path })
+  } catch (err) {
+    return res.status(err.status || 500).json({ ...err })
+  }
+}
 
 const signRemove = async (req, res) => {
     // const { id } = req.params;
@@ -197,5 +228,6 @@ module.exports = {
   signIn,
   signUp,
   isLogin,
+  getPathUser,
   signRemove
 }

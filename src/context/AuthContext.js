@@ -22,7 +22,6 @@ export default function AuthContextProvider ({children}) {
           // setIsAuthenticated(true)
         },
         error: (err) => {
-          console.log(err)
           localStorage.removeItem(TOKEN_BIBLIOTECA_VIRTUAL);
           window.location.reload()
           // setIsAuthenticated(false)
