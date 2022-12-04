@@ -1,4 +1,4 @@
-import React, { memo, useEffect } from 'react';
+import React, { memo, useEffect, useState } from 'react';
 import { styled, useTheme } from '@mui/material/styles';
 import MuiAppBar from '@mui/material/AppBar';
 import Toolbar from '@mui/material/Toolbar';
@@ -16,6 +16,7 @@ import iconUserNiño from "../../assets/icons/user-niño.png"
 import { Tooltip } from '@mui/material';
 import { useNavigate } from 'react-router-dom';
 import { pathFront } from '../../config/router/pathFront';
+import Controls from '../../framework/components/Controls';
 
 const drawerWidth = 296;
 const AppBar = styled(MuiAppBar, {
@@ -41,6 +42,7 @@ const HeaderComponentEstudiante = () => {
   const navigate = useNavigate()
   const [role, setRole] = React.useState(null);
   const {open, setOpen} = useLayoutContext()
+  const [openPerfil, setOpenPerfil] = useState(false)
 
   const handleDrawerOpen = () => {
     setOpen(true);
@@ -52,6 +54,7 @@ const HeaderComponentEstudiante = () => {
 
   useEffect(() => {
     if (user) {
+      console.log(user)
       setRole(user.userAccess.ID_PERFILES.NOMBRE_PERFIL)
     }
   }, [user])
@@ -121,7 +124,7 @@ const HeaderComponentEstudiante = () => {
         } */}
         
         <div className="header__buttons">
-          <Tooltip title="Ver mi Perfil" placement="bottom">
+          <Tooltip title="Ver mi Perfil" placement="bottom" onClick={() => setOpenPerfil(!openPerfil)}>
             <div className="header__buttons__link">
               <img src={iconUserNiño} style={{ width: "25px" }} alt="" />
             </div>
@@ -130,7 +133,40 @@ const HeaderComponentEstudiante = () => {
           <Typography variant="h6" component="div" style={{ display: "flex", alignItems: "center" }}>
             { user?.userAccess && user.userAccess.NOMBRE_USUARIO }
           </Typography>
+
+          {openPerfil && 
+          <div 
+            className="header__buttons__tooltip__perfil background-white_100"
+            style={{ 
+              display: "grid", 
+              gridTemplateColumns: "30% 1fr",
+              gap: "15px", 
+              padding: "15px", 
+              justifyItems: "center",
+              alignContent: "center"
+            }}
+          >
+            <div className='display-flex display-flex-center-center' >
+              <img src={iconUserNiño} style={{ width: "60px" }} alt="" />
+            </div>
+            <div style={{ justifySelf: "start" }}>
+              <div style={{ marginBottom: "10px" }}>
+                <Controls.TextComponent variant="h2" component="span">
+                  { user?.userAccess && user.userAccess.NOMBRE_USUARIO }
+                </Controls.TextComponent>
+              </div>
+          
+              <Controls.ButtonComponent 
+                variant="medium" 
+                type="red" 
+                title="Salir" 
+                onClick={() => navigate("/logout")}
+              />
+            </div>
+          </div>
+          }
         </div>
+        
       </Toolbar>
     </AppBar>
   );

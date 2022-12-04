@@ -3,7 +3,7 @@ config();
 
 module.exports = {
   database: {
-    MONGODB_URI: process.env.MONGO_URI,
+    MONGODB_URI: process.env.MONGO_URI_LOCAL,
     PORT: process.env.PORT
   },
 
