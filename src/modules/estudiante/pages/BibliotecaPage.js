@@ -27,6 +27,13 @@ const dataInitial = {
   SEARCH: "",
 };
 
+const dataInitialSelect = {
+  CATEGORIAS: [],
+  ETIQUETAS: [],
+  AUTORES: [],
+  ORDEN: []
+}
+
 const BibliotecaPage = () => {
   const InputSearchStyled = {
     width: "100%",
@@ -38,11 +45,13 @@ const BibliotecaPage = () => {
   const navigate = useNavigate();
   const setLoader = useLoaderContext();
   const [librosMain, setLibrosMain] = useState([]);
+  const [librosView, setLibrosView] = useState([]);
   const [librosFilter, setLibrosFilter] = useState([]);
   const [categorias, setCategorias] = useState([]);
   const [etiquetas, setEtiquetas] = useState([]);
   const [autores, setAutores] = useState([]);
   const [orden, setOrden] = useState(dataOrden);
+  const [dataSelect, setDataSelect] = useState(dataInitialSelect)
   const [search, handleInputChange] = useForm(dataInitial);
 
   const getLibros = () => {
@@ -53,9 +62,10 @@ const BibliotecaPage = () => {
       fnRequest: SERVICES_GET,
       success: (resp) => {
         let { libros, etiquetas, categorias, autores } = resp.data;
-        console.log(libros);
+
         setLibrosMain(libros || []);
         setLibrosFilter(libros || []);
+        setLibrosView(libros || []);
         setCategorias(categorias || []);
         setEtiquetas(etiquetas || []);
         setAutores(autores || []);
@@ -71,23 +81,59 @@ const BibliotecaPage = () => {
 
   const handleChange = (e) => {
     const regExp = RegExp(e.target.value, "ig");
-    const arrDataFilter = librosMain.filter((el) => el?.TITULO?.match(regExp));
+    const arrDataFilter = librosFilter.filter((el) => el?.TITULO?.match(regExp));
     handleInputChange(e);
-    setLibrosFilter(arrDataFilter);
+    setLibrosView(arrDataFilter);
   };
 
   useEffect(() => {
     getLibros();
   }, []);
 
+  useEffect(() => {
+    const { CATEGORIAS, AUTORES, ETIQUETAS, ORDEN } = dataSelect
+    let arrLibros = librosMain || [];
+
+    {
+      CATEGORIAS?.length > 0 &&
+      (arrLibros = librosView.filter(libro => {
+        return libro.ID_CATEGORIA?.find(categoria => {
+          return CATEGORIAS?.includes(categoria)
+        })
+      }));
+    }
+
+    {
+      AUTORES.length > 0 &&
+      (arrLibros = arrLibros.filter(libro => {
+        return libro.ID_AUTOR?.find(autor => {
+          return AUTORES?.includes(autor)
+        })
+      }))
+    }
+
+    {
+      ETIQUETAS.length > 0 &&
+      (
+        arrLibros = arrLibros.filter(libro => {
+          return libro.ID_ETIQUETA?.find(etiqueta => {
+            return ETIQUETAS?.includes(etiqueta)
+          })
+        }))
+    }
+
+    setLibrosView(arrLibros)
+    setLibrosFilter(arrLibros)
+  }, [dataSelect]);
+
   return (
     <Grid container spacing={2}>
       <Grid item xs={2}>
         <Stack direction="column" spacing={2}>
-          <ItemComponent data={categorias} title="Categorias" />
-          <ItemComponent data={etiquetas} title="Etiquetas" />
-          <ItemComponent data={autores} title="Autores" />
-          <ItemComponent data={orden} title="Ordenar" />
+          <ItemComponent dataSelect={dataSelect} setDataSelect={setDataSelect} name="CATEGORIAS" data={categorias} title="Categorias" />
+          <ItemComponent dataSelect={dataSelect} setDataSelect={setDataSelect} name="ETIQUETAS" data={etiquetas} title="Etiquetas" />
+          <ItemComponent dataSelect={dataSelect} setDataSelect={setDataSelect} name="AUTORES" data={autores} title="Autores" />
+          <ItemComponent dataSelect={dataSelect} setDataSelect={setDataSelect} name="ORDEN" data={orden} title="Ordenar" />
         </Stack>
       </Grid>
 
@@ -133,7 +179,7 @@ const BibliotecaPage = () => {
         </Box>
 
         <Grid container spacing={2} marginTop={1}>
-          {librosFilter.map((libro, index) => (
+          {librosView.map((libro, index) => (
             <Grid item xs={6} key={index}>
               <CardHorizontal
                 classNameColor="background-primary"
@@ -230,7 +276,7 @@ const BibliotecaPage = () => {
   );
 };
 
-const ItemComponent = ({ title, data }) => {
+const ItemComponent = ({ dataSelect, setDataSelect, title, data, name }) => {
   const InputSearchStyled = {
     width: "100%",
     display: "block",
@@ -241,6 +287,24 @@ const ItemComponent = ({ title, data }) => {
   const [form, handleInputChange] = useForm({ SEARCH: "" });
   const [filter, setFilter] = useState(data);
   const inputSearch = useRef();
+
+  const handleChangeCheck = (e, value) => {
+    let { checked, name } = e.target;
+
+    if (checked) {
+      setDataSelect({
+        ...dataSelect,
+        [name]: [...dataSelect[name], value]
+      })
+    } else {
+      let arrData = dataSelect[name]?.filter(el => el !== value);
+      setDataSelect({
+        ...dataSelect,
+        [name]: arrData
+      })
+    }
+  }
+
   const handleChange = (e) => {
     const regExp = RegExp(e.target.value, "ig");
     const arrDataFilter = data.filter((el) => el?.label?.match(regExp));
@@ -295,7 +359,9 @@ const ItemComponent = ({ title, data }) => {
           filter.map((el, index) => (
             <Controls.CheckComponent
               key={index}
-              name={el.label}
+              name={name}
+              onChange={(e) => handleChangeCheck(e, el.value)}
+              value={dataSelect[name]?.includes(el.value)}
               label={el.label}
               sx={{ display: "block" }}
             />
