@@ -2,6 +2,7 @@ import { ButtonComponent, ButtonIconComponent } from './form/button/ButtonCompon
 import InputComponent from './form/input/InputComponent';
 import SelectComponent from './form/input/SelectComponent';
 import SearchComponent from './form/input/SearchComponent';
+import CheckComponent from './form/input/CheckComponent';
 import { TextComponent } from './font/Typography';
 import { Title } from './font/Title';
 import TableComponents from './table/TableComponent';
@@ -15,6 +16,7 @@ const Controls = {
   ButtonIconComponent,
   TextComponent,
   InputComponent,
+  CheckComponent,
   SelectComponent,
   SearchComponent,
   TableComponents,

@@ -2,9 +2,9 @@ import { Box } from '@mui/system';
 import React from 'react';
 import "./CardHorizontal.css";
 
-const CardHorizontal = ({ classNameColor, children, img }) => {
+const CardHorizontal = ({ classNameColor, children, img, sx }) => {
   return (
-    <Box className={`card-main ${classNameColor}`}>
+    <Box className={`card-main ${classNameColor}`} sx={sx}>
       <Box className="display-flex display-flex-center-center card-main__img">
         <img src={img} alt="" style={{ maxHeight: "250px", objectFit: "cover" }} />
       </Box>

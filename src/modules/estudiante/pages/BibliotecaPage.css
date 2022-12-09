@@ -1,7 +1,4 @@
 .title__estudiante {
   padding: 8px 25px;
-  position: absolute;
-  left: 0;
-  margin-top: 25px;
-  border-radius: 0 5px 5px 0;
+  border-radius: 5px;
 }

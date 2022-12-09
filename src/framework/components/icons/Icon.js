@@ -17,6 +17,7 @@ import AddIcon from '@mui/icons-material/Add';
 import RemoveIcon from '@mui/icons-material/Remove';
 import DocumentScannerIcon from '@mui/icons-material/DocumentScanner';
 import AutoStoriesIcon from '@mui/icons-material/AutoStories';
+import SearchIcon from '@mui/icons-material/Search';
 
 export const ICON = {
   CLOSE: <CloseIcon />,
@@ -34,6 +35,7 @@ export const ICON = {
   ARROW_SMALL_BOTTOM: <KeyboardArrowDownIcon />,
   ARROW_SMALL_TOP: <KeyboardArrowUpIcon />,
   SEARCH_PAGE: <FindInPageIcon />,
+  SEARCH: <SearchIcon />,
   ADD: <AddIcon />,
   REMOVE: <RemoveIcon />,
   SCANNER: <DocumentScannerIcon />,
