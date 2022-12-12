@@ -93,33 +93,27 @@ const BibliotecaPage = () => {
     const { CATEGORIAS, AUTORES, ETIQUETAS, ORDEN } = dataSelect
     let arrLibros = librosMain || [];
 
-    {
-      CATEGORIAS?.length > 0 &&
-      (arrLibros = librosView.filter(libro => {
-        return libro.ID_CATEGORIA?.find(categoria => {
-          return CATEGORIAS?.includes(categoria)
-        })
-      }));
-    }
+    CATEGORIAS?.length > 0 &&
+    (arrLibros = librosView.filter(libro => {
+      return libro.ID_CATEGORIA?.find(categoria => {
+        return CATEGORIAS?.includes(categoria)
+      })
+    }));
+    
+    AUTORES.length > 0 &&
+    (arrLibros = arrLibros.filter(libro => {
+      return libro.ID_AUTOR?.find(autor => {
+        return AUTORES?.includes(autor)
+      })
+    }))
 
-    {
-      AUTORES.length > 0 &&
-      (arrLibros = arrLibros.filter(libro => {
-        return libro.ID_AUTOR?.find(autor => {
-          return AUTORES?.includes(autor)
-        })
-      }))
-    }
-
-    {
-      ETIQUETAS.length > 0 &&
-      (
-        arrLibros = arrLibros.filter(libro => {
-          return libro.ID_ETIQUETA?.find(etiqueta => {
-            return ETIQUETAS?.includes(etiqueta)
-          })
-        }))
-    }
+    ETIQUETAS.length > 0 &&
+    (
+      arrLibros = arrLibros.filter(libro => {
+        return libro.ID_ETIQUETA?.find(etiqueta => {
+          return ETIQUETAS?.includes(etiqueta)
+      })
+    }))
 
     setLibrosView(arrLibros)
     setLibrosFilter(arrLibros)
@@ -208,7 +202,7 @@ const BibliotecaPage = () => {
                     </Controls.TextComponent>
 
                     <Box sx={{ marginTop: "3px" }}>
-                      {libro.FILE?.name?.split(".")?.length > 0 && (
+                      {libro.NOMBRE_FILE?.split(".")?.length > 0 && (
                         <Controls.TextComponent
                           variant="text2"
                           component="p"
@@ -218,11 +212,11 @@ const BibliotecaPage = () => {
                           }}
                         >
                           <b>Formato: </b>
-                          {libro.FILE?.name.split(".")[1]}
+                          {libro.NOMBRE_FILE.split(".").pop()}
                         </Controls.TextComponent>
                       )}
 
-                      {libro.FILE?.pages && (
+                      {libro.PAGINAS && (
                         <Controls.TextComponent
                           variant="text2"
                           component="p"
@@ -232,7 +226,7 @@ const BibliotecaPage = () => {
                           }}
                         >
                           <b>Páginas: </b>
-                          {libro.FILE?.pages} pag.
+                          {libro.PAGINAS} pag.
                         </Controls.TextComponent>
                       )}
                     </Box>
