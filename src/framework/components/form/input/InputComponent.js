@@ -4,6 +4,7 @@ import Controls from "../../Controls";
 
 export default function InputComponent({
   label,
+  multiline,
   id,
   value,
   onChange,
@@ -70,6 +71,7 @@ export default function InputComponent({
       label={label}
       type={type === "decimal" || type ? "text" : type}
       variant="outlined"
+      multiline={multiline}
       size="small"
       name={name}
       value={value === undefined || value === null || value === "" ? "" : value}

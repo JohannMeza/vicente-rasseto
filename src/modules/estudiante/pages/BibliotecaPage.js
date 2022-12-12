@@ -53,7 +53,6 @@ const BibliotecaPage = () => {
       fnRequest: SERVICES_GET,
       success: (resp) => {
         let { libros, etiquetas, categorias, autores } = resp.data;
-        console.log(libros);
         setLibrosMain(libros || []);
         setLibrosFilter(libros || []);
         setCategorias(categorias || []);

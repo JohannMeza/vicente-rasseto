@@ -1,4 +1,4 @@
-import { Grid, Stack, Table, TableBody, TableCell, TableHead, TableRow, Typography } from '@mui/material';
+import { Grid, Stack, Table, TableBody, TableCell, TableHead, TableRow, TextareaAutosize, Typography } from '@mui/material';
 import { Box } from '@mui/system';
 import React, { useEffect, useState } from 'react';
 import { useRef } from 'react';
@@ -11,6 +11,7 @@ import { SaveRequestData } from '../../../../helpers/helpRequestBackend';
 import { useBase64Encoded } from '../../../../hooks/useBase64File';
 import { useFormValidation } from '../../../../hooks/useFormValidation';
 import useLoaderContext from '../../../../hooks/useLoaderContext';
+import { useReadLibro } from '../../../../hooks/useReadLibro';
 import { SERVICES_GET, SERVICES_POST } from '../../../../services/services.axios';
 import { MessageUtil } from '../../../../util/MessageUtil';
 
@@ -22,6 +23,8 @@ const estadoLibro = [
 const dataInitial = {
   TITULO: "",
   ESTADO: "Publicar",
+  DESCRIPCION_LARGA: "",
+  DESCRIPCION_CORTA: "",
   CATEGORIA: "",
   ETIQUETA: "",
   LINK: "",
@@ -31,6 +34,9 @@ const dataInitial = {
   FILE: {},
   IMAGEN: {},
 }
+
+const descripcion_larga = 150;
+const descripcion_corta = 50;
 
 export default function LibrosDetailPage () {
   const styleImage = {
@@ -68,6 +74,26 @@ export default function LibrosDetailPage () {
     if ("GRADO" in fieldValues) {
       temp.GRADO = !fieldValues.GRADO ? "El campo Grado es requerido" : "";
     } 
+
+    if ("DESCRIPCION_LARGA" in fieldValues) {
+      if (!fieldValues?.DESCRIPCION_LARGA || fieldValues.DESCRIPCION_LARGA === "") {
+        temp.DESCRIPCION_LARGA = "El campo Descripcion Larga es requerido"
+      } else if (fieldValues.DESCRIPCION_LARGA.length > descripcion_larga) {
+        temp.DESCRIPCION_LARGA = `El campo Descripcion Larga no puede exceder a ${descripcion_larga} caracteres`
+      } else {
+        temp.DESCRIPCION_LARGA = "";
+      }
+    } 
+
+    if ("DESCRIPCION_CORTA" in fieldValues) {
+      if (!fieldValues?.DESCRIPCION_CORTA || fieldValues.DESCRIPCION_CORTA === "" ) {
+        temp.DESCRIPCION_CORTA = "El campo Descripcion Corta es requerido"
+      } else if (fieldValues.DESCRIPCION_CORTA.length > descripcion_corta) {
+        temp.DESCRIPCION_CORTA = `El campo Descripcion Corta no puede exceder a ${descripcion_corta} caracteres`
+      } else {
+        temp.DESCRIPCION_CORTA = "";
+      }
+    } 
     
     setErrors({...temp});
     if (fieldValues === data) {
@@ -89,6 +115,8 @@ export default function LibrosDetailPage () {
   const [dataPdf, setDataPdf] = useState({})
   const [libroBase64, setLibroBase64] = useState({})
   const [imagenBase64, setImagenBase64] = useState({})
+  const [pdfData, setPdfData] = useState();
+  const [canvas] = useReadLibro(pdfData, 1)
   let btnFileLibro = useRef(null)
   let btnFileImage = useRef(null)
   let imgFile = useRef(null)
@@ -106,7 +134,6 @@ export default function LibrosDetailPage () {
         setListEtiquetas(etiqueta)
         setListAutores(autores)
         setListNivelEstudio(nivel_estudio)
-
         if (Object.entries(libro || {}).length > 0) {
           setData({
             ...libro,
@@ -117,15 +144,26 @@ export default function LibrosDetailPage () {
             NIVEL_ESTUDIO: libro?.ID_GRADO.ID_NIVEL_ESTUDIO._id,
           })
           if (libro?.FILE) {
-            if (!pdfFile.current) return;
-            await fetch(`data:application/pdf;base64,${libro?.FILE.url}`).then(result => {  
-              pdfFile.current.data = result.url
-              setLibroBase64({ FILE: libro.FILE.url })
-              setDataPdf(libro.FILE)
-            })        
-            .catch(err => {
-              console.log(err)
+            setPdfData(atob(libro?.FILE))
+            setDataPdf({  
+              PAGINAS: libro.PAGINAS,
+              NOMBRE_FILE: libro.NOMBRE_FILE,
+              PESO: libro.PESO
             })
+
+            // if (!pdfFile.current) return;
+            // await fetch(`data:application/pdf;base64,${libro?.FILE}`).then(result => {  
+            //   // pdfFile.current.data = result.url
+            //   // setLibroBase64({ FILE: libro.FILE })
+            //   setDataPdf({  
+            //     PAGINAS: libro.PAGINAS,
+            //     NOMBRE_FILE: libro.NOMBRE_FILE,
+            //     PESO: libro.PESO
+            //   })
+            // })        
+            // .catch(err => {
+            //   console.log(err)
+            // })
           }
 
           if (libro?.IMAGEN) {
@@ -209,18 +247,20 @@ export default function LibrosDetailPage () {
       let reader = new FileReader();
       let file = e.target.files[0]
 
+      if (e.target.files.length === 0) return;
+
       reader.readAsBinaryString(e.target.files[0])
       reader.onloadend = function () {
         let regExp = new RegExp("count [0-9]", "ig")
-        let count = reader.result.match(regExp)[0].split(" ")[1]
+        let count = reader.result.match(regExp)?.length > 0 ? reader.result.match(regExp)[0].split(" ")[1] : 0
         setDataPdf({ 
-          pages: count,
-          name: file.name,
-          size: sizeFile(file)
+          PAGINAS: count,
+          NOMBRE_FILE: file.name,
+          PESO: sizeFile(file)
         })
       }
 
-      pdfFile.current.data = _URL.createObjectURL(e.target.files[0])
+      // pdfFile.current.data = _URL.createObjectURL(e.target.files[0])
       encodedFileBase64(libroBase64, setLibroBase64, e)
       return
     }
@@ -252,10 +292,10 @@ export default function LibrosDetailPage () {
   }
 
   const borrarPdf = () => {
-    pdfFile.current.data = "";
+    // pdfFile.current.data = "";
     setDataPdf({})
     setLibroBase64({})
-    setData({ ...data, FILE: { url: "" } })
+    setData({ ...data, FILE: "" })
   }
 
   const saveData = () => {
@@ -263,7 +303,8 @@ export default function LibrosDetailPage () {
       setLoader(true)
       SaveRequestData({
         path: pathServer.ADMINISTRACION.MULTIMEDIA.NEW,
-        body: {...data, TIPO: "Libro", FILE: { url: libroBase64.FILE, ...dataPdf }, IMAGEN: { url: imagenBase64.IMAGEN, ...dataImage } },
+        // body: {...data, TIPO: "Libro", FILE: { url: libroBase64.FILE, ...dataPdf }, IMAGEN: { url: imagenBase64.IMAGEN, ...dataImage } },
+        body: {...data, TIPO: "Libro", FILE: libroBase64.FILE, ...dataPdf, IMAGEN: { url: imagenBase64.IMAGEN, ...dataImage } },
         fnRequest: SERVICES_POST,
         success: (resp) => {
           setLoader(false)
@@ -281,6 +322,12 @@ export default function LibrosDetailPage () {
   useEffect(() => {
     getDataInitial()
   }, [])
+
+  useEffect(() => {
+    if (libroBase64?.FILE) {
+      setPdfData(atob(libroBase64?.FILE))
+    }
+  }, [libroBase64])
 
   useEffect(() => {
     if (data._id) {
@@ -325,6 +372,26 @@ export default function LibrosDetailPage () {
                   onChange={handleChangeInput}
                   list={estadoLibro}
                   error={errors.ESTADO}
+                />
+              </Grid>
+              <Grid item xs={12}>
+                <Controls.InputComponent 
+                  label={!data.DESCRIPCION_LARGA?.length ? `Descripción larga del libro` : `Descripción larga del libro (${data.DESCRIPCION_LARGA?.length} de ${descripcion_larga})` }
+                  name="DESCRIPCION_LARGA"
+                  multiline
+                  onChange={handleChangeInput}
+                  value={data.DESCRIPCION_LARGA}
+                  error={errors.DESCRIPCION_LARGA}
+                />
+              </Grid>
+              <Grid item xs={12}>
+                <Controls.InputComponent 
+                  label={!data.DESCRIPCION_CORTA?.length ? `Descripción corta del libro` : `Descripción corta del libro (${data.DESCRIPCION_CORTA?.length} de ${descripcion_corta})` }
+                  name="DESCRIPCION_CORTA"
+                  multiline
+                  onChange={handleChangeInput}
+                  value={data.DESCRIPCION_CORTA}
+                  error={errors.DESCRIPCION_CORTA}
                 />
               </Grid>
             </Grid>
@@ -411,13 +478,15 @@ export default function LibrosDetailPage () {
             />
 
             <Box style={{ display: "flex", gridGap: "10px" }}>
-              <object aria-label="pdf" ref={pdfFile} style={styleImage} type="application/pdf"></object>
+              <canvas style={styleImage} ref={canvas}></canvas>
+
+              {/* <object aria-label="pdf" ref={pdfFile} style={styleImage} type="application/pdf"></object> */}
 
               <Box>
                 <Typography variant="text1" component="div"><b>Informacion del Libro</b></Typography>
-                <Typography variant="text2" component="div">Nombre: {dataPdf.name}</Typography>
-                <Typography variant="text2" component="div">Cantidad: {dataPdf.pages || 0} páginas</Typography>
-                <Typography variant="text2" component="div">Peso: {dataPdf.size}</Typography>
+                <Typography variant="text2" component="div">Nombre: {dataPdf.NOMBRE_FILE}</Typography>
+                <Typography variant="text2" component="div">Cantidad: {dataPdf.PAGINAS || 0} páginas</Typography>
+                <Typography variant="text2" component="div">Peso: {dataPdf.PESO}</Typography>
                 {
                   libroBase64.FILE &&
                   <a href={`data:application/pdf;base64,${libroBase64.FILE}`} target="_blank" rel="noopener noreferrer">Abrir Pdf</a>

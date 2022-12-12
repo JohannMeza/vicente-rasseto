@@ -27,6 +27,18 @@ const AdministracionMultimediaSchema = new Schema({
     required: true,
     trim: true
   },
+  DESCRIPCION_LARGA: {
+    type: String,
+    required: true,
+    trim: true,
+    maxlength: 150
+  },
+  DESCRIPCION_CORTA: {
+    type: String,
+    required: true,
+    trim: true,
+    maxlength: 50
+  },
   TIPO: {
     type: String,
     required: true,
@@ -37,13 +49,25 @@ const AdministracionMultimediaSchema = new Schema({
     trim: true
   },
   FILE: {
-    type: Object,
+    type: String,
   },
   IMAGEN: {
     type: Object,
   },
   ESTADO: {
     type: String,
+  },
+  NOMBRE_FILE: {
+    type: String,
+    trim: true
+  },
+  PAGINAS: {
+    type: String,
+    trim: true
+  },
+  PESO: {
+    type: String,
+    trim: true
   }
 }, {
   versionKey: false,
