@@ -123,7 +123,7 @@ export default function LibrosDetailPage () {
   const [libroBase64, setLibroBase64] = useState({})
   const [imagenBase64, setImagenBase64] = useState({})
   const [pdfData, setPdfData] = useState();
-  const [canvas] = useReadLibro(pdfData, 1)
+  const [canvas, numeroPaginas] = useReadLibro(pdfData, 1, true)
   let btnFileLibro = useRef(null)
   let btnFileImage = useRef(null)
   let imgFile = useRef(null)
@@ -261,7 +261,7 @@ export default function LibrosDetailPage () {
         let regExp = new RegExp("count [0-9]", "ig")
         let count = reader.result.match(regExp)?.length > 0 ? reader.result.match(regExp)[0].split(" ")[1] : 0
         setDataPdf({ 
-          PAGINAS: count,
+          PAGINAS: numeroPaginas === 0 || count,
           NOMBRE_FILE: file.name,
           PESO: sizeFile(file)
         })

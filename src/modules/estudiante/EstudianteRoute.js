@@ -1,10 +1,8 @@
 import { Box, CssBaseline } from '@mui/material';
 import React, { memo } from 'react';
 import HeaderComponentEstudiante from '../../components/layout/HeaderComponentEstudiante';
-import NavbarComponentEstudiante from '../../components/layout/NavbarComponentEstudiante'
 import { styled } from '@mui/material/styles';
 import { Route, Routes } from 'react-router-dom';
-import useLayoutContext from '../../hooks/useLayoutContext';
 import HomePage from './pages/HomePage';
 import AudiolibroPage from './pages/AudiolibroPage';
 import BibliotecaPage from './pages/BibliotecaPage';
@@ -25,8 +23,6 @@ const DrawerHeader = styled('div')(({ theme }) => ({
 }));
 
 const EstudianteRoutes = () => {  
-  const {open} = useLayoutContext()
-  
   return (
     <Box sx={{ display: 'flex' }}>
       <CssBaseline />

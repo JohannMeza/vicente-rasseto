@@ -91,7 +91,11 @@ input {
 
 .display-flex-start-start { justify-content: flex-start; align-items: flex-start; }
 
-
+.input-number__desactive::-webkit-inner-spin-button, 
+.input-number__desactive::-webkit-outer-spin-button { 
+  -webkit-appearance: none; 
+  margin: 0; 
+}
 
 
 /* 

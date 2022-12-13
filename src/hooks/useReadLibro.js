@@ -1,4 +1,4 @@
-import { useEffect, useRef } from 'react';
+import { useEffect, useRef, useState } from 'react';
 import useLoaderContext from './useLoaderContext';
 import { AlertUtilRelease } from '../util/AlertUtil';
 
@@ -7,6 +7,7 @@ pdfjsLib.GlobalWorkerOptions.workerSrc = '//mozilla.github.io/pdf.js/build/pdf.w
 
 export const useReadLibro = (pdfData, pageNumber = 1) => {
   const setLoader = useLoaderContext();
+  const [numeroPaginas, setNumeroPaginas] = useState(0);
   let canvasElement = useRef(null);
   
   useEffect(() => {
@@ -14,6 +15,8 @@ export const useReadLibro = (pdfData, pageNumber = 1) => {
       setLoader(true)
       pdfjsLib.getDocument({data: pdfData}).promise.then(function(pdf) {
         setLoader(false)
+
+        setNumeroPaginas(pdf._pdfInfo.numPages)
 
         pdf.getPage(pageNumber)
         .then(function(page) {
@@ -43,5 +46,5 @@ export const useReadLibro = (pdfData, pageNumber = 1) => {
     }
   }, [pageNumber, pdfData])
 
-  return [canvasElement]
+  return [canvasElement, numeroPaginas]
 }
