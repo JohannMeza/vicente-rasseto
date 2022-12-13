@@ -1,4 +1,4 @@
-import { Grid, Stack, Table, TableBody, TableCell, TableHead, TableRow, TextareaAutosize, Typography } from '@mui/material';
+import { Button, Grid, Stack, Table, TableBody, TableCell, TableHead, TableRow, TextareaAutosize, Typography } from '@mui/material';
 import { Box } from '@mui/system';
 import React, { useEffect, useState } from 'react';
 import { useRef } from 'react';
@@ -33,10 +33,17 @@ const dataInitial = {
   NIVEL_ESTUDIO: "",
   FILE: {},
   IMAGEN: {},
+  BACKGROUND: "#517ABF"
 }
 
 const descripcion_larga = 150;
 const descripcion_corta = 50;
+
+const coloresBase = [
+  { color: "#517ABF", nombre: "Color Azul" },
+  { color: "#F5958E", nombre: "Color Rojo" },
+  { color: "#51BFA1", nombre: "Color Verde" },
+]
 
 export default function LibrosDetailPage () {
   const styleImage = {
@@ -393,6 +400,30 @@ export default function LibrosDetailPage () {
                   value={data.DESCRIPCION_CORTA}
                   error={errors.DESCRIPCION_CORTA}
                 />
+              </Grid>
+            </Grid>
+          </Controls.Card>
+          <Controls.Card title="Estilo del Libro">
+            <Grid container spacing={3}>
+              <Grid item xs={12}>
+                <Box className="display-flex" sx={{ gap: "15px", justifyContent: "space-between" }}>
+                  {coloresBase.map((el, index) => 
+                    <Button 
+                      type="green" 
+                      key={index} 
+                      variant={el.color === data.BACKGROUND ? "contained" : "outlined"} 
+                      size="large"
+                      onClick={() => {
+                        setData({...data, BACKGROUND: el.color})
+                      }}
+                    >
+                      <Box className="display-flex display-flex-center-center" sx={{ flexDirection: "column", p: 2 }}>
+                        <Controls.TextComponent variant="span3" component="p" children={el.nombre} />
+                        <Box sx={{ background: el.color, width: "50px", height: "50px" }}></Box>
+                      </Box>  
+                    </Button>
+                  )}
+                </Box>
               </Grid>
             </Grid>
           </Controls.Card>

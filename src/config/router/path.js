@@ -101,6 +101,8 @@ export const pathServer = {
     BIBLIOTECA: {
       INDEX: "/estudiante/biblioteca",
       SHOW: "/estudiante/biblioteca/libro/",
+      PREVIEW_LIBRO: "/estudiante/biblioteca/libro/preview/",
+      SHOW_RELACIONADO: "/estudiante/biblioteca/libros-relacionados",
       SEARCH: "/estudiante/biblioteca/multimedia",
     },
     CATEGORIA: {

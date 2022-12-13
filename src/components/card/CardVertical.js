@@ -1,0 +1,18 @@
+import { Box } from '@mui/system';
+import React from 'react';
+import "./CardVertical.css";
+
+const CardVertical = ({ classNameColor, children, img, sx }) => {
+  return (
+    <Box className={`card-main-vertical ${classNameColor}`} sx={sx}>
+      <Box className="display-flex display-flex-center-center card-main-vertical__img">
+        <img src={img} alt="" style={{ maxHeight: "250px", objectFit: "cover" }} />
+      </Box>
+      <Box item xs={6}>
+        {children}
+      </Box>
+    </Box>
+  )
+}
+
+export default CardVertical;

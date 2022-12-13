@@ -115,6 +115,7 @@ const listGrados = async (req, res) => {
 const store = async (req, res) => {
   try {
     const { TITULO, ESTADO, CATEGORIA, ETIQUETA, AUTOR, GRADO, FILE, IMAGEN, _id, TIPO, LINK, DESCRIPCION_LARGA, DESCRIPCION_CORTA, NOMBRE_FILE, PESO, PAGINAS } = req.body;
+    let { BACKGROUND } = req.body;
     let arrEstadoValid = ["Publicado", "No Publicado"];
     if (!arrEstadoValid.includes(ESTADO)) {
       throw({
@@ -125,16 +126,21 @@ const store = async (req, res) => {
     }
 
     const validData = UtilComponents.ValidarParametrosObligatorios({ TITULO, CATEGORIA, ETIQUETA, AUTOR, GRADO, DESCRIPCION_LARGA, DESCRIPCION_CORTA })
+
+    if (!BACKGROUND || BACKGROUND === "") {
+      BACKGROUND = "#517ABF"
+    }
+    
     if (validData) throw(validData);
     if (_id) { // UPDATE
-      await AdministracionMultimedia.findOneAndUpdate({ _id }, { TITULO, ESTADO, ID_CATEGORIA: CATEGORIA.split(","), ID_ETIQUETA: ETIQUETA.split(","), ID_AUTOR: AUTOR.split(","), ID_GRADO: GRADO, FILE, IMAGEN: IMAGEN, TIPO, LINK, DESCRIPCION_LARGA, DESCRIPCION_CORTA, NOMBRE_FILE, PESO, PAGINAS })
+      await AdministracionMultimedia.findOneAndUpdate({ _id }, { TITULO, ESTADO, ID_CATEGORIA: CATEGORIA.split(","), ID_ETIQUETA: ETIQUETA.split(","), ID_AUTOR: AUTOR.split(","), ID_GRADO: GRADO, FILE, IMAGEN: IMAGEN, TIPO, LINK, DESCRIPCION_LARGA, DESCRIPCION_CORTA, NOMBRE_FILE, PESO, PAGINAS, BACKGROUND })
       return res.status(201).json({
         error: false,
         status: 201,
         statusText: MessageConstants.MESSAGE_SUCCESS_UPDATE
       })
     } else { //  SAVE
-      const multimedia = new AdministracionMultimedia({ TITULO, ESTADO, ID_CATEGORIA: CATEGORIA.split(","), ID_ETIQUETA: ETIQUETA.split(","), ID_AUTOR: AUTOR.split(","), ID_GRADO: GRADO, FILE, IMAGEN: IMAGEN, TIPO, LINK, DESCRIPCION_LARGA, DESCRIPCION_CORTA, NOMBRE_FILE, PESO, PAGINAS });
+      const multimedia = new AdministracionMultimedia({ TITULO, ESTADO, ID_CATEGORIA: CATEGORIA.split(","), ID_ETIQUETA: ETIQUETA.split(","), ID_AUTOR: AUTOR.split(","), ID_GRADO: GRADO, FILE, IMAGEN: IMAGEN, TIPO, LINK, DESCRIPCION_LARGA, DESCRIPCION_CORTA, NOMBRE_FILE, PESO, PAGINAS, BACKGROUND });
       await multimedia.save();
 
       return res.status(201).json({

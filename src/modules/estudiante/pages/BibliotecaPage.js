@@ -1,8 +1,6 @@
-import { Box, Grid, Stack, Typography } from "@mui/material";
+import { Box, Grid, Stack } from "@mui/material";
 import React, { useEffect, useRef, useState } from "react";
 import CardHorizontal from "../../../components/card/CardHorizontal";
-import audiolibroImage from "../../../assets/image/audiolibro-card.png";
-import bibliotecaImage from "../../../assets/image/biblioteca-card.png";
 import Controls from "../../../framework/components/Controls";
 import "./BibliotecaPage.css";
 import { useNavigate } from "react-router-dom";
@@ -12,7 +10,6 @@ import { pathServer } from "../../../config/router/path";
 import { SERVICES_GET } from "../../../services/services.axios";
 import { MessageUtil } from "../../../util/MessageUtil";
 import useLoaderContext from "../../../hooks/useLoaderContext";
-import LabelComponent from "../../../components/card/LabelComponent";
 import { ICON } from "../../../framework/components/icons/Icon";
 import { useForm } from "../../../hooks/useForm";
 
@@ -50,7 +47,7 @@ const BibliotecaPage = () => {
   const [categorias, setCategorias] = useState([]);
   const [etiquetas, setEtiquetas] = useState([]);
   const [autores, setAutores] = useState([]);
-  const [orden, setOrden] = useState(dataOrden);
+  const [orden, ] = useState(dataOrden);
   const [dataSelect, setDataSelect] = useState(dataInitialSelect)
   const [search, handleInputChange] = useForm(dataInitial);
 
@@ -87,10 +84,11 @@ const BibliotecaPage = () => {
 
   useEffect(() => {
     getLibros();
+  // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
   useEffect(() => {
-    const { CATEGORIAS, AUTORES, ETIQUETAS, ORDEN } = dataSelect
+    const { CATEGORIAS, AUTORES, ETIQUETAS,  } = dataSelect
     let arrLibros = librosMain || [];
 
     CATEGORIAS?.length > 0 &&
@@ -117,6 +115,7 @@ const BibliotecaPage = () => {
 
     setLibrosView(arrLibros)
     setLibrosFilter(arrLibros)
+  // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [dataSelect]);
 
   return (
@@ -175,7 +174,7 @@ const BibliotecaPage = () => {
           {librosView.map((libro, index) => (
             <Grid item xs={6} key={index}>
               <CardHorizontal
-                classNameColor="background-primary"
+                sx={{ background: libro.BACKGROUND }}
                 img={`data:image;base64,${libro?.IMAGEN?.url}`}
               >
                 <Box
@@ -198,7 +197,7 @@ const BibliotecaPage = () => {
                       component="p"
                       sx={{ color: "var(--white_100)", textAlign: "justify" }}
                     >
-                      A aqui econtrarás contenidos de libros leídos en voz alta.
+                      {libro.DESCRIPCION_CORTA}
                     </Controls.TextComponent>
 
                     <Box sx={{ marginTop: "3px" }}>

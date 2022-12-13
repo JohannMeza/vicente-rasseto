@@ -13,7 +13,7 @@ import ReadLibroPage from './pages/ReadLibroPage';
 import QuestionsPage from './pages/QuestionsPage';
 import BusquedaCategoriasPage from './pages/BusquedaCategoriasPage';
 import BusquedaLibrosPage from './pages/BusquedaLibrosPage';
-
+import Logo from '../../assets/resources/logo-transparente.png';
 
 const drawerWidth = 296;
 const DrawerHeader = styled('div')(({ theme }) => ({
@@ -35,7 +35,10 @@ const EstudianteRoutes = () => {
       />
       <Box style={{ 
         flexGrow: 1,
-        padding: "25px"
+        padding: "25px",
+        minHeight: "100vh",
+        background: `center 130px / 30% no-repeat url(${Logo})`,
+        backgroundAttachment: "fixed"
       }}>
         <DrawerHeader />
         <Routes>

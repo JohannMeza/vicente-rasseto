@@ -1,3 +1,4 @@
+/* eslint-disable no-throw-literal */
 const MessageConstants = require("../../constants/message");
 const AdministracionMultimedia = require("../../models/administracion/administracion_multimedia.model");
 const CategoriasMultimedia = require("../../models/administracion/administracion_categorias.model");
@@ -51,6 +52,44 @@ const show = async (req, res) => {
   }
 }
 
+const previewLibro = async (req, res) => {
+  try {
+    const { id } = req.params;
+    const showLibro = await AdministracionMultimedia.find({ _id: id }, { NOMBRE_FILE: 1, PAGINAS: 1, TITULO: 1, DESCRIPCION_CORTA: 1, IMAGEN: 1, LINK: 1, BACKGROUND: 1 }).populate("ID_CATEGORIA").populate("ID_ETIQUETA").populate("ID_AUTOR");
+    res.status(201).json({
+      error: false,
+      status: 201,
+      statusText: MessageConstants.REQUEST_SUCCESS,
+      data: showLibro
+    })
+  } catch (err) {
+    return res.status(err.status || 500).json({ ...err })
+  }
+}
+
+const showLibrosRelacionados = async (req, res) => {
+  try {
+    const { categories, id } = req.body;
+    if (!categories || categories.length === 0) {
+      throw ({
+        error: false,
+        status: 401,
+        statusText: "Lista de categorias vacia",
+        data: []
+      })
+    };
+    const dataLibro = await AdministracionMultimedia.find({ ID_CATEGORIA: { $in: categories }, _id: {$ne: id} }, { NOMBRE_FILE: 1, PAGINAS: 1, TITULO: 1, DESCRIPCION_CORTA: 1, IMAGEN: 1, LINK: 1, BACKGROUND: 1 } ).limit(3);
+    res.status(201).json({
+      error: false,
+      status: 201,
+      statusText: MessageConstants.REQUEST_SUCCESS,
+      data: dataLibro
+    })
+  } catch (err) {
+    return res.status(err.status || 500).json({ ...err })
+  }
+}
+
 const search = async (req, res) => {
   try {
     const { TIPO_MULTIMEDIA, TITULO } = req.body;
@@ -71,5 +110,7 @@ const search = async (req, res) => {
 module.exports = {
   index,
   show,
-  search
+  search,
+  showLibrosRelacionados,
+  previewLibro
 }

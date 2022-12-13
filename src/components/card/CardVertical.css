@@ -1,0 +1,19 @@
+.card-main-vertical {
+  padding: 25px;
+  border-radius: 15px;
+  min-height: 300px;
+  display: grid;
+  grid-template-columns: 1fr;
+  grid-template-rows: 1fr auto;
+  gap: 25px
+}
+
+.card-main-vertical__img {
+  background: white;
+  border-radius: 15px;
+}
+
+.card-main-vertical__img img {
+  width: 100%;
+  max-width: 200px;
+}

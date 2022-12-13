@@ -68,6 +68,10 @@ const AdministracionMultimediaSchema = new Schema({
   PESO: {
     type: String,
     trim: true
+  },
+  BACKGROUND: {
+    type: String,
+    trim: true
   }
 }, {
   versionKey: false,
