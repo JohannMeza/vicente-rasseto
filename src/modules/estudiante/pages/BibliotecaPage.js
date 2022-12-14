@@ -120,7 +120,7 @@ const BibliotecaPage = () => {
 
   return (
     <Grid container spacing={2}>
-      <Grid item xs={2}>
+      <Grid item xs={12} sm={12} md={2}>
         <Stack direction="column" spacing={2}>
           <ItemComponent dataSelect={dataSelect} setDataSelect={setDataSelect} name="CATEGORIAS" data={categorias} title="Categorias" />
           <ItemComponent dataSelect={dataSelect} setDataSelect={setDataSelect} name="ETIQUETAS" data={etiquetas} title="Etiquetas" />
@@ -129,7 +129,7 @@ const BibliotecaPage = () => {
         </Stack>
       </Grid>
 
-      <Grid item xs={10}>
+      <Grid item xs={12} sm={12} md={10}>
         {/* <Box className="display-flex" sx={{ gap: "15px" }}>
           <LabelComponent label="Aventura" />
         </Box> */}
@@ -172,7 +172,7 @@ const BibliotecaPage = () => {
 
         <Grid container spacing={2} marginTop={1}>
           {librosView.map((libro, index) => (
-            <Grid item xs={6} key={index}>
+            <Grid item xs={12} sm={12} md={6} key={index}>
               <CardHorizontal
                 sx={{ background: libro.BACKGROUND }}
                 img={`data:image;base64,${libro?.IMAGEN?.url}`}

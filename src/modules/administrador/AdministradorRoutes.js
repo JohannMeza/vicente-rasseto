@@ -107,6 +107,7 @@ const AdministradorRoutes = () => {
             marginLeft: open ? "0px" : `-${drawerWidth}px`,
             flexGrow: 1,
             padding: "25px",
+            width: "100%"
           }}
         >
           <DrawerHeader />

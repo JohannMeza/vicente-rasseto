@@ -177,7 +177,7 @@ export default function LibrosAdminPage() {
         </Controls.TextComponent>
         <br />
         <Grid container spacing={2}>
-          <Grid item xs={3}>
+          <Grid item xs={12} sm={12} md={3}>
             <Controls.InputComponent 
               label="Titulo" 
               value={data.TITULO}
@@ -185,7 +185,7 @@ export default function LibrosAdminPage() {
               name="TITULO"
             />
           </Grid>
-          <Grid item xs={3}>
+          <Grid item xs={12} sm={12} md={3}>
             <Controls.SelectComponent 
               label="Autor" 
               list={listAutores}
@@ -194,7 +194,7 @@ export default function LibrosAdminPage() {
               name="ID_AUTOR"
               />
           </Grid>
-          <Grid item xs={3}>
+          <Grid item xs={12} sm={12} md={3}>
             <Controls.SelectComponent 
               label="Categoria" 
               list={listCategorias}
@@ -203,7 +203,7 @@ export default function LibrosAdminPage() {
               name="ID_CATEGORIA"
               />
           </Grid>
-          <Grid item xs={3}>
+          <Grid item xs={12} sm={12} md={3}>
             <Controls.SelectComponent 
               label="Etiqueta" 
               list={listEtiquetas}

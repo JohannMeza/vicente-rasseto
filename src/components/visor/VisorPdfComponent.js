@@ -178,7 +178,7 @@ const RenderPDF = ({ pdf, number }) => {
   
   return (
     <div style={{ display: "inline" }}>
-      <canvas ref={canvas} style={{ minHeight: "100vh" }}></canvas>
+      <canvas ref={canvas} style={{ minHeight: "auto", width: "100%" }}></canvas>
       <p>{number}</p>
     </div>
   )

@@ -25,7 +25,7 @@ const HomePage = () => {
       <Controls.Title title="¿Que deseas hacer?" sx={{ marginTop: 3 }} />
 
       <Grid container spacing={8} marginTop={1}>
-        <Grid item xs={6}>
+        <Grid item xs={12} sm={12} md={6}>
           <CardHorizontal 
             classNameColor="background-primary"
             img={audiolibroImage}
@@ -42,7 +42,7 @@ const HomePage = () => {
             />
           </CardHorizontal>
         </Grid>
-        <Grid item xs={6}>
+        <Grid item xs={12} sm={12} md={6}>
           <CardHorizontal 
             classNameColor="background-third"
             img={bibliotecaImage}

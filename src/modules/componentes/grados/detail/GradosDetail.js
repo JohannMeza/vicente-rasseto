@@ -113,7 +113,7 @@ export default function GradosDetail() {
         </Controls.TextComponent>
         <br />
         <Grid container spacing={2}>
-          <Grid item xs={3}>
+          <Grid item xs={12} sm={12} md={3}>
             <Controls.InputComponent 
               label="Grados" 
               name="GRADO"
@@ -121,7 +121,7 @@ export default function GradosDetail() {
               onChange={handleDataFormChange}
             />
           </Grid>
-          <Grid item xs={3}>
+          <Grid item xs={12} sm={12} md={3}>
             <Controls.SelectComponent 
               label="Estado"
               name="ESTADO"

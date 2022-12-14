@@ -338,13 +338,13 @@ export default function PaginasDetail() {
           <Controls.TextComponent variant="h3" component="div">Filtros de Búsqueda</Controls.TextComponent>
           <br />
           <Grid container spacing={2}>
-            <Grid item xs={3}>
+            <Grid item xs={12} sm={12} md={3}>
               <Controls.InputComponent label="Nombre de la Página" name="NOMBRE_MENU" onChange={handleDataFormChange} value={dataForm.NOMBRE_MENU} />
             </Grid>
-            <Grid item xs={3}>
+            <Grid item xs={12} sm={12} md={3}>
               <Controls.InputComponent label="Ruta" name="PATH" onChange={handleDataFormChange} value={dataForm.PATH} />
             </Grid>
-            <Grid item xs={3}>
+            <Grid item xs={12} sm={12} md={3}>
               <Controls.SelectComponent label="Estado" list={listEstado} name="ESTADO" onChange={handleDataFormChange} value={dataForm.ESTADO} />
             </Grid>
           </Grid>
@@ -362,7 +362,7 @@ export default function PaginasDetail() {
           setPagination={setPagination}
           fnPagination={getPaginas}
         >
-          <Table stickyHeader aria-label="sticky table">
+          <Table stickyHeader aria-label="sticky table" style={{ minWidth: 600 }}>
             <TableHead>
               <TableRow>
                 <TableCell>Nombre</TableCell>

@@ -141,10 +141,10 @@ export default function PerfilesAdminPage () {
         <Controls.TextComponent variant="h3" component="div">Filtros de Búsqueda</Controls.TextComponent>
         <br />
         <Grid container spacing={2}>
-          <Grid item xs={3}>
+          <Grid item xs={12} sm={12} md={3}>
             <Controls.InputComponent label="Nombre" name="NOMBRE_PERFIL" value={dataForm.NOMBRE_PERFIL} onChange={handleInputChange} />
           </Grid>
-          <Grid item xs={3}>
+          <Grid item xs={12} sm={12} md={3}>
             <Controls.SelectComponent label="Estado" name="ESTADO" list={estadoList} value={dataForm.ESTADO} onChange={handleInputChange} />
           </Grid>
         </Grid>

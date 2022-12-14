@@ -126,36 +126,49 @@ export default function AlumnosAdminPage () {
 
   return(
     <Box>
-      <Stack direction="row" spacing={3}>
-        <Controls.Title variant="h1" component="h1" title="Alumnos" />
+      <Grid container spacing={1}>
+        <Grid item xs={12} sm={12} md={2}>
+          <Controls.Title variant="h1" component="h1" title="Alumnos" />
+        </Grid>
 
-        <Stack direction="row" spacing={1}>
-          <Controls.ButtonComponent
-            variant="primary-small"
-            type="admin"
-            title="Nuevo Alumno"
-            onClick={() => setOpen(true)}
-          />
+        <Grid item xs={12} sm={12} md={10} lg={6} xl={5}>
+          <Grid container spacing={1}>
+            <Grid item xs={12} sm={12} md={4}>
+              <Controls.ButtonComponent
+                variant="primary-small"
+                type="admin"
+                title="Nuevo Alumno"
+                onClick={() => setOpen(true)}
+                style={{ width: "100%" }}
+              />
+            </Grid>
 
-          <Controls.ButtonComponent
-            variant="secondary-small"
-            type="admin"
-            title="Exportar"
-          />
+            <Grid item xs={12} sm={12} md={3}>
+              <Controls.ButtonComponent
+                variant="secondary-small"
+                type="admin"
+                title="Exportar"
+                style={{ width: "100%" }}
+              />
+            </Grid>
 
-          <Controls.ButtonComponent
-            variant="secondary-small"
-            type="admin"
-            title="Importar"
-          />
-        </Stack>
-      </Stack>
+            <Grid item xs={12} sm={12} md={3}>
+              <Controls.ButtonComponent
+                variant="secondary-small"
+                type="admin"
+                title="Importar"
+                style={{ width: "100%" }}
+              />
+            </Grid>
+          </Grid>
+        </Grid>
+      </Grid>
       <br />
       <Box>
         <Controls.TextComponent variant="h3" component="div">Filtros de Búsqueda</Controls.TextComponent>
         <br />
         <Grid container spacing={2}>
-          <Grid item xs={3}>
+          <Grid item xs={12} sm={12} md={3}>
             <Controls.InputComponent 
               label="Nombre del Estudiante" 
               name="NOMBRE_USUARIO"
@@ -163,7 +176,7 @@ export default function AlumnosAdminPage () {
               onChange={handleChange}
             />
           </Grid>
-          <Grid item xs={3}>
+          <Grid item xs={12} sm={12} md={3}>
             <Controls.InputComponent 
               label="Email" 
               name="EMAIL"
@@ -171,7 +184,7 @@ export default function AlumnosAdminPage () {
               onChange={handleChange}
             />
           </Grid>
-          <Grid item xs={3}>
+          <Grid item xs={12} sm={12} md={3}>
             <Controls.InputComponent 
               label="DNI del Estudiante" 
               name="DNI"
@@ -179,7 +192,7 @@ export default function AlumnosAdminPage () {
               onChange={handleChange}
             />
           </Grid>
-          <Grid item xs={3}>
+          <Grid item xs={12} sm={12} md={3}>
             <Controls.SelectComponent 
               label="Nivel Estudio" 
               list={listNivelEstudio}
@@ -188,7 +201,7 @@ export default function AlumnosAdminPage () {
               onChange={handleChange}
             />
           </Grid>
-          <Grid item xs={3}>
+          <Grid item xs={12} sm={12} md={3}>
             <Controls.SelectComponent 
               label="Grado" 
               name="ID_GRADO"
@@ -197,7 +210,7 @@ export default function AlumnosAdminPage () {
               onChange={handleChange}
             />
           </Grid>
-          <Grid item xs={3}>
+          <Grid item xs={12} sm={12} md={3}>
             <Controls.SelectComponent 
               label="Estado" 
               name="ESTADO"
@@ -373,7 +386,7 @@ const ModalAlumno = ({ open, setOpen, isDataToEdit, setIsDataToEdit, saveData, l
     title="Nuevo Alumno"
     >
       <Grid container spacing={3}>
-        <Grid item xs={6}>
+        <Grid item xs={12} sm={12} md={6}>
           <Controls.InputComponent
             label="Nombre del Estudiante"
             name="NOMBRE_USUARIO"
@@ -382,7 +395,7 @@ const ModalAlumno = ({ open, setOpen, isDataToEdit, setIsDataToEdit, saveData, l
             value={data.NOMBRE_USUARIO}
           />
         </Grid>
-        <Grid item xs={6}>
+        <Grid item xs={12} sm={12} md={6}>
           <Controls.InputComponent
             label="Correo Eléctronico"
             name="EMAIL"
@@ -391,7 +404,7 @@ const ModalAlumno = ({ open, setOpen, isDataToEdit, setIsDataToEdit, saveData, l
             value={data.EMAIL}
           />
         </Grid>
-        <Grid item xs={6}>
+        <Grid item xs={12} sm={12} md={6}>
           <Controls.InputComponent
             label="DNI del Estudiante"
             name="DNI"
@@ -400,7 +413,7 @@ const ModalAlumno = ({ open, setOpen, isDataToEdit, setIsDataToEdit, saveData, l
             value={data.DNI}
           />
         </Grid>
-        <Grid item xs={6}>
+        <Grid item xs={12} sm={12} md={6}>
           <Controls.SelectComponent
             label="Nivel de Estudio"
             list={listNivelEstudio}
@@ -410,7 +423,7 @@ const ModalAlumno = ({ open, setOpen, isDataToEdit, setIsDataToEdit, saveData, l
             value={data.ID_NIVEL_ESTUDIO}
           />
         </Grid>
-        <Grid item xs={6}>
+        <Grid item xs={12} sm={12} md={6}>
           <Controls.SelectComponent
             label="Grado"
             list={listGrados}
@@ -420,7 +433,7 @@ const ModalAlumno = ({ open, setOpen, isDataToEdit, setIsDataToEdit, saveData, l
             value={data.ID_GRADO}
           />
         </Grid>
-        <Grid item xs={6}>
+        <Grid item xs={12} sm={12} md={6}>
           <Controls.SelectComponent
             label="Estado"
             list={estadoList}
@@ -430,7 +443,7 @@ const ModalAlumno = ({ open, setOpen, isDataToEdit, setIsDataToEdit, saveData, l
             value={data.ESTADO}
           />
         </Grid>
-        <Grid item xs={6}>
+        <Grid item xs={12} sm={12} md={6}>
           <Controls.InputComponent
             label="Ingrese contraseña nueva"
             name="PASSWORD"

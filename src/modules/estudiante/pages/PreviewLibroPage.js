@@ -62,11 +62,11 @@ const PreviewLibroPage = () => {
   
   return (
     <Box>
-      <Grid container spacing={4}>
-        <Grid item xs={6}>
+      <Grid container spacing={4} sx={{ flexWrap: "wrap-reverse" }}>
+        <Grid item xs={12} sm={12} md={6}>
           <img src={`data:image;base64,${libro?.IMAGEN?.url}`} style={{ width: "100%", maxHeight: "750px" }} alt="" />
         </Grid>
-        <Grid item xs={6}>
+        <Grid item xs={12} sm={12} md={6}>
           <Controls.Title title={libro?.TITULO} sx={{ color: "var(--blue_700)" }} />
           <Controls.TextComponent variant="text2" component="div">{libro?.DESCRIPCION_LARGA}</Controls.TextComponent>
           
@@ -131,7 +131,7 @@ const PreviewLibroPage = () => {
       </Controls.TextComponent>
       <Grid container spacing={2} marginTop={1}>
           {librosRelacionados.map((libro, index) => (
-            <Grid item xs={4} key={index}>
+            <Grid item xs={12} sm={12} md={4} key={index}>
               <CardVertical
                 sx={{ background: libro.BACKGROUND }}
                 img={`data:image;base64,${libro?.IMAGEN?.url}`}

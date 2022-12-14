@@ -350,7 +350,7 @@ export default function LibrosDetailPage () {
       </Stack>
       <br />
       <Grid container spacing={3}>
-        <Grid item xs={6} sx={{ display: "flex", flexDirection: "column", gridGap: "30px" }}>
+        <Grid item xs={12} sm={12} md={6} sx={{ display: "flex", flexDirection: "column", gridGap: "30px" }}>
           <Controls.Card title="Datos del Libro">
             <Grid container spacing={3}>
               <Grid item xs={12}>
@@ -406,13 +406,14 @@ export default function LibrosDetailPage () {
           <Controls.Card title="Estilo del Libro">
             <Grid container spacing={3}>
               <Grid item xs={12}>
-                <Box className="display-flex" sx={{ gap: "15px", justifyContent: "space-between" }}>
+                <Box className="display-flex" sx={{ gap: "15px", justifyContent: "space-between", flexWrap: "wrap" }}>
                   {coloresBase.map((el, index) => 
                     <Button 
                       type="green" 
                       key={index} 
                       variant={el.color === data.BACKGROUND ? "contained" : "outlined"} 
                       size="large"
+                      sx={{ flexGrow: 1 }}
                       onClick={() => {
                         setData({...data, BACKGROUND: el.color})
                       }}
@@ -496,7 +497,7 @@ export default function LibrosDetailPage () {
             </Grid>
           </Controls.Card>
         </Grid>
-        <Grid item xs={6} sx={{ display: "flex", flexDirection: "column", gridGap: "30px" }}>
+        <Grid item xs={12} sm={12} md={6} sx={{ display: "flex", flexDirection: "column", gridGap: "30px" }}>
           <Controls.Card title="Subir Libro">
             <input
               type="file"
@@ -508,7 +509,7 @@ export default function LibrosDetailPage () {
               onChange={handleChangeInput}
             />
 
-            <Box style={{ display: "flex", gridGap: "10px" }}>
+            <Box style={{ display: "flex", gridGap: "10px", flexWrap: "wrap" }}>
               <canvas style={styleImage} ref={canvas}></canvas>
 
               {/* <object aria-label="pdf" ref={pdfFile} style={styleImage} type="application/pdf"></object> */}
@@ -553,7 +554,7 @@ export default function LibrosDetailPage () {
               onChange={handleChangeInput}
             />
             
-            <Box style={{ display: "flex", gridGap: "10px" }}>
+            <Box style={{ display: "flex", gridGap: "10px", flexWrap: "wrap" }}>
               <img src="" alt="" style={styleImage} ref={imgFile} />
               <Box>
                 <Typography variant="text1" component="div"><b>Informacion de la Imagen</b></Typography>

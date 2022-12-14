@@ -2,6 +2,7 @@ import * as React from 'react';
 import Paper from '@mui/material/Paper';
 import TableContainer from '@mui/material/TableContainer';
 import TablePagination from '@mui/material/TablePagination';
+import { Grid } from '@mui/material';
 
 export default function TableComponents({ children, pagination, setPagination, fnPagination }) {
   const handleChangePage = (event, newPage) => {
@@ -26,11 +27,9 @@ export default function TableComponents({ children, pagination, setPagination, f
 
   return (
     <>
-      <Paper sx={{ width: '100%' }}>
-        <TableContainer sx={{ maxHeight: 440 }} className="style-table">
-          {children}
-        </TableContainer>
-      </Paper>
+      <TableContainer sx={{ maxHeight: 440, overflow: "auto" }} className="style-table">
+        {children}
+      </TableContainer>      
       {pagination && 
       <TablePagination
         rowsPerPageOptions={[10, 25, 100]}

@@ -227,10 +227,10 @@ export default function PaginasConfiguracionPage() {
         <Controls.TextComponent variant="h3" component="div">Filtros de Búsqueda</Controls.TextComponent>
         <br />
         <Grid container spacing={2}>
-          <Grid item xs={3}>
+          <Grid item xs={12} sm={12} md={3}>
             <Controls.InputComponent label="Nombre" name="NOMBRE_SUBMENU" value={dataTableForm.NOMBRE_SUBMENU} onChange={handleInputChangeTable} />
           </Grid>
-          <Grid item xs={3}>
+          <Grid item xs={12} sm={12} md={3}>
             <Controls.InputComponent label="Ruta" name="PATH" value={dataTableForm.PATH} onChange={handleInputChangeTable} />
           </Grid>
         </Grid>
@@ -327,13 +327,13 @@ export default function PaginasConfiguracionPage() {
           <Controls.TextComponent variant="h3" component="div">Filtros de Búsqueda</Controls.TextComponent>
           <br />
           <Grid container spacing={2}>
-            <Grid item xs={3}>
+            <Grid item xs={12} sm={12} md={3}>
               <Controls.InputComponent label="Nombre" name="NOMBRE_SUBMENU" value={dataForm.NOMBRE_SUBMENU} onChange={handleInputChange} />
             </Grid>
-            <Grid item xs={3}>
+            <Grid item xs={12} sm={12} md={3}>
               <Controls.InputComponent label="Ruta" name="PATH" value={dataForm.PATH} onChange={handleInputChange} />
             </Grid>
-            <Grid item xs={3}>
+            <Grid item xs={12} sm={12} md={3}>
               <Controls.SelectComponent label="Estado" name="ESTADO" list={listEstado} value={dataForm.ESTADO} onChange={handleInputChange} />
             </Grid>
           </Grid>

@@ -190,19 +190,19 @@ export default function SubpaginasDetail() {
           <Controls.TextComponent variant="h3" component="div">Filtros de Búsqueda</Controls.TextComponent>
           <br />
           <Grid container spacing={2}>
-            <Grid item xs={3}>
+            <Grid item xs={12} sm={12} md={3}>
               <Controls.InputComponent label="Nombre" name="NOMBRE_SUBMENU" value={dataForm.NOMBRE_SUBMENU} onChange={handleInputChange} />
             </Grid>
-            <Grid item xs={3}>
+            <Grid item xs={12} sm={12} md={3}>
               <Controls.InputComponent label="Ruta" name="PATH" value={dataForm.PATH} onChange={handleInputChange} />
             </Grid>
-            <Grid item xs={3}>
+            <Grid item xs={12} sm={12} md={3}>
               <Controls.InputComponent label="Ruta Archivo" name="PATH_FILE" value={dataForm.PATH_FILE} onChange={handleInputChange} />
             </Grid>
-            <Grid item xs={3}>
+            <Grid item xs={12} sm={12} md={3}>
               <Controls.InputComponent label="Ruta Base" name="PATH_BASE" value={dataForm.PATH_BASE} onChange={handleInputChange} />
             </Grid>
-            <Grid item xs={3}>
+            <Grid item xs={12} sm={12} md={3}>
               <Controls.SelectComponent label="Estado" name="ESTADO" list={listEstado} value={dataForm.ESTADO} onChange={handleInputChange} />
             </Grid>
           </Grid>
@@ -220,7 +220,7 @@ export default function SubpaginasDetail() {
           setPagination={setPagination}
           fnPagination={getSubPaginas}
         >
-          <Table stickyHeader aria-label="sticky table">
+          <Table stickyHeader aria-label="sticky table" style={{ minWidth: 600 }}>
             <TableHead>
               <TableRow>
                 <TableCell>Nombre</TableCell>

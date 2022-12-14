@@ -38,5 +38,6 @@
   text-align: center;
   top: 40px;
   z-index: 1;
-  min-height: 100vh
+  min-height: 100vh;
+  flex-wrap: wrap
 }

@@ -101,7 +101,7 @@ export default function LibrosAdminPage () {
         <Controls.TextComponent variant="h3" component="div">Filtros de Búsqueda</Controls.TextComponent>
         <br />
         <Grid container spacing={2}>
-          <Grid item xs={3}>
+          <Grid item xs={12} sm={12} md={3}>
             <Controls.InputComponent 
               label="Nombre" 
               name="NOMBRE_AUTOR"
@@ -109,7 +109,7 @@ export default function LibrosAdminPage () {
               value={data.NOMBRE_AUTOR}
             />
           </Grid>
-          <Grid item xs={3}>
+          <Grid item xs={12} sm={12} md={3}>
             <Controls.SelectComponent 
               label="Estado"
               list={estadoList}

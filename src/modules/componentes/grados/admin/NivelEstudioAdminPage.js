@@ -106,7 +106,7 @@ export default function NivelEstudioDetail () {
         <Controls.TextComponent variant="h3" component="div">Filtros de Búsqueda</Controls.TextComponent>
         <br />
         <Grid container spacing={2}>
-          <Grid item xs={3}>
+          <Grid item xs={12} sm={12} md={3}>
             <Controls.InputComponent 
               label="Nivel Estudio" 
               name="NIVEL_ESTUDIO"
@@ -114,7 +114,7 @@ export default function NivelEstudioDetail () {
               value={dataForm.NIVEL_ESTUDIO}
             />
           </Grid>
-          <Grid item xs={3}>
+          <Grid item xs={12} sm={12} md={3}>
             <Controls.SelectComponent 
               label="Estado" 
               list={estadoList}

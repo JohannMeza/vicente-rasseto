@@ -93,36 +93,49 @@ export default function DocentesAdminPage () {
 
   return(
     <Box>
-      <Stack direction="row" spacing={3}>
-        <Controls.Title variant="h1" component="h1" title="Docentes" />
+      <Grid container spacing={1}>
+        <Grid item xs={12} sm={12} md={2}>
+          <Controls.Title variant="h1" component="h1" title="Docentes" />
+        </Grid>
 
-        <Stack direction="row" spacing={1}>
-          <Controls.ButtonComponent
-            variant="primary-small"
-            type="admin"
-            title="Nuevo Docente"
-            onClick={() => setOpen(true)}
-          />
+        <Grid item xs={12} sm={12} md={10} lg={6} xl={5}>
+          <Grid container spacing={1}>
+            <Grid item xs={12} sm={12} md={4}>
+              <Controls.ButtonComponent
+                variant="primary-small"
+                type="admin"
+                title="Nuevo Docente"
+                onClick={() => setOpen(true)}
+                style={{ width: "100%" }}
+              />
+            </Grid>
 
-          <Controls.ButtonComponent
-            variant="secondary-small"
-            type="admin"
-            title="Exportar"
-          />
+            <Grid item xs={12} sm={12} md={3}>
+              <Controls.ButtonComponent
+                variant="secondary-small"
+                type="admin"
+                title="Exportar"
+                style={{ width: "100%" }}
+              />
+            </Grid>
 
-          <Controls.ButtonComponent
-            variant="secondary-small"
-            type="admin"
-            title="Importar"
-          />
-        </Stack>
-      </Stack>
+            <Grid item xs={12} sm={12} md={3}>
+              <Controls.ButtonComponent
+                variant="secondary-small"
+                type="admin"
+                title="Importar"
+                style={{ width: "100%" }}
+              />
+            </Grid>
+          </Grid>
+        </Grid>
+      </Grid>
       <br />
       <Box>
         <Controls.TextComponent variant="h3" component="div">Filtros de Búsqueda</Controls.TextComponent>
         <br />
         <Grid container spacing={2}>
-          <Grid item xs={3}>
+          <Grid item xs={12} sm={12} md={3}>
             <Controls.InputComponent 
               label="Nombre del Docente" 
               name="NOMBRE_USUARIO"
@@ -130,7 +143,7 @@ export default function DocentesAdminPage () {
               onChange={handleInputChange}
             />
           </Grid>
-          <Grid item xs={3}>
+          <Grid item xs={12} sm={12} md={3}>
             <Controls.InputComponent 
               label="Email" 
               name="EMAIL"
@@ -138,7 +151,7 @@ export default function DocentesAdminPage () {
               onChange={handleInputChange}
             />
           </Grid>
-          <Grid item xs={3}>
+          <Grid item xs={12} sm={12} md={3}>
             <Controls.InputComponent 
               label="DNI del Docente" 
               name="DNI"
@@ -146,7 +159,7 @@ export default function DocentesAdminPage () {
               onChange={handleInputChange}
             />
           </Grid>
-          <Grid item xs={3}>
+          <Grid item xs={12} sm={12} md={3}>
             <Controls.SelectComponent 
               label="Estado" 
               name="ESTADO"
@@ -279,7 +292,7 @@ const ModalDocente = ({ open, setOpen, isDataToEdit, setIsDataToEdit, saveData, 
     title="Nuevo Docente"
     >
       <Grid container spacing={3}>
-        <Grid item xs={6}>
+        <Grid item xs={12} sm={12} md={6}>
           <Controls.InputComponent
             label="Nombre del Docente"
             name="NOMBRE_USUARIO"
@@ -288,7 +301,7 @@ const ModalDocente = ({ open, setOpen, isDataToEdit, setIsDataToEdit, saveData, 
             value={data.NOMBRE_USUARIO}
           />
         </Grid>
-        <Grid item xs={6}>
+        <Grid item xs={12} sm={12} md={6}>
           <Controls.InputComponent
             label="Correo Eléctronico"
             name="EMAIL"
@@ -297,7 +310,7 @@ const ModalDocente = ({ open, setOpen, isDataToEdit, setIsDataToEdit, saveData, 
             value={data.EMAIL}
           />
         </Grid>
-        <Grid item xs={6}>
+        <Grid item xs={12} sm={12} md={6}>
           <Controls.InputComponent
             label="DNI del Docente"
             name="DNI"
@@ -306,7 +319,7 @@ const ModalDocente = ({ open, setOpen, isDataToEdit, setIsDataToEdit, saveData, 
             value={data.DNI}
           />
         </Grid>
-        <Grid item xs={6}>
+        <Grid item xs={12} sm={12} md={6}>
           <Controls.SelectComponent
             label="Estado"
             list={estadoList}
@@ -316,7 +329,7 @@ const ModalDocente = ({ open, setOpen, isDataToEdit, setIsDataToEdit, saveData, 
             value={data.ESTADO}
           />
         </Grid>
-        <Grid item xs={6}>
+        <Grid item xs={12} sm={12} md={6}>
           <Controls.InputComponent
             label="Ingrese contraseña nueva"
             list={estadoList}
