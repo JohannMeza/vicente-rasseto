@@ -6,11 +6,28 @@ import Controls from '../../framework/components/Controls';
 import { ICON } from '../../framework/components/icons/Icon';
 import { SaveRequestData } from '../../helpers/helpRequestBackend';
 import useLoaderContext from '../../hooks/useLoaderContext';
-import { useReadLibro } from '../../hooks/useReadLibro';
+import { useReadLibroBase64, useReadLibroUrl } from '../../hooks/useReadLibro';
 import { SERVICES_GET } from '../../services/services.axios';
 import { MessageUtil } from '../../util/MessageUtil';
 import './VisorPdfComponent.css';
 
+const listScale = [
+  { value: 1.5, label: "Automático" },
+  { value: 1.5, label: "Tamaño real" },
+  { value: 1.5, label: "Ajuste de la página" },
+  { value: 1.5, label: "Anchura de la página" },
+  { value: 0.5, label: "50%" },
+  { value: 0.75, label: "75%" },
+  { value: 1, label: "100%" },
+  { value: 1.25, label: "125%" },
+  { value: 1.5, label: "150%" },
+  { value: 1.75, label: "175%" },
+  { value: 2, label: "200%" },
+  { value: 3, label: "300%" },
+  { value: 4, label: "400%" },
+]
+
+let totalPaginas = 0;
 
 const VisorPdfComponent = () => {
   const setLoader = useLoaderContext();
@@ -20,6 +37,7 @@ const VisorPdfComponent = () => {
   const [totalPages, setTotalPages] = useState(0);
   // const [canvas] = useReadLibro(pdfData, pageNumber)
   const [fullHeight, setFullHeight] = useState(false)
+  const [scale, setScale] = useState(1.5)
   const [requestInicializado, setRequestInicializado] = useState(false);
 
   const inputPage = useRef()
@@ -47,11 +65,12 @@ const VisorPdfComponent = () => {
       fnRequest: SERVICES_GET,
       success: (resp) => {
         setLoader(false)
-        setPdfData(atob(resp.data[0]?.FILE))
-        setTotalPages(parseInt(resp.data[0]?.PAGINAS))
-
+        setPdfData(resp.data[0]?.FILE)
+        setTotalPages(parseInt(resp.data[0]?.PAGINAS));
+        totalPaginas = parseInt(resp.data[0]?.PAGINAS);
+        inputPage.current.value = 1
         inputPage && inputPage.current.addEventListener("change", (e) => {
-          if (parseInt(e.target.value) > 0 && parseInt(e.target.value) <= parseInt(resp.data[0]?.PAGINAS)) {
+          if (parseInt(e.target.value) > 0 && parseInt(e.target.value) <= totalPaginas) {
             validarHojaMaxima(e.target.value, resp.data[0]?.PAGINAS)
           }
         })
@@ -124,7 +143,10 @@ const VisorPdfComponent = () => {
           />
           
           <Box className="display-flex" style={{ height: "-webkit-fill-available", gap: "10px", alignItems: "center" }}>
-            <input type="number" ref={inputPage} onChange={handleChangePage} className="input-number__desactive visorPdf__header__input" style={{ width: "80px" }} />
+            <input type="number" 
+              // onKeyUp={(e) => {// console.log(e.keyCode === 13)}} 
+              ref={inputPage}
+              onChange={handleChangePage} className="input-number__desactive visorPdf__header__input" style={{ width: "80px" }} />
             <span>de</span>
             <span>{totalPages}</span>
           </Box>
@@ -140,7 +162,9 @@ const VisorPdfComponent = () => {
             title="Aumentar Zoom"
             className="color-white_100"
           />
-          <input type="text" className="visorPdf__header__input" />
+          <select className="visorPdf__header__input" onChange={(e) => setScale(parseFloat(e.target.value)) }>
+            { listScale.map((el, index) => <option value={el.value} key={index} style={{ textAlign: "left" }}>{el.label}</option> ) }
+          </select>
         </Box>
         <Box className="display-flex display-flex-right-center">
           <Controls.ButtonIconComponent
@@ -154,7 +178,7 @@ const VisorPdfComponent = () => {
 
       <Box className="visorPdf__book display-flex" sx={fullHeightCanvasStyle}>
         {/* <canvas ref={canvas}></canvas> */}
-        {Array.from(
+        {/* {Array.from(
           new Array(2),
           (el, index) => 
           (
@@ -167,19 +191,37 @@ const VisorPdfComponent = () => {
               }
             </Suspense>
           )
-        )}
+        )} */}
+        
+
+        <Suspense fallback={<h1>Cargando</h1>}>
+          {
+            <RenderPDF 
+              pdf={pdfData} 
+              number={pageNumber} 
+              scale={scale} 
+              totalPages={totalPages}
+              setTotalPages={setTotalPages}
+            />
+          }
+        </Suspense>
       </Box>
     </Box>
   )
 }
 
-const RenderPDF = ({ pdf, number }) => {
-  const [canvas] = useReadLibro(pdf, number)
-  
+const RenderPDF = ({ pdf, number, totalPages, setTotalPages, scale }) => {
+  const [canvas, numberPaginas] = useReadLibroUrl(pdf, number, scale)
+  useEffect(() => { 
+    if (!totalPages) setTotalPages(numberPaginas) 
+    totalPaginas = numberPaginas
+  }, [numberPaginas, totalPages])
   return (
-    <div style={{ display: "inline" }}>
-      <canvas ref={canvas} style={{ minHeight: "auto", width: "100%" }}></canvas>
-      <p>{number}</p>
+    <div style={{ display: "inline", height: "100%" }}>
+      <canvas ref={canvas} style={{ height: "inherit", width: "100%" }}></canvas>
+      {/* <p style={{ display: "flex", justifyContent: "center" }}>
+        <span style={{ padding: "3px 8px", background: "white", borderRadius: "3px" }} className="color-text">{number}</span>
+      </p> */}
     </div>
   )
 }

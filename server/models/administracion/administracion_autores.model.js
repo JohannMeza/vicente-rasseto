@@ -13,6 +13,7 @@ const AdministracionAutoresSchema = new Schema({
   },
   ESTADO: {
     type: Boolean,
+    default: true,
     required: true
   }
 }, {

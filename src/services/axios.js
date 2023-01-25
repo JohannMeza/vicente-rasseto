@@ -1,14 +1,17 @@
 import axios from 'axios';
 
-const axiosConfig = axios.create({
-  baseURL: "https://vicente-rasseto.onrender.com/api",
-  // baseURL: "http://localhost:4010/api",
-  header: {
-    'Content-Type': 'application/json'
-  },
-  headers: {
-    'Authorization': `${localStorage.getItem('TOKEN_BIBLIOTECA_VIRTUAL')}`
-  }
+const baseUrlLocal = "http://localhost:4010/api";
+const baseUrlServer = "https://vicente-rasseto.onrender.com/api";
+
+export const axiosBase = axios.create({
+  baseURL: baseUrlLocal,
+  header: { 'Content-Type': 'application/json' },
+  headers: { 'Authorization': `${localStorage.getItem('TOKEN_BIBLIOTECA_VIRTUAL')}` }
 })
 
-export default axiosConfig;
+export const axiosReport = axios.create({
+  baseURL: baseUrlLocal,
+  responseType: 'arraybuffer', 
+  header: { 'Content-Type': 'application/json' },
+  headers: { 'Authorization': `${localStorage.getItem('TOKEN_BIBLIOTECA_VIRTUAL')}`}
+})

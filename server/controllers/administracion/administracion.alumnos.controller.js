@@ -6,7 +6,9 @@ const AdministracionGrados = require("../../models/administracion/administracion
 const Login = require("../../models/auth/login.model");
 const UtilComponents = require("../../utils/UtilsComponents");
 const SeguridadPerfiles = require("../../models/seguridad/seguridad_perfiles.model");
+const xl = require("exceljs")
 const bcrypt = require("bcrypt")
+const XLSX = require('xlsx');
 
 const index = async (req, res) => {
   try {
@@ -47,7 +49,6 @@ const index = async (req, res) => {
       count: dataAlumnos.totalDocs
     })
   } catch (err) {
-    console.log(err)
     return res.status(err.status || 500).json({ ...err })
   }
 }
@@ -145,8 +146,68 @@ const store = async (req, res) => {
   }
 }
 
+const reporteExcel = async (req, res) => {
+  try {
+    const { NOMBRE_USUARIO, DNI, ESTADO, ID_NIVEL_ESTUDIO, EMAIL, ID_GRADO } = req.body;
+    const dataFilter = UtilComponents.ValidarObjectForFilter({ NOMBRE_USUARIO, DNI, ESTADO })
+    const perfilEstudiante = await SeguridadPerfiles.findOne({ NOMBRE_PERFIL: { $in: [/estudiante/i ] }});
+    let dataAlumnos = await SeguridadUsuarios.paginate({...dataFilter, ID_PERFILES: perfilEstudiante._id }, { populate: [{path: 'ID_LOGIN'}, { path: "ID_GRADO", populate: { path: "ID_NIVEL_ESTUDIO" } }] })
+    let arrFilterAlumnos = dataAlumnos.docs
+
+    if (ID_NIVEL_ESTUDIO) arrFilterAlumnos = arrFilterAlumnos.filter(el => el.ID_GRADO.ID_NIVEL_ESTUDIO._id.toString() === ID_NIVEL_ESTUDIO )
+    if (ID_GRADO) arrFilterAlumnos = arrFilterAlumnos.filter(el => el.ID_GRADO._id.toString() === ID_GRADO )
+    if (EMAIL) arrFilterAlumnos = arrFilterAlumnos.filter(el => el.ID_LOGIN.EMAIL === EMAIL )
+
+    // Estilo del Excel
+    let workbook = new xl.Workbook();
+    let worksheet = workbook.addWorksheet('Worksheet');
+
+    res.setHeader('Access-Control-Expose-Headers', "Content-Disposition"); //IMPORTANT FOR React.js content-disposition get Name
+    res.setHeader("Content-Type", "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet")
+    res.setHeader("Content-Disposition", `attachment; filename=Reporte Alumnos ${new Date().toLocaleDateString()}.xlsx`)
+    
+    worksheet.getCell('A1').alignment = { horizontal: 'center' };
+    worksheet.getCell('B1').alignment = { horizontal: 'center' };
+    worksheet.getCell('C1').alignment = { horizontal: 'center' };
+    worksheet.getCell('D1').alignment = { horizontal: 'center' };
+    worksheet.getCell('E1').alignment = { horizontal: 'center' };
+
+    worksheet.columns = [
+      { header: 'Nombre', key: 'nombre', width: 20 },
+      { header: 'DNI', key: 'dni', width: 20 },
+      { header: 'Email', key: 'email', width: 20 },
+      { header: 'Nivel Educativo', key: 'nivel_educativo', width: 20 },
+      { header: 'Grado', key: 'grado', width: 20  }
+    ];
+    
+    worksheet.getRow(1).font = { size: 12, bold: true };
+    
+    arrFilterAlumnos.forEach((el) => {
+      worksheet.addRow({
+        nombre: el.NOMBRE_USUARIO, 
+        dni: el.DNI,
+        email: el.ID_LOGIN.EMAIL, 
+        nivel_educativo: el.ID_GRADO.ID_NIVEL_ESTUDIO?.NIVEL_ESTUDIO, 
+        grado: el.ID_GRADO.GRADO
+      });
+    })
+    
+    
+    return workbook.xlsx.write(res).then(() => res.status(200).end())
+  } catch (err) {
+    return res.status(err.status || 500).json({ ...err })
+  }
+}
+
+const importarExcel = async (req, res) => {
+  console.log(req.body);
+  res.send();
+}
+
 module.exports = {
   index,
   store,
-  getGradosLabel
+  getGradosLabel,
+  reporteExcel,
+  importarExcel
 }

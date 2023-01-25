@@ -1,16 +1,19 @@
 import { Grid, Stack, Table, TableBody, TableCell, TableHead, TableRow, Typography } from '@mui/material';
 import { Box } from '@mui/system';
 import React, { useEffect, useState } from 'react';
+import { useRef } from 'react';
 import ButtonsSearchComponent from '../../../../components/utilComponents/ButtonsSearchComponent';
 import { pathServer } from '../../../../config/router/path';
 import Controls from '../../../../framework/components/Controls';
 import { ICON } from '../../../../framework/components/icons/Icon';
-import { SaveRequestData } from '../../../../helpers/helpRequestBackend';
+import { SaveRequestData, SaveRequestReport } from '../../../../helpers/helpRequestBackend';
 import { useForm } from '../../../../hooks/useForm';
 import { useFormValidation } from '../../../../hooks/useFormValidation';
 import useLoaderContext from '../../../../hooks/useLoaderContext';
 import { SERVICES_POST } from '../../../../services/services.axios';
+import { AlertUtilRelease } from '../../../../util/AlertUtil';
 import { MessageUtil } from '../../../../util/MessageUtil';
+import { UploadFile } from '../../../../util/UploadFile';
 
 const dataInitialFilter = {  
   NOMBRE_AUTOR: "",
@@ -36,6 +39,7 @@ export default function LibrosAdminPage () {
   const [pagination, setPagination] = useState(paginate);
   const [autores, setAutores] = useState([])
   const [isDataToEdit, setIsDataToEdit] = useState(null)
+  const inputFile = useRef();
 
   const getAutores = (rowsPerPage = 10, page = 1) => {
     setLoader(true)
@@ -47,8 +51,11 @@ export default function LibrosAdminPage () {
       rowsPerPage,
       page,
       success: (resp) => {
-        setAutores(resp.data);
         setLoader(false)
+        setAutores(resp.data);
+        let { rowsPerPage, count, page } = resp;
+        --page;
+        setPagination({ rowsPerPage, count, page });
       },
       error: (err) => {
         MessageUtil({ message: err.statusText, type: "error", seg: 10 });
@@ -71,11 +78,36 @@ export default function LibrosAdminPage () {
       success: (resp) => {
         getAutores()
         MessageUtil({ message: resp.statusText, type: "success", seg: 10 });
+        setOpen(false)
         setLoader(false)
       },
       error: (err) => {
         MessageUtil({ message: err.statusText, type: "error", seg: 10 });
         setLoader(false)
+      }
+    })
+  }
+
+  const importarExcel = (e) => {
+    setLoader(true)
+    
+    let obj = { FILE_PATH: e.target.files[0]}
+    const formData = UploadFile(obj);
+    setLoader(true)
+    SaveRequestData({
+      path: pathServer.ADMINISTRACION.AUTOR.IMPORTAR,
+      body: formData,
+      fnRequest: SERVICES_POST,
+      success: (resp) => {
+        e.target.value = null
+        setLoader(false)
+        getAutores()
+        MessageUtil({ message: resp.statusText, type: "success", seg: 10 });
+      },
+      error: (err) => {
+        e.target.value = null
+        setLoader(false)
+        AlertUtilRelease({ title: "Error", text: err.statusText, icon: "error" })
       }
     })
   }
@@ -89,12 +121,29 @@ export default function LibrosAdminPage () {
       <Stack direction="row" spacing={3}>
         <Controls.Title variant="h1" component="h1" title="Autores" />
 
-        <Controls.ButtonComponent
-          variant="primary-small"
-          type="admin"
-          title="Nuevo autor"
-          onClick={() => setOpen(true)}
-        />
+        <Grid item xs={12} sm={12} md={10} lg={6} xl={5}>
+          <Grid container spacing={1}>
+            <Grid item xs={12} sm={12} md={6}>
+              <Controls.ButtonComponent
+                variant="primary-small"
+                type="admin"
+                title="Nuevo"
+                onClick={() => setOpen(true)}
+              />
+            </Grid>
+
+            <Grid item xs={12} sm={12} md={6}>
+              <input type="file" ref={inputFile} onChange={importarExcel} style={{ display: "none" }} accept=".xlsx" />
+              <Controls.ButtonComponent
+                variant="secondary-small"
+                type="admin"
+                title="Importar"
+                style={{ width: "100%" }}
+                onClick={() => inputFile.current.click()}
+              />
+            </Grid>
+          </Grid>
+        </Grid>
       </Stack>
       <br />
       <Box>
@@ -126,12 +175,17 @@ export default function LibrosAdminPage () {
         />
       </Box>
       <br />
-      <Controls.TableComponents>
-        <Table>
+      <Controls.TableComponents
+        pagination={pagination}
+        setPagination={setPagination}
+        fnPagination={getAutores}
+      >
+        <Table stickyHeader aria-label="sticky table">
           <TableHead>
             <TableRow>
               <TableCell>Nombre</TableCell>
-              <TableCell>Operación</TableCell>
+              <TableCell>Estado</TableCell>
+              <TableCell>Opciones</TableCell>
             </TableRow>
           </TableHead>
           <TableBody>
@@ -140,6 +194,7 @@ export default function LibrosAdminPage () {
               autores.map((el, index) => (
                 <TableRow key={index}>
                   <TableCell>{el.NOMBRE_AUTOR}</TableCell>
+                  <TableCell>{el.ESTADO ? "Activo" : "Inactivo"}</TableCell>
                   <TableCell>
                     <Stack direction="row" spacing={1}>
                       <Controls.ButtonIconComponent

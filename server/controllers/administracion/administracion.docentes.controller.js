@@ -6,6 +6,7 @@ const Login = require("../../models/auth/login.model");
 const UtilComponents = require("../../utils/UtilsComponents");
 const SeguridadPerfiles = require("../../models/seguridad/seguridad_perfiles.model");
 const bcrypt = require("bcrypt")
+const xl = require("exceljs")
 
 const index = async (req, res) => {
   try {
@@ -39,7 +40,6 @@ const index = async (req, res) => {
       count: dataAlumnos.totalDocs
     })
   } catch (err) {
-    console.log(err)
     return res.status(err.status || 500).json({ ...err })
   }
 }
@@ -117,7 +117,54 @@ const store = async (req, res) => {
   }
 }
 
+const reporteExcel = async (req, res) => {
+  try {
+    const { NOMBRE_USUARIO, ESTADO, EMAIL, DNI } = req.body;
+    const dataFilter = UtilComponents.ValidarObjectForFilter({ NOMBRE_USUARIO, ESTADO, DNI })
+    const perfilDocente = await SeguridadPerfiles.findOne({ NOMBRE_PERFIL: { $in: [/docente/i ] }});
+
+    let dataAlumnos = await SeguridadUsuarios.paginate({...dataFilter, ID_PERFILES: perfilDocente._id }, { populate: [{path: 'ID_LOGIN'}] })
+    let arrFilterDocentes = dataAlumnos.docs
+
+    if (EMAIL) arrFilterDocentes = arrFilterDocentes.filter(el => el.ID_LOGIN.EMAIL === EMAIL)
+
+    // Estilo del Excel
+    let workbook = new xl.Workbook();
+    let worksheet = workbook.addWorksheet('Worksheet');
+
+    res.setHeader('Access-Control-Expose-Headers', "Content-Disposition"); //IMPORTANT FOR React.js content-disposition get Name
+    res.setHeader("Content-Type", "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet")
+    res.setHeader("Content-Disposition", `attachment; filename=Reporte Docentes ${new Date().toLocaleDateString()}.xlsx`)
+    
+    worksheet.getCell('A1').alignment = { horizontal: 'center' };
+    worksheet.getCell('B1').alignment = { horizontal: 'center' };
+    worksheet.getCell('C1').alignment = { horizontal: 'center' };
+    worksheet.getCell('D1').alignment = { horizontal: 'center' };
+    worksheet.getCell('E1').alignment = { horizontal: 'center' };
+    worksheet.getRow(1).font = { size: 12, bold: true };
+
+    worksheet.columns = [
+      { header: 'Nombre', key: 'nombre', width: 20 },
+      { header: 'DNI', key: 'dni', width: 20 },
+      { header: 'Email', key: 'email', width: 20 },
+    ];
+
+    arrFilterDocentes.forEach((el) => {
+      worksheet.addRow({
+        nombre: el.NOMBRE_USUARIO, 
+        dni: el.DNI,
+        email: el.ID_LOGIN.EMAIL
+      });
+    })
+    
+    return workbook.xlsx.write(res).then(() => res.status(200).end())
+  } catch (err) {
+    return res.status(err.status || 500).json({ ...err })
+  }
+}
+
 module.exports = {
   index,
-  store
+  store,
+  reporteExcel
 }

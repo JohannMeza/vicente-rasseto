@@ -11,9 +11,10 @@ import { SaveRequestData } from '../../../../helpers/helpRequestBackend';
 import { useBase64Encoded } from '../../../../hooks/useBase64File';
 import { useFormValidation } from '../../../../hooks/useFormValidation';
 import useLoaderContext from '../../../../hooks/useLoaderContext';
-import { useReadLibro } from '../../../../hooks/useReadLibro';
+import { useReadLibroBase64, useReadLibroUrl } from '../../../../hooks/useReadLibro';
 import { SERVICES_GET, SERVICES_POST } from '../../../../services/services.axios';
 import { MessageUtil } from '../../../../util/MessageUtil';
+import { UploadFile } from '../../../../util/UploadFile';
 
 const estadoLibro = [
   { label: 'Publicar', value: "Publicado" },
@@ -109,25 +110,36 @@ export default function LibrosDetailPage () {
   }
   
   const navigate = useNavigate();
-  const { id } = useParams();
-  const {data, setData, errors, setErrors, handleInputFormChange, resetForm} = useFormValidation(dataInitial, true, validate);
-  const {encodedFileBase64} = useBase64Encoded();
+  const {id} = useParams();
+  const {data, setData, errors, setErrors, handleInputFormChange} = useFormValidation(dataInitial, true, validate);
   const setLoader = useLoaderContext();
   const [listCategorias, setListCategorias] = useState([]);
   const [listEtiquetas, setListEtiquetas] = useState([]);
   const [listAutores, setListAutores] = useState([]);
   const [listNivelEstudio, setListNivelEstudio] = useState([]);
   const [listGrados, setListGrados] = useState([]);
-  const [dataImage, setDataImage] = useState({})
-  const [dataPdf, setDataPdf] = useState({})
-  const [libroBase64, setLibroBase64] = useState({})
+  const {encodedFileBase64} = useBase64Encoded();
+  
+  // DATA DE LA IMAGEN
   const [imagenBase64, setImagenBase64] = useState({})
-  const [pdfData, setPdfData] = useState();
-  const [canvas, numeroPaginas] = useReadLibro(pdfData, 1, true)
+  const [dataImage, setDataImage] = useState({})
+  
+  // DATA DEL PDF
+  const [pdfBase64, setPdfBase64] = useState()
+  const [pdfPath, setPdfPath] = useState();
+  const [descripcionPdf, setDescripcionPdf] = useState({})
+  const [libroBase64, setLibroBase64] = useState({ FILE: "" })
+  
+  const [filename, setFilename] = useState({})
+  let [canvas, numeroPaginas] = useReadLibroUrl(pdfPath, 1)
+  let [canvas64] = useReadLibroBase64(pdfBase64, 1)
+  let [stateCanvasInitial, setStateCanvasInitial] = useState(true)
+
+  // const [stateInitial, setStateInitial] = useState(true)
+
   let btnFileLibro = useRef(null)
   let btnFileImage = useRef(null)
   let imgFile = useRef(null)
-  let pdfFile = useRef(null)
 
   const getDataInitial = () => {
     setLoader(true)
@@ -137,6 +149,7 @@ export default function LibrosDetailPage () {
       fnRequest: SERVICES_POST,
       success: async (resp) => {
         let { categoria, etiqueta, autores, nivel_estudio, libro } = resp.data
+        console.log(libro)
         setListCategorias(categoria)
         setListEtiquetas(etiqueta)
         setListAutores(autores)
@@ -151,30 +164,11 @@ export default function LibrosDetailPage () {
             NIVEL_ESTUDIO: libro?.ID_GRADO.ID_NIVEL_ESTUDIO._id,
           })
           if (libro?.FILE) {
-            setPdfData(atob(libro?.FILE))
-            setDataPdf({  
-              PAGINAS: libro.PAGINAS,
-              NOMBRE_FILE: libro.NOMBRE_FILE,
-              PESO: libro.PESO
-            })
-
-            // if (!pdfFile.current) return;
-            // await fetch(`data:application/pdf;base64,${libro?.FILE}`).then(result => {  
-            //   // pdfFile.current.data = result.url
-            //   // setLibroBase64({ FILE: libro.FILE })
-            //   setDataPdf({  
-            //     PAGINAS: libro.PAGINAS,
-            //     NOMBRE_FILE: libro.NOMBRE_FILE,
-            //     PESO: libro.PESO
-            //   })
-            // })        
-            // .catch(err => {
-            //   console.log(err)
-            // })
+            setPdfPath(libro.FILE)
           }
 
           if (libro?.IMAGEN) {
-            imgFile.current.src = `data:image;base64,${libro?.IMAGEN.url}`
+            if (libro?.IMAGEN.url) imgFile.current.src = `data:image;base64,${libro?.IMAGEN.url}`
             setImagenBase64({ IMAGEN: libro.IMAGEN.url })
             setDataImage(libro.IMAGEN)
           }
@@ -250,17 +244,16 @@ export default function LibrosDetailPage () {
     }
 
     if (name === "FILE") {
-      let _URL = window.url || window.webkitURL;
       let reader = new FileReader();
       let file = e.target.files[0]
 
       if (e.target.files.length === 0) return;
-
+      
       reader.readAsBinaryString(e.target.files[0])
       reader.onloadend = function () {
         let regExp = new RegExp("count [0-9]", "ig")
         let count = reader.result.match(regExp)?.length > 0 ? reader.result.match(regExp)[0].split(" ")[1] : 0
-        setDataPdf({ 
+        setDescripcionPdf({ 
           PAGINAS: numeroPaginas === 0 || count,
           NOMBRE_FILE: file.name,
           PESO: sizeFile(file)
@@ -268,6 +261,8 @@ export default function LibrosDetailPage () {
       }
 
       // pdfFile.current.data = _URL.createObjectURL(e.target.files[0])
+      setFilename(file)
+      setStateCanvasInitial(false)
       encodedFileBase64(libroBase64, setLibroBase64, e)
       return
     }
@@ -299,19 +294,22 @@ export default function LibrosDetailPage () {
   }
 
   const borrarPdf = () => {
-    // pdfFile.current.data = "";
-    setDataPdf({})
+    setDescripcionPdf({})
     setLibroBase64({})
     setData({ ...data, FILE: "" })
+    setFilename({})
+    setStateCanvasInitial(false)
+    setPdfBase64(null)
   }
 
   const saveData = () => {
     if (validate()) {
+      let obj = { ...data, ...descripcionPdf, TIPO: "Libro", FILE_PATH: filename, IMAGEN: imagenBase64.IMAGEN, DATA_IMAGEN: JSON.stringify(dataImage) }
+      const formData = UploadFile(obj);
       setLoader(true)
       SaveRequestData({
         path: pathServer.ADMINISTRACION.MULTIMEDIA.NEW,
-        // body: {...data, TIPO: "Libro", FILE: { url: libroBase64.FILE, ...dataPdf }, IMAGEN: { url: imagenBase64.IMAGEN, ...dataImage } },
-        body: {...data, TIPO: "Libro", FILE: libroBase64.FILE, ...dataPdf, IMAGEN: { url: imagenBase64.IMAGEN, ...dataImage } },
+        body: formData,
         fnRequest: SERVICES_POST,
         success: (resp) => {
           setLoader(false)
@@ -332,7 +330,7 @@ export default function LibrosDetailPage () {
 
   useEffect(() => {
     if (libroBase64?.FILE) {
-      setPdfData(atob(libroBase64?.FILE))
+      setPdfBase64(atob(libroBase64?.FILE))
     }
   }, [libroBase64])
 
@@ -510,19 +508,21 @@ export default function LibrosDetailPage () {
             />
 
             <Box style={{ display: "flex", gridGap: "10px", flexWrap: "wrap" }}>
-              <canvas style={styleImage} ref={canvas}></canvas>
-
-              {/* <object aria-label="pdf" ref={pdfFile} style={styleImage} type="application/pdf"></object> */}
+              <Box style={styleImage}>
+                { (canvas && stateCanvasInitial) && <canvas style={{ width: "100%" }} ref={canvas}></canvas> }
+                { (canvas64 && !stateCanvasInitial && pdfBase64) && <canvas style={{ width: "100%" }} ref={canvas64}></canvas> }
+                {/* <object aria-label="pdf" href={file} style={styleImage} type="application/pdf"></object> */}
+              </Box>
 
               <Box>
                 <Typography variant="text1" component="div"><b>Informacion del Libro</b></Typography>
-                <Typography variant="text2" component="div">Nombre: {dataPdf.NOMBRE_FILE}</Typography>
-                <Typography variant="text2" component="div">Cantidad: {dataPdf.PAGINAS || 0} páginas</Typography>
-                <Typography variant="text2" component="div">Peso: {dataPdf.PESO}</Typography>
-                {
+                <Typography variant="text2" component="div">Nombre: {descripcionPdf.NOMBRE_FILE}</Typography>
+                <Typography variant="text2" component="div">Cantidad: {descripcionPdf.PAGINAS || 0} páginas</Typography>
+                <Typography variant="text2" component="div">Peso: {descripcionPdf.PESO}</Typography>
+                {/* {
                   libroBase64.FILE &&
                   <a href={`data:application/pdf;base64,${libroBase64.FILE}`} target="_blank" rel="noopener noreferrer">Abrir Pdf</a>
-                }
+                } */}
               </Box>
             </Box>
 
@@ -555,7 +555,7 @@ export default function LibrosDetailPage () {
             />
             
             <Box style={{ display: "flex", gridGap: "10px", flexWrap: "wrap" }}>
-              <img src="" alt="" style={styleImage} ref={imgFile} />
+              {imgFile && <img src="" alt="" style={styleImage} ref={imgFile} />}
               <Box>
                 <Typography variant="text1" component="div"><b>Informacion de la Imagen</b></Typography>
                 <Typography variant="text2" component="div">Nombre: {dataImage.name}</Typography>

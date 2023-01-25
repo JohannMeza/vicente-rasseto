@@ -167,7 +167,8 @@ export default function PerfilesAdminPage () {
             <TableRow>
               <TableCell>Nombre</TableCell>
               <TableCell>Administrable</TableCell>
-              <TableCell>Operación</TableCell>
+              <TableCell>Estado</TableCell>
+              <TableCell>Opción</TableCell>
             </TableRow>
           </TableHead>
 
@@ -177,6 +178,7 @@ export default function PerfilesAdminPage () {
                 <TableRow hover role="checkbox" tabIndex={-1} key={index}>
                   <TableCell>{el.NOMBRE_PERFIL}</TableCell>
                   <TableCell>{el.IS_MANAGEABLE ? "Administrable" : "No Administrable"}</TableCell>
+                  <TableCell>{el.ESTADO ? "Activo" : "Inactivo"}</TableCell>
                   <TableCell>
                     <Stack direction="row" spacing={1}>
                       <Controls.ButtonIconComponent

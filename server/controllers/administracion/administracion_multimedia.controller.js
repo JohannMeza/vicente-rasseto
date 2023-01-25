@@ -1,11 +1,11 @@
 /* eslint-disable no-throw-literal */
-const MessageConstants = require("../../constants/message");
 const AdministracionMultimedia = require("../../models/administracion/administracion_multimedia.model");
 const AdministracionCategoria = require("../../models/administracion/administracion_categorias.model");
 const AdministracionEtiqueta = require("../../models/administracion/administracion_etiquetas.model");
 const AdministracionAutores = require("../../models/administracion/administracion_autores.model");
 const AdministracionNivelEstudio = require("../../models/administracion/administracion_nivel_estudio.model");
 const AdministracionGrados = require("../../models/administracion/administracion_grados.model");
+const MessageConstants = require("../../constants/message");
 const UtilComponents = require("../../utils/UtilsComponents");
 
 /**
@@ -44,6 +44,11 @@ const index = async (req, res) => {
     console.log(err)
     return res.status(err.status || 500).json({ ...err })
   }
+}
+
+const uploadImage = (req, res) => {
+  console.log(req.file)
+  res.send("Imagen cargada");
 }
 
 const listDataInitial = async (req, res) => {
@@ -114,33 +119,36 @@ const listGrados = async (req, res) => {
 
 const store = async (req, res) => {
   try {
-    const { TITULO, ESTADO, CATEGORIA, ETIQUETA, AUTOR, GRADO, FILE, IMAGEN, _id, TIPO, LINK, DESCRIPCION_LARGA, DESCRIPCION_CORTA, NOMBRE_FILE, PESO, PAGINAS } = req.body;
-    let { BACKGROUND } = req.body;
-    let arrEstadoValid = ["Publicado", "No Publicado"];
-    if (!arrEstadoValid.includes(ESTADO)) {
-      throw({
-        error: true,
-        status: 404,
-        statusText: "Ocurrio un error, intente recargando la pagina o dentro de unos minutos"
-      })
-    }
-
+    const { TITULO, ESTADO, CATEGORIA, ETIQUETA, AUTOR, GRADO, _id, TIPO, LINK, DESCRIPCION_LARGA, DESCRIPCION_CORTA, NOMBRE_FILE, PAGINAS, IMAGEN, DATA_IMAGEN } = req.body;
     const validData = UtilComponents.ValidarParametrosObligatorios({ TITULO, CATEGORIA, ETIQUETA, AUTOR, GRADO, DESCRIPCION_LARGA, DESCRIPCION_CORTA })
-
-    if (!BACKGROUND || BACKGROUND === "") {
-      BACKGROUND = "#517ABF"
-    }
+    let { BACKGROUND } = req.body;
     
+    let filename, size;
+    let dataImagen = { url: IMAGEN, ...JSON.parse(DATA_IMAGEN || {}) }
+
+    if (req.file) {
+      filename = req.file.filename
+      size = req.file.size
+    } else {      
+      filename = req.body.FILE
+      size = req.body.PESO
+    }
+
+    let arrEstadoValid = ["Publicado", "No Publicado"];
+    
+    if (!arrEstadoValid.includes(ESTADO)) throw({error: true, status: 404, statusText: "Ocurrio un error, intente recargando la pagina o dentro de unos minutos"})
+    if (!BACKGROUND || BACKGROUND === "") BACKGROUND = "#517ABF"
     if (validData) throw(validData);
+    
     if (_id) { // UPDATE
-      await AdministracionMultimedia.findOneAndUpdate({ _id }, { TITULO, ESTADO, ID_CATEGORIA: CATEGORIA.split(","), ID_ETIQUETA: ETIQUETA.split(","), ID_AUTOR: AUTOR.split(","), ID_GRADO: GRADO, FILE, IMAGEN: IMAGEN, TIPO, LINK, DESCRIPCION_LARGA, DESCRIPCION_CORTA, NOMBRE_FILE, PESO, PAGINAS, BACKGROUND })
+      await AdministracionMultimedia.findOneAndUpdate({ _id }, { TITULO, ESTADO, ID_CATEGORIA: CATEGORIA.split(","), ID_ETIQUETA: ETIQUETA.split(","), ID_AUTOR: AUTOR.split(","), ID_GRADO: GRADO, FILE: filename, IMAGEN: dataImagen, TIPO, LINK, DESCRIPCION_LARGA, DESCRIPCION_CORTA, NOMBRE_FILE, PESO: size, PAGINAS, BACKGROUND })
       return res.status(201).json({
         error: false,
         status: 201,
         statusText: MessageConstants.MESSAGE_SUCCESS_UPDATE
       })
     } else { //  SAVE
-      const multimedia = new AdministracionMultimedia({ TITULO, ESTADO, ID_CATEGORIA: CATEGORIA.split(","), ID_ETIQUETA: ETIQUETA.split(","), ID_AUTOR: AUTOR.split(","), ID_GRADO: GRADO, FILE, IMAGEN: IMAGEN, TIPO, LINK, DESCRIPCION_LARGA, DESCRIPCION_CORTA, NOMBRE_FILE, PESO, PAGINAS, BACKGROUND });
+      const multimedia = new AdministracionMultimedia({ TITULO, ESTADO, ID_CATEGORIA: CATEGORIA.split(","), ID_ETIQUETA: ETIQUETA.split(","), ID_AUTOR: AUTOR.split(","), ID_GRADO: GRADO, filename, IMAGEN: dataImagen, TIPO, LINK, DESCRIPCION_LARGA, DESCRIPCION_CORTA, NOMBRE_FILE, size, PAGINAS, BACKGROUND });
       await multimedia.save();
 
       return res.status(201).json({
@@ -185,5 +193,6 @@ module.exports = {
   store,
   del,
   listDataInitial,
-  listGrados
+  listGrados,
+  uploadImage
 };

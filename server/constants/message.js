@@ -4,6 +4,7 @@ const MessageConstants = {
   MESSAGE_SUCCESS_SAVE: '¡¡¡En hora buena!!! se guardó con éxito',
   MESSAGE_SUCCESS_DELETE: '¡¡¡En hora buena!!! se eliminó con éxito',
   MESSAGE_SUCCESS_UPDATE: '¡¡¡En hora buena!!! se editó con éxito',
+  MESSAGE_IMPORT_DATA: '¡¡¡En hora buena!!! datos importados correctamente',
   
   
   // PETICIONES ERROR

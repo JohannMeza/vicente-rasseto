@@ -4,5 +4,6 @@ const AdministracionDocentesController = require("../../controllers/administraci
 
 router.post("/", AdministracionDocentesController.index)
 router.post("/new", AdministracionDocentesController.store)
+router.post("/reporte", AdministracionDocentesController.reporteExcel)
 
 module.exports = router;

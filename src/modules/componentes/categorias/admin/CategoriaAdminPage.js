@@ -47,12 +47,12 @@ export default function GradosAdminPage () {
       rowsPerPage,
       page,
       success: (resp) => {
-        setCategoria(resp.data);
         setLoader(false)
+        setCategoria(resp.data);
       },
       error: (err) => {
-        MessageUtil({ message: err.statusText, type: "error", seg: 10 });
         setLoader(false)
+        MessageUtil({ message: err.statusText, type: "error", seg: 10 });
       }
     })
   }

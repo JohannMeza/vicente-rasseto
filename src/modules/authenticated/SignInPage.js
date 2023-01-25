@@ -10,6 +10,7 @@ import { SaveRequestData } from '../../helpers/helpRequestBackend';
 import { MessageUtil } from '../../util/MessageUtil';
 import useAuthContext from '../../hooks/useAuthContext';
 import useLoaderContext from '../../hooks/useLoaderContext';
+import { ICON } from '../../framework/components/icons/Icon';
 
 const dataInitial = {
   EMAIL: "",
@@ -36,7 +37,6 @@ export default function SignInPage() {
       },
       error: (err) => {
         setLoader(false)
-        inputPass.current.focus()
         setData( {...data, PASSWORD: "" })
         MessageUtil({ message: err.statusText, type: "error", seg: 10, });
       }
@@ -46,56 +46,43 @@ export default function SignInPage() {
 
   return (
     <Box className="content">
-      <Container
+      <Box
       component="main"
       className="content__form"
       >
       <CssBaseline />
         <Grid container justifyContent="center">
-          <Grid item xs={6}>
+          {/* <Grid item xs={6}>
             <Stack direction="row" justifyContent="center">
               <img src={Logo} alt="Insignia de Vicente Rasseto" className="logotipo" />
             </Stack>
-          </Grid>
-
+          </Grid> */}
+          
           <Grid item xs={8}>
-            <Stack direction="column" spacing={3}>
-              <Box>
-                <Controls.TextComponent 
-                variant="h1" 
-                component="div" 
-                className="color-blue_700"
-                sx={{ textAlign: "center", margin: "5px 0" }}
-                >
-                  <label htmlFor="user">Usuario</label>
-                </Controls.TextComponent>
+            <Stack direction="column" spacing={5}>
+              <Controls.TextComponent 
+                children="Iniciar Sesión"
+                variant="h1"
+                component="p"
+                className=""
+                sx={{ textAlign: "center", color: "var(--primary)" }}
+              />
 
-                <input 
-                  type="text" 
-                  id="user" 
-                  className="inputStyle" 
-                  autoComplete='off'
+              <Box>
+                <Controls.InputComponent
+                  label="Usuario"
                   name="EMAIL"
                   value={data.EMAIL}
+                  autoComplete='on'
                   onChange={handleInputChange}
                 />
               </Box>
 
               <Box>
-                <Controls.TextComponent 
-                variant="h1" 
-                component="div" 
-                className="color-blue_700"
-                sx={{ textAlign: "center", margin: "5px 0" }}
-                >
-                  <label htmlFor="pass">Contraseña</label>
-                </Controls.TextComponent>
-
-                <input 
-                  type="password" 
-                  id="pass" 
-                  className="inputStyle" 
-                  autoComplete='off'
+                <Controls.InputComponent
+                  label="Contraseña"
+                  type="password"
+                  autoComplete='on'
                   name="PASSWORD"
                   value={data.PASSWORD}
                   onChange={handleInputChange}
@@ -108,14 +95,16 @@ export default function SignInPage() {
           <Grid item xs={12}>
             <Stack direction="row" justifyContent="center" sx={{ marginTop: "30px" }}>
               <Controls.ButtonComponent
-                title="Entrar"
-                variant="large"
+                variant="docente-normal"
+                type="blue"
+                color="blue"
                 onClick={loginUser}
+                title="Entrar"
               />
             </Stack>
           </Grid>
         </Grid>
-      </Container>
+      </Box>
     </Box>
 
   )

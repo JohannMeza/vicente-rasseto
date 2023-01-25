@@ -1,11 +1,11 @@
-import { Grid, Stack, Table, TableBody, TableCell, TableHead, TableRow, Typography } from '@mui/material';
+import { Grid, Stack, Table, TableBody, TableCell, TableHead, TableRow } from '@mui/material';
 import { Box } from '@mui/system';
 import React, { useEffect, useState } from 'react';
 import ButtonsSearchComponent from '../../../../components/utilComponents/ButtonsSearchComponent';
 import { pathServer } from '../../../../config/router/path';
 import Controls from '../../../../framework/components/Controls';
 import { ICON } from '../../../../framework/components/icons/Icon';
-import { SaveRequestData } from '../../../../helpers/helpRequestBackend';
+import { SaveRequestData, SaveRequestReport } from '../../../../helpers/helpRequestBackend';
 import { useForm } from '../../../../hooks/useForm';
 import { useFormValidation } from '../../../../hooks/useFormValidation';
 import useLoaderContext from '../../../../hooks/useLoaderContext';
@@ -116,6 +116,16 @@ export default function AlumnosAdminPage () {
     setIsDataToEdit({ ...dataEdit, ID_GRADO, ID_NIVEL_ESTUDIO: ID_NIVEL_ESTUDIO._id, EMAIL })
   }
 
+  const reporteExcel = () => {
+    setLoader(true)
+    SaveRequestReport({
+      path: pathServer.ADMINISTRACION.ALUMNOS.REPORTE,
+      body: data,
+      success: () => setLoader(false),
+      error: () => setLoader(false)
+    })
+  }
+
   useEffect(() => {
     getAlumnos()
   }, [])
@@ -133,11 +143,11 @@ export default function AlumnosAdminPage () {
 
         <Grid item xs={12} sm={12} md={10} lg={6} xl={5}>
           <Grid container spacing={1}>
-            <Grid item xs={12} sm={12} md={4}>
+            <Grid item xs={12} sm={12} md={3}>
               <Controls.ButtonComponent
                 variant="primary-small"
                 type="admin"
-                title="Nuevo Alumno"
+                title="Nuevo"
                 onClick={() => setOpen(true)}
                 style={{ width: "100%" }}
               />
@@ -149,6 +159,7 @@ export default function AlumnosAdminPage () {
                 type="admin"
                 title="Exportar"
                 style={{ width: "100%" }}
+                onClick={reporteExcel}
               />
             </Grid>
 
@@ -236,7 +247,7 @@ export default function AlumnosAdminPage () {
               <TableCell>Email</TableCell>
               <TableCell>Nivel Educativo</TableCell>
               <TableCell>Grado</TableCell>
-              <TableCell>Operación</TableCell>
+              <TableCell>Opciones</TableCell>
             </TableRow>
           </TableHead>
           <TableBody>

@@ -1,6 +1,8 @@
-import axios from './axios';
+import { axiosBase, axiosReport } from './axios';
 
-export const SERVICES_GET = (path, body) => axios.get(path, body);
-export const SERVICES_POST = (path, body) => axios.post(path, body);
-export const SERVICES_PUT = (path, body) => axios.put(path, body);
-export const SERVICES_DELETE = (path, body) => axios.delete(path, body);
+export const SERVICES_GET = (path, body) => axiosBase.get(path, body);
+export const SERVICES_POST = (path, body) => axiosBase.post(path, body);
+export const SERVICES_PUT = (path, body) => axiosBase.put(path, body);
+export const SERVICES_DELETE = (path, body) => axiosBase.delete(path, body);
+
+export const REPORT_POST = (path, body) => axiosReport.post(path, body);

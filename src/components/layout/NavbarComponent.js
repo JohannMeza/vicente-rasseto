@@ -76,9 +76,9 @@ const NavbarComponent = ({ DrawerHeader }) => {
       anchor="left"
       open={open}
     >
-      <DrawerHeader sx={{ justifyContent: "space-between", padding: "15px 0" }}>
-        <Box sx={{ flexGrow: "1", textAlign: "center" }}>
-          <img src={Logo} alt=""  style={{ width: "120px" }} />
+      <DrawerHeader sx={{ justifyContent: "space-between", padding: "15px 0", minHeight: "150px" }}>
+        <Box sx={{ flexGrow: "1", textAlign: "center", height: "100%" }}>
+          <img src={Logo} alt=""  style={{ maxWidth: "120px", height: "inherit" }} />
         </Box>
       </DrawerHeader>
       {

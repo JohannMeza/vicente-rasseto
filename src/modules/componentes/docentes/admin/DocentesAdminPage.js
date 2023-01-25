@@ -5,7 +5,7 @@ import ButtonsSearchComponent from '../../../../components/utilComponents/Button
 import { pathServer } from '../../../../config/router/path';
 import Controls from '../../../../framework/components/Controls';
 import { ICON } from '../../../../framework/components/icons/Icon';
-import { SaveRequestData } from '../../../../helpers/helpRequestBackend';
+import { SaveRequestData, SaveRequestReport } from '../../../../helpers/helpRequestBackend';
 import { useForm } from '../../../../hooks/useForm';
 import { useFormValidation } from '../../../../hooks/useFormValidation';
 import useLoaderContext from '../../../../hooks/useLoaderContext';
@@ -87,6 +87,16 @@ export default function DocentesAdminPage () {
     setIsDataToEdit({ ...dataEdit, EMAIL })
   }
 
+  const reporteExcel = () => {
+    setLoader(true)
+    SaveRequestReport({
+      path: pathServer.ADMINISTRACION.DOCENTES.REPORTE,
+      body: data,
+      success: () => setLoader(false),
+      error: () => setLoader(false)
+    })
+  }
+
   useEffect(() => {
     getDocentes()
   }, [])
@@ -100,11 +110,11 @@ export default function DocentesAdminPage () {
 
         <Grid item xs={12} sm={12} md={10} lg={6} xl={5}>
           <Grid container spacing={1}>
-            <Grid item xs={12} sm={12} md={4}>
+            <Grid item xs={12} sm={12} md={3}>
               <Controls.ButtonComponent
                 variant="primary-small"
                 type="admin"
-                title="Nuevo Docente"
+                title="Nuevo"
                 onClick={() => setOpen(true)}
                 style={{ width: "100%" }}
               />
@@ -116,6 +126,7 @@ export default function DocentesAdminPage () {
                 type="admin"
                 title="Exportar"
                 style={{ width: "100%" }}
+                onClick={reporteExcel}
               />
             </Grid>
 

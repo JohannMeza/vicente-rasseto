@@ -1,6 +1,7 @@
 const MessageConstants = require("../../constants/message");
 const AdministracionAutores = require("../../models/administracion/administracion_autores.model");
 const UtilComponents = require("../../utils/UtilsComponents");
+const XLSX = require('xlsx');
 
 /**
  * 
@@ -92,8 +93,28 @@ const del = async (req, res) => {
   }
 }
 
+const importarExcel = async (req, res) => {
+  try {
+    const workbook = XLSX.readFile(req.file.path);
+    const workbookSheets = workbook.SheetNames;
+    const sheet = workbookSheets[0];
+    const dataExcel = XLSX.utils.sheet_to_json(workbook.Sheets[sheet]);
+
+    await AdministracionAutores.insertMany(dataExcel)
+
+    return res.status(201).json({
+      error: false,
+      status: 201,
+      statusText: MessageConstants.MESSAGE_IMPORT_DATA
+    })
+  } catch (err) {
+    return res.status(err.status || 500).json({ statusText: "Error en la importacion", ...err })
+  }
+}
+
 module.exports = {
   index,
   store,
-  del
+  del,
+  importarExcel
 };

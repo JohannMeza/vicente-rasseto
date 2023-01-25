@@ -22,7 +22,8 @@ export default function InputComponent({
   placeholder = "",
   style,
   iconClick,
-  sx
+  sx,
+  ref
 }) {
   const handleChange = (e) => {
     const valueAnt = value;
@@ -82,6 +83,7 @@ export default function InputComponent({
       required={required || false}
       placeholder={placeholder}
       sx={sx}
+      ref={ref}
       InputProps={{
         inputProps: {
           max,

@@ -1,4 +1,5 @@
 import React, { createContext, useCallback, useEffect, useMemo, useState } from 'react';
+import { useNavigate } from 'react-router-dom';
 import { ACCESS } from '../config/router/path';
 import { SaveRequestData } from '../helpers/helpRequestBackend'
 import { authAccess } from '../services/auth.axios'
@@ -36,6 +37,7 @@ export default function AuthContextProvider ({children}) {
   const logout = () => {
     localStorage.removeItem(TOKEN_BIBLIOTECA_VIRTUAL);
     setUser(null);
+    window.location.reload()
     // setIsAuthenticated(false);
   }
 

@@ -269,6 +269,54 @@ const styleButtonAdminAndDocente = [
       }
     },
   },
+
+  // --- COLOR - BLUE 
+
+  {
+    props: { variant: "docente-large", type: "blue" },
+    style: {
+      padding: "5px 25px",
+      fontSize: sizeText.boton_1,
+      background: paletteColors.primary,
+      color: paletteColors.white_100,
+      fontFamily: fontStyle.primary,
+      fontWeight: 800,
+      boxShadow: "0 4px 4px 1px rgba(0,0,0,0.25)",
+      '&:hover, &.Mui-focusVisible': {
+        background: "#3864AF",
+      }
+    },
+  },
+  {
+    props: { variant: "docente-normal", type: "blue" },
+    style: {
+      padding: "5px 25px",
+      fontSize: sizeText.boton_1,
+      background: paletteColors.primary,
+      color: paletteColors.white_100,
+      fontFamily: fontStyle.primary,
+      fontWeight: 800,
+      boxShadow: "0 4px 4px 1px rgba(0,0,0,0.25)",
+      '&:hover, &.Mui-focusVisible': {
+        background: "#3864AF",
+      }
+    },
+  },
+  {
+    props: { variant: "docente-small", type: "blue" },
+    style: {
+      padding: "0px 25px",
+      fontSize: sizeText.boton_2,
+      background: paletteColors.primary,
+      color: paletteColors.white_100,
+      fontFamily: fontStyle.primary,
+      fontWeight: 800,
+      boxShadow: "0 4px 4px 1px rgba(0,0,0,0.25)",
+      '&:hover, &.Mui-focusVisible': {
+        background: "#2D2C2C",
+      }
+    },
+  }
 ]
 
 export const StyleButton = [

@@ -151,6 +151,7 @@ const BibliotecaPage = () => {
           <input
             type="text"
             placeholder="Buscar..."
+            autoComplete="off"
             style={InputSearchStyled}
             name="SEARCH"
             onChange={handleChange}

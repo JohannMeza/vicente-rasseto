@@ -1,4 +1,6 @@
 const ObjectId = require('mongoose').Types.ObjectId;
+const multer = require('multer');
+const {StorageMulter, StorageMulterExcel} = require('./StorageMulter.js');
 
 /**
  * 
@@ -44,6 +46,8 @@ const ValidarObjectForFilter = (obj) => {
   let dataFilter = { $and: [] };
   
   for (let value in obj) {
+    if (value === "ESTADO" && obj[value] === 0) return;
+    
     if (typeof obj[value] !== "boolean") { // VALOR NULL
       let elementObj = {
         $regex: (obj[value] === null || obj[value] === undefined) ? '' : obj[value], 
@@ -90,9 +94,14 @@ const CambiarNombreCampos = (arrData, objCampos) => {
   return newArrData
 }
 
+const uploadImage = multer({ storage: StorageMulter, limits: {fieldSize: 25 * 1024 * 1024} })
+const importarExcel = multer({ storage: StorageMulterExcel, limits: {fieldSize: 25 * 1024 * 1024} })
+
 module.exports = {
   ValidarParametrosObligatorios,
   ValidarObjectIdValido,
   ValidarObjectForFilter,
-  CambiarNombreCampos
+  CambiarNombreCampos,
+  uploadImage,
+  importarExcel
 }

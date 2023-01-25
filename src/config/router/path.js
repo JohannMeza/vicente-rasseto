@@ -60,14 +60,19 @@ export const pathServer = {
       INDEX: "/administracion/alumnos",
       NEW: "/administracion/alumnos/new",
       GRADOS_LABEL: "/administracion/alumnos/grados_label",
+      REPORTE: "/administracion/alumnos/reporte",
+      IMPORTAR: "/administracion/alumnos/importar",
     },
     DOCENTES: {
       INDEX: "/administracion/docentes",
       NEW: "/administracion/docentes/new",
+      REPORTE: "/administracion/docentes/reporte",
+      IMPORTAR: "/administracion/docentes/importar",
     },
     AUTOR: {
       INDEX: "/administracion/autor",
       NEW: "/administracion/autor/new",
+      IMPORTAR: "/administracion/autor/importar",
     },
     CATEGORIA: {
       INDEX: "/administracion/categorias",
