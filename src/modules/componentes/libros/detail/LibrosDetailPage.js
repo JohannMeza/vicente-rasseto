@@ -15,6 +15,7 @@ import { useReadLibroBase64, useReadLibroUrl } from '../../../../hooks/useReadLi
 import { SERVICES_GET, SERVICES_POST } from '../../../../services/services.axios';
 import { MessageUtil } from '../../../../util/MessageUtil';
 import { UploadFile } from '../../../../util/UploadFile';
+import Libro from '../../../../assets/upload/1674847546016.pdf';
 
 const estadoLibro = [
   { label: 'Publicar', value: "Publicado" },
@@ -512,6 +513,7 @@ export default function LibrosDetailPage () {
                 { (canvas && stateCanvasInitial) && <canvas style={{ width: "100%" }} ref={canvas}></canvas> }
                 { (canvas64 && !stateCanvasInitial && pdfBase64) && <canvas style={{ width: "100%" }} ref={canvas64}></canvas> }
                 {/* <object aria-label="pdf" href={file} style={styleImage} type="application/pdf"></object> */}
+                <object type="application/pdf" width="250" height="200" data={Libro}></object>
               </Box>
 
               <Box>
