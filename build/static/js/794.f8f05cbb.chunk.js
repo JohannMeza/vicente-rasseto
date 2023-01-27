@@ -1,0 +1,1 @@
+"use strict";(self.webpackChunksistema_web=self.webpackChunksistema_web||[]).push([[794],{7794:function(e,s,t){e.exports=t.p+"static/media/patron-fondo.e135c9b41ae42254cd6f.webp"}}]);
