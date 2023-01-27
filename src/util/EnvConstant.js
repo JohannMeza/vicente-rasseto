@@ -1,4 +1,4 @@
-const RASSETO_DEVELOPMENT       = true;
+const RASSETO_DEVELOPMENT       = false;
 
 // Desarrollo
 const RASSETO_DEV_PATH_UPLOAD   = "assets/upload/";
