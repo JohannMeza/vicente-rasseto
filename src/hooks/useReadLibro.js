@@ -1,6 +1,7 @@
 import { useEffect, useRef, useState } from 'react';
 import useLoaderContext from './useLoaderContext';
 import { AlertUtilRelease } from '../util/AlertUtil';
+import { EnvConstant } from '../util/EnvConstant';
 
 let pdfjsLib = window['pdfjs-dist/build/pdf'];
 pdfjsLib.GlobalWorkerOptions.workerSrc = '//mozilla.github.io/pdf.js/build/pdf.worker.js';
@@ -9,12 +10,11 @@ export const useReadLibroUrl = (pdfData, pageNumber = 1, scale = 1.5) => {
   const setLoader = useLoaderContext();
   const [numeroPaginas, setNumeroPaginas] = useState(0);
   let canvasElement = useRef(null);
-  const urlLocal = "../assets/upload/";
-  const urlServer = "../media/upload/";
+  
   useEffect(() => {
     if (pdfData && canvasElement) {
       setLoader(true)
-      import(`${urlServer}${pdfData}`)
+      import(`${EnvConstant.RASSETO_PATH_UPLOAD}${pdfData}`)
       .then((module) => {
         var loadingTask = pdfjsLib.getDocument(module.default);
         loadingTask.promise

@@ -1,10 +1,9 @@
-const { config } = require("dotenv");
-config();
+const EnvConstant = require("../utils/EnvConstant");
 
 module.exports = {
   database: {
-    MONGODB_URI: process.env.MONGO_URI,
-    PORT: process.env.PORT
+    MONGODB_URI: EnvConstant.APP_DATABASE_URI,
+    PORT: EnvConstant.APP_PORT
   },
 
   jwt: {
