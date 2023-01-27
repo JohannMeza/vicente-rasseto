@@ -61,7 +61,7 @@ export default function SignInPage() {
           <Grid item xs={8}>
             <Stack direction="column" spacing={5}>
               <Controls.TextComponent 
-                children="Iniciar Sesión"
+                children=" Sesión"
                 variant="h1"
                 component="p"
                 className=""

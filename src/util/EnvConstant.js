@@ -1,11 +1,11 @@
 const RASSETO_DEVELOPMENT       = false;
 
 // Desarrollo
-const RASSETO_DEV_PATH_UPLOAD   = "../assets/upload/";
+const RASSETO_DEV_PATH_UPLOAD   = "assets/upload/";
 const RASSETO_DEV_BASE_URL      = "http://localhost:4010/api"
 
 // Produccion
-const RASSETO_PROD_PATH_UPLOAD  = "../media/upload/";
+const RASSETO_PROD_PATH_UPLOAD  = "media/upload/";
 const RASSETO_PROD_BASE_URL     = "https://vicente-rasseto.onrender.com/api";
 
 // Configuracion Rasseto
