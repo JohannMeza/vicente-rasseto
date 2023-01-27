@@ -9,11 +9,12 @@ export const useReadLibroUrl = (pdfData, pageNumber = 1, scale = 1.5) => {
   const setLoader = useLoaderContext();
   const [numeroPaginas, setNumeroPaginas] = useState(0);
   let canvasElement = useRef(null);
-  
+  const urlLocal = "../assets/upload/";
+  const urlServer = "../media/upload/";
   useEffect(() => {
     if (pdfData && canvasElement) {
       setLoader(true)
-      import(`../assets/upload/${pdfData}`)
+      import(`${urlServer}${pdfData}`)
       .then((module) => {
         var loadingTask = pdfjsLib.getDocument(module.default);
         loadingTask.promise
