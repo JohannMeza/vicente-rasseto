@@ -14,7 +14,7 @@ export const useReadLibroUrl = (pdfData, pageNumber = 1, scale = 1.5) => {
   useEffect(() => {
     if (pdfData && canvasElement) {
       setLoader(true)
-      import(`/${EnvConstant.RASSETO_PATH_UPLOAD}${pdfData}`)
+      import(`./../${EnvConstant.RASSETO_PATH_UPLOAD}${pdfData}`)
       .then((module) => {
         var loadingTask = pdfjsLib.getDocument(module.default);
         loadingTask.promise
