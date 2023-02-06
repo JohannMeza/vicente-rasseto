@@ -1,7 +1,7 @@
 const { config } = require("dotenv");
 config();
 
-const APP_DEVELOPMENT        = true;
+const APP_DEVELOPMENT        = false;
 
 // Desarrollo
 const APP_DEV_DATABASE_URI          = process.env.APP_DEV_DATABASE_URI;
