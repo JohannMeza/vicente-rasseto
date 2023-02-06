@@ -27,6 +27,11 @@ const AdministracionMultimediaSchema = new Schema({
     required: true,
     trim: true
   },
+  SUBIDA: {
+    type: String,
+    required: true,
+    trim: true
+  },
   DESCRIPCION_LARGA: {
     type: String,
     required: true,

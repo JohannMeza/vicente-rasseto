@@ -12,10 +12,10 @@ const index = async (req, res) => {
     let camposEtiquetas = { ETIQUETA: "label", _id: "value" };
     let camposAutores = { NOMBRE_AUTOR: "label", _id: "value" };
 
-    const dataLibro = await AdministracionMultimedia.find({TIPO: "Libro"})
-    const categorias = await CategoriasMultimedia.find({}, { _id: 1, CATEGORIA: 1 });
-    const etiquetas = await EtiquetasMultimedia.find({}, { _id: 1, ETIQUETA: 1 });
-    const autores = await AutoresMultimedia.find({}, { _id: 1, NOMBRE_AUTOR: 1 });
+    const dataLibro = await AdministracionMultimedia.find({TIPO: "Libro",ESTADO: "Publicado"})
+    const categorias = await CategoriasMultimedia.find({ESTADO: true}, { _id: 1, CATEGORIA: 1 });
+    const etiquetas = await EtiquetasMultimedia.find({ESTADO: true}, { _id: 1, ETIQUETA: 1 });
+    const autores = await AutoresMultimedia.find({ESTADO: true}, { _id: 1, NOMBRE_AUTOR: 1 });
 
     const arrCategorias = UtilComponents.CambiarNombreCampos(categorias, camposCategorias)
     const arrEtiquetas = UtilComponents.CambiarNombreCampos(etiquetas, camposEtiquetas)

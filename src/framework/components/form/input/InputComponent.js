@@ -10,7 +10,7 @@ export default function InputComponent({
   onChange,
   name,
   disabled,
-  type,
+  type = "text",
   className,
   error = null,
   min,
@@ -70,7 +70,7 @@ export default function InputComponent({
       className={className || ""}
       id={id || "outlined-basec"}
       label={label}
-      type={type === "decimal" || type ? "text" : type}
+      type={type}
       variant="outlined"
       multiline={multiline}
       size="small"

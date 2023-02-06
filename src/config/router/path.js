@@ -86,7 +86,7 @@ export const pathServer = {
       INDEX: "/administracion/multimedia",
       DATA_INITIAL: "/administracion/multimedia/list_data_initial",
       LIST_GRADOS: "/administracion/multimedia/list_grados/",
-      NEW: "/administracion/multimedia/new",
+      NEW: "/administracion/multimedia/new/",
       DELETE: "/administracion/multimedia/delete/",
     }
   },

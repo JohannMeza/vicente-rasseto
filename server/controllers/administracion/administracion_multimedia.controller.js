@@ -7,6 +7,8 @@ const AdministracionNivelEstudio = require("../../models/administracion/administ
 const AdministracionGrados = require("../../models/administracion/administracion_grados.model");
 const MessageConstants = require("../../constants/message");
 const UtilComponents = require("../../utils/UtilsComponents");
+const cloudinary = require("cloudinary");
+const EnvConstant = require("../../utils/EnvConstant");
 
 /**
  * 
@@ -119,27 +121,28 @@ const listGrados = async (req, res) => {
 
 const store = async (req, res) => {
   try {
-    const { TITULO, ESTADO, CATEGORIA, ETIQUETA, AUTOR, GRADO, _id, TIPO, LINK, DESCRIPCION_LARGA, DESCRIPCION_CORTA, NOMBRE_FILE, PAGINAS, IMAGEN, DATA_IMAGEN } = req.body;
+    const { TITULO, ESTADO, CATEGORIA, ETIQUETA, AUTOR, GRADO, _id, TIPO, LINK, DESCRIPCION_LARGA, DESCRIPCION_CORTA, NOMBRE_FILE, PAGINAS, IMAGEN, DATA_IMAGEN, SUBIDA } = req.body;
     const validData = UtilComponents.ValidarParametrosObligatorios({ TITULO, CATEGORIA, ETIQUETA, AUTOR, GRADO, DESCRIPCION_LARGA, DESCRIPCION_CORTA })
     let { BACKGROUND } = req.body;
     
     let filename, size;
     let dataImagen = { url: IMAGEN, ...JSON.parse(DATA_IMAGEN || {}) }
 
-    if (req.file) {
-      filename = req.file.filename
+    if (SUBIDA === 'cloudinary') {
+      cloudinary.config({ cloud_name: EnvConstant.APP_CLOUDINARY_NAME, api_key: EnvConstant.APP_CLOUDINARY_KEY, api_secret: EnvConstant.APP_CLOUDINARY_API_SECRET })
+      const fileUpload = await cloudinary.uploader.upload(req.file.path)
+      filename = fileUpload.secure_url
       size = req.file.size
-    } else {      
+    } else if (SUBIDA === 'github') {
       filename = req.body.FILE
       size = req.body.PESO
     }
-
     let arrEstadoValid = ["Publicado", "No Publicado"];
     
     if (!arrEstadoValid.includes(ESTADO)) throw({error: true, status: 404, statusText: "Ocurrio un error, intente recargando la pagina o dentro de unos minutos"})
     if (!BACKGROUND || BACKGROUND === "") BACKGROUND = "#517ABF"
     if (validData) throw(validData);
-    
+
     if (_id) { // UPDATE
       await AdministracionMultimedia.findOneAndUpdate({ _id }, { TITULO, ESTADO, ID_CATEGORIA: CATEGORIA.split(","), ID_ETIQUETA: ETIQUETA.split(","), ID_AUTOR: AUTOR.split(","), ID_GRADO: GRADO, FILE: filename, IMAGEN: dataImagen, TIPO, LINK, DESCRIPCION_LARGA, DESCRIPCION_CORTA, NOMBRE_FILE, PESO: size, PAGINAS, BACKGROUND })
       return res.status(201).json({

@@ -14,6 +14,7 @@
 # /build
 /public
 /server/node_modules
+/.vscode
 
 # misc
 .DS_Store

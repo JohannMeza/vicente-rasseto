@@ -7,6 +7,8 @@ const StorageMulter = multer.diskStorage({
   filename: (req, file, cb) => cb(null, `${Date.now()}.${file.originalname.split('.').pop()}`)
 })
 
+const StorageMulterTemp = multer.diskStorage({})
 const StorageMulterExcel = multer.diskStorage({})
+const StorageMulterCloudinary = multer.diskStorage({ filename: (req, file, cb) => cb(null, `${file.originalname}`) })
 
-module.exports = {StorageMulter, StorageMulterExcel}
+module.exports = {StorageMulter, StorageMulterTemp, StorageMulterExcel, StorageMulterCloudinary}

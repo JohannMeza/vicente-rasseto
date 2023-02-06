@@ -16,10 +16,18 @@ import { SERVICES_GET, SERVICES_POST } from '../../../../services/services.axios
 import { MessageUtil } from '../../../../util/MessageUtil';
 import { UploadFile } from '../../../../util/UploadFile';
 import Libro from '../../../../assets/upload/1674847546016.pdf';
+import { useForm } from '../../../../hooks/useForm';
 
 const estadoLibro = [
   { label: 'Publicar', value: "Publicado" },
   { label: 'No Publicar', value: "No Publicado" }
+]
+
+const tipoSubida = [
+  { label: 'Archivo', value: "archivo" },
+  { label: 'Base64', value: "base64" },
+  { label: 'Cloudinary', value: "cloudinary" },
+  { label: 'Github', value: "github" }
 ]
 
 const dataInitial = {
@@ -30,12 +38,20 @@ const dataInitial = {
   CATEGORIA: "",
   ETIQUETA: "",
   LINK: "",
+  SUBIDA: "github",
   AUTOR: "",
   GRADO: "",
   NIVEL_ESTUDIO: "",
   FILE: {},
   IMAGEN: {},
   BACKGROUND: "#517ABF"
+}
+
+const dataLibroCopy = {
+  FILE: "",
+  PESO: "",
+  PAGINAS: "",
+  NOMBRE_FILE: ""
 }
 
 const descripcion_larga = 150;
@@ -84,6 +100,16 @@ export default function LibrosDetailPage () {
       temp.GRADO = !fieldValues.GRADO ? "El campo Grado es requerido" : "";
     } 
 
+    if ("SUBIDA" in fieldValues) {
+      if (!fieldValues.SUBIDA) {
+        temp.SUBIDA = "El campo Subida es requerido";
+      } else if (fieldValues.SUBIDA !== "github") {
+        temp.SUBIDA = "La opcion elegida no esta habilitada";
+      } else {
+        temp.SUBIDA = "";
+      }
+    } 
+
     if ("DESCRIPCION_LARGA" in fieldValues) {
       if (!fieldValues?.DESCRIPCION_LARGA || fieldValues.DESCRIPCION_LARGA === "") {
         temp.DESCRIPCION_LARGA = "El campo Descripcion Larga es requerido"
@@ -130,11 +156,13 @@ export default function LibrosDetailPage () {
   const [pdfPath, setPdfPath] = useState();
   const [descripcionPdf, setDescripcionPdf] = useState({})
   const [libroBase64, setLibroBase64] = useState({ FILE: "" })
-  
+  const [updateData, setUpdateData] = useState(false);
+
   const [filename, setFilename] = useState({})
   let [canvas, numeroPaginas] = useReadLibroUrl(pdfPath, 1)
   let [canvas64] = useReadLibroBase64(pdfBase64, 1)
   let [stateCanvasInitial, setStateCanvasInitial] = useState(true)
+  let [copyLibros, handleInputChange, , setCopyLibros] = useForm(dataLibroCopy)
 
   // const [stateInitial, setStateInitial] = useState(true)
 
@@ -150,7 +178,6 @@ export default function LibrosDetailPage () {
       fnRequest: SERVICES_POST,
       success: async (resp) => {
         let { categoria, etiqueta, autores, nivel_estudio, libro } = resp.data
-        console.log(libro)
         setListCategorias(categoria)
         setListEtiquetas(etiqueta)
         setListAutores(autores)
@@ -163,6 +190,13 @@ export default function LibrosDetailPage () {
             AUTOR: libro?.ID_AUTOR.join(","),
             GRADO: libro?.ID_GRADO._id,
             NIVEL_ESTUDIO: libro?.ID_GRADO.ID_NIVEL_ESTUDIO._id,
+            SUBIDA: "github"
+          })
+          setCopyLibros({
+            FILE: libro.FILE,
+            PESO: libro.PESO,
+            PAGINAS: libro.PAGINAS,
+            NOMBRE_FILE: libro.NOMBRE_FILE
           })
           if (libro?.FILE) {
             setPdfPath(libro.FILE)
@@ -309,7 +343,7 @@ export default function LibrosDetailPage () {
       const formData = UploadFile(obj);
       setLoader(true)
       SaveRequestData({
-        path: pathServer.ADMINISTRACION.MULTIMEDIA.NEW,
+        path: pathServer.ADMINISTRACION.MULTIMEDIA.NEW + data.SUBIDA,
         body: formData,
         fnRequest: SERVICES_POST,
         success: (resp) => {
@@ -323,6 +357,35 @@ export default function LibrosDetailPage () {
         }
       })
     }
+  }
+
+  const updateDatosLibro = () => {
+    setUpdateData(true)
+    setPdfPath("")
+    setCopyLibros({
+      FILE: data.FILE,
+      NOMBRE_FILE: data.NOMBRE_FILE,
+      PESO: data.PESO,
+      PAGINAS: data.PAGINAS
+    })
+  }
+
+  const handleCancelUpdateDataLibro = () => {
+    setUpdateData(false)
+    setPdfPath(data.FILE)
+    setCopyLibros({
+      FILE: data.FILE,
+      NOMBRE_FILE: data.NOMBRE_FILE,
+      PESO: data.PESO,
+      PAGINAS: data.PAGINAS
+    })
+  }
+
+  const handleUpdateDataLibro = () => {
+    setData((data) => { return { ...data, ...copyLibros, TITULO: copyLibros.NOMBRE_FILE }})
+    setDescripcionPdf({ PAGINAS: copyLibros.PAGINAS || 0, NOMBRE_FILE: copyLibros.NOMBRE_FILE, PESO: copyLibros.PESO, FILE: copyLibros.FILE })
+    setPdfPath(copyLibros.FILE)
+    setUpdateData(false)
   }
 
   useEffect(() => {
@@ -378,6 +441,16 @@ export default function LibrosDetailPage () {
                   onChange={handleChangeInput}
                   list={estadoLibro}
                   error={errors.ESTADO}
+                />
+              </Grid>
+              <Grid item xs={12}>
+                <Controls.SelectComponent
+                  label="Tipo Subida"
+                  name="SUBIDA"
+                  value={data.SUBIDA}
+                  onChange={handleChangeInput}
+                  list={tipoSubida}
+                  error={errors.SUBIDA}
                 />
               </Grid>
               <Grid item xs={12}>
@@ -498,52 +571,116 @@ export default function LibrosDetailPage () {
         </Grid>
         <Grid item xs={12} sm={12} md={6} sx={{ display: "flex", flexDirection: "column", gridGap: "30px" }}>
           <Controls.Card title="Subir Libro">
-            <input
-              type="file"
-              ref={btnFileLibro}
-              style={{ visibility: "hidden", width: "0px", height: "0px", display: "none" }}
-              id="inputLibroFile"
-              name="FILE"
-              accept=".pdf"
-              onChange={handleChangeInput}
-            />
+            {
+              (
+                updateData
+              ) ? (
+                <>
+                  <Grid container spacing={3}>
+                    <Grid item xs={12}>
+                      <Controls.InputComponent 
+                        label="Ruta del libro"
+                        name="FILE"
+                        multiline
+                        onChange={handleInputChange}
+                        value={copyLibros.FILE}
+                      />
+                    </Grid>
+                    <Grid item xs={12}>
+                      <Controls.InputComponent 
+                        label="Titulo"
+                        name="NOMBRE_FILE"
+                        onChange={handleInputChange}
+                        value={copyLibros.NOMBRE_FILE}
+                      />
+                    </Grid>
+                    <Grid item xs={12}>
+                      <Controls.InputComponent 
+                        label="Cantidad de páginas"
+                        type="number"
+                        min={0}
+                        name="PAGINAS"
+                        onChange={handleInputChange}
+                        value={copyLibros.PAGINAS}
+                      />
+                    </Grid>
+                    <Grid item xs={12}>
+                      <Controls.InputComponent 
+                        label="Peso"
+                        name="PESO"
+                        onChange={handleInputChange}
+                        value={copyLibros.PESO}
+                      />
+                    </Grid>
+                  </Grid>
+                  <br />
+                  <Stack direction="row" spacing={3} justifyContent="center">
+                    <Controls.ButtonComponent
+                      title="Cancelar"
+                      variant="secondary-small"
+                      type="admin"
+                      onClick={handleCancelUpdateDataLibro}
+                    />
+                    <Controls.ButtonComponent
+                      title="Actualizar"
+                      variant="primary-small"
+                      type="admin"
+                      onClick={handleUpdateDataLibro}
+                    />
+                  </Stack>
+                </>
+              ) : (
+                <>
+                  <input
+                    type="file"
+                    ref={btnFileLibro}
+                    style={{ visibility: "hidden", width: "0px", height: "0px", display: "none" }}
+                    id="inputLibroFile"
+                    name="FILE"
+                    accept=".pdf"
+                    onChange={handleChangeInput}
+                  />
 
-            <Box style={{ display: "flex", gridGap: "10px", flexWrap: "wrap" }}>
-              <Box style={styleImage}>
-                { (canvas && stateCanvasInitial) && <canvas style={{ width: "100%" }} ref={canvas}></canvas> }
-                { (canvas64 && !stateCanvasInitial && pdfBase64) && <canvas style={{ width: "100%" }} ref={canvas64}></canvas> }
-                {/* <object aria-label="pdf" href={file} style={styleImage} type="application/pdf"></object> */}
-                <object type="application/pdf" width="250" height="200" data={Libro}></object>
-              </Box>
+                  <Box style={{ display: "flex", gridGap: "10px", flexWrap: "wrap" }}>
+                    <Box style={styleImage}>
+                      { (canvas && stateCanvasInitial) && <canvas style={{ width: "100%" }} ref={canvas}></canvas> }
+                      { (canvas64 && !stateCanvasInitial && pdfBase64) && <canvas style={{ width: "100%" }} ref={canvas64}></canvas> }
+                      {/* <object aria-label="pdf" href={file} style={styleImage} type="application/pdf"></object> */}
+                      {/* <object type="application/pdf" width="250" height="200" data={Libro}></object> */}
+                    </Box>
 
-              <Box>
-                <Typography variant="text1" component="div"><b>Informacion del Libro</b></Typography>
-                <Typography variant="text2" component="div">Nombre: {descripcionPdf.NOMBRE_FILE}</Typography>
-                <Typography variant="text2" component="div">Cantidad: {descripcionPdf.PAGINAS || 0} páginas</Typography>
-                <Typography variant="text2" component="div">Peso: {descripcionPdf.PESO}</Typography>
-                {/* {
-                  libroBase64.FILE &&
-                  <a href={`data:application/pdf;base64,${libroBase64.FILE}`} target="_blank" rel="noopener noreferrer">Abrir Pdf</a>
-                } */}
-              </Box>
-            </Box>
+                    <Box>
+                      <Typography variant="text1" component="div"><b>Informacion del Libro</b></Typography>
+                      <Typography variant="text2" component="div">Nombre: {descripcionPdf.NOMBRE_FILE || data.TITULO}</Typography>
+                      <Typography variant="text2" component="div">Cantidad: {descripcionPdf.PAGINAS || data.PAGINAS || 0} páginas</Typography>
+                      <Typography variant="text2" component="div">Peso: {descripcionPdf.PESO || data.PESO}</Typography>
+                      <Typography variant="text3" component="div" className='color-blue_700' onClick={updateDatosLibro} sx={{ textDecoration: "underline", cursor: "pointer", userSelect: "none" }}>Actualizar datos</Typography>
+                      {/* {
+                        libroBase64.FILE &&
+                        <a href={`data:application/pdf;base64,${libroBase64.FILE}`} target="_blank" rel="noopener noreferrer">Abrir Pdf</a>
+                      } */}
+                    </Box>
+                  </Box>
 
-            <br />
+                  <br />
 
-            <Stack direction="row" spacing={3} justifyContent="center">
-              <Controls.ButtonComponent
-                title="Borrar Libro"
-                variant="secondary-small"
-                type="admin"
-                onClick={borrarPdf}
-              />
-              <Controls.ButtonComponent
-                title="Cargar Libro"
-                variant="primary-small"
-                type="admin"
-                onClick={() => btnFileLibro.current.click()}
-              />
-            </Stack>
+                  <Stack direction="row" spacing={3} justifyContent="center">
+                    <Controls.ButtonComponent
+                      title="Borrar Libro"
+                      variant="secondary-small"
+                      type="admin"
+                      onClick={borrarPdf}
+                    />
+                    <Controls.ButtonComponent
+                      title="Cargar Libro"
+                      variant="primary-small"
+                      type="admin"
+                      onClick={() => btnFileLibro.current.click()}
+                    />
+                  </Stack>
+                </>
+              )
+            }
           </Controls.Card>
           <Controls.Card title="Imagen">
             <input

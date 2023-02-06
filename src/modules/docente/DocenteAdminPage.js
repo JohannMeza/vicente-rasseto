@@ -67,17 +67,19 @@ export default function AdministradorAdminPage () {
       success: (resp) => {
         setLoader(false);
         let arrFileComponents = []
-        console.log(resp)
-        resp.data?.ID_CONFIGURACION_SUBMENU?.forEach((el) => {
-          import(`../${el.PATH_FILE}`)
-            .then((module) => {
-              arrFileComponents.push({url: el.PATH_BASE, component: React.createElement(module.default)},)
-            })
-            .catch((err) => {
-              console.log(err);
-            });
-        });
 
+        resp.data.forEach(menu => {
+          menu.ID_CONFIGURACION_SUBMENU?.forEach((el) => {
+            if (el.PATH_FILE === "") return;
+            import(`../${el.PATH_FILE}`)
+            .then((module) => {
+              arrFileComponents.push({url: el.PATH_BASE, component: React.createElement(module.default)})
+              })
+              .catch((err) => {
+                console.log(err);
+              });
+          });
+        })
         setArrData(arrFileComponents);
       },
       error: (err) => {
@@ -91,10 +93,6 @@ export default function AdministradorAdminPage () {
     getPage();
   }, []);
 
-  useEffect(() => {
-    console.log(arrData);
-  }, [arrData]);
-  
   return (
     <>
       <Box sx={{ display: "flex" }}>

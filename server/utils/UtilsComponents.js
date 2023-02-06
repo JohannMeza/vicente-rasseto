@@ -1,6 +1,6 @@
 const ObjectId = require('mongoose').Types.ObjectId;
 const multer = require('multer');
-const {StorageMulter, StorageMulterExcel} = require('./StorageMulter.js');
+const {StorageMulter, StorageMulterExcel, StorageMulterCloudinary, StorageMulterTemp} = require('./StorageMulter.js');
 
 /**
  * 
@@ -94,8 +94,10 @@ const CambiarNombreCampos = (arrData, objCampos) => {
   return newArrData
 }
 
+const uploadFileTemp = multer({ storage: StorageMulterTemp, limits: {fieldSize: 25 * 1024 * 1024} })
 const uploadImage = multer({ storage: StorageMulter, limits: {fieldSize: 25 * 1024 * 1024} })
 const importarExcel = multer({ storage: StorageMulterExcel, limits: {fieldSize: 25 * 1024 * 1024} })
+const cloudinary = multer({ storage: StorageMulterCloudinary, limits: {fieldSize: 25 * 1024 * 1024} })
 
 module.exports = {
   ValidarParametrosObligatorios,
@@ -103,5 +105,7 @@ module.exports = {
   ValidarObjectForFilter,
   CambiarNombreCampos,
   uploadImage,
-  importarExcel
+  importarExcel,
+  cloudinary,
+  uploadFileTemp
 }
