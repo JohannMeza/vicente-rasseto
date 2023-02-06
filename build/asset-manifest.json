@@ -1,7 +1,7 @@
 {
   "files": {
     "main.css": "/static/css/main.3a0beab9.css",
-    "main.js": "/static/js/main.7f8d556f.js",
+    "main.js": "/static/js/main.84cc3cad.js",
     "static/js/500.971510b8.chunk.js": "/static/js/500.971510b8.chunk.js",
     "static/js/773.5f6bc03e.chunk.js": "/static/js/773.5f6bc03e.chunk.js",
     "static/js/719.8d54f891.chunk.js": "/static/js/719.8d54f891.chunk.js",
@@ -42,7 +42,7 @@
     "static/media/audiolibro-card.png": "/static/media/audiolibro-card.5be71d19ce1a49d4bc83.png",
     "index.html": "/index.html",
     "main.3a0beab9.css.map": "/static/css/main.3a0beab9.css.map",
-    "main.7f8d556f.js.map": "/static/js/main.7f8d556f.js.map",
+    "main.84cc3cad.js.map": "/static/js/main.84cc3cad.js.map",
     "500.971510b8.chunk.js.map": "/static/js/500.971510b8.chunk.js.map",
     "773.5f6bc03e.chunk.js.map": "/static/js/773.5f6bc03e.chunk.js.map",
     "719.8d54f891.chunk.js.map": "/static/js/719.8d54f891.chunk.js.map",
@@ -76,6 +76,6 @@
   },
   "entrypoints": [
     "static/css/main.3a0beab9.css",
-    "static/js/main.7f8d556f.js"
+    "static/js/main.84cc3cad.js"
   ]
 }
