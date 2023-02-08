@@ -9,6 +9,8 @@ const MessageConstants = require("../../constants/message");
 const UtilComponents = require("../../utils/UtilsComponents");
 const cloudinary = require("cloudinary");
 const EnvConstant = require("../../utils/EnvConstant");
+const AdministracionGrado = require("../../models/administracion/administracion_grados.model");
+const NivelEstudio = require("../../models/administracion/administracion_nivel_estudio.model");
 
 /**
  * 
@@ -43,7 +45,6 @@ const index = async (req, res) => {
     //   page: libros.page,
     //   count: libros.totalDocs
   } catch (err) {
-    console.log(err)
     return res.status(err.status || 500).json({ ...err })
   }
 }
@@ -66,13 +67,13 @@ const listDataInitial = async (req, res) => {
     const categorias = await AdministracionCategoria.find({ESTADO: true}, {_id: 1, CATEGORIA: 1});
     const etiquetas = await AdministracionEtiqueta.find({ESTADO: true}, {_id: 1, ETIQUETA: 1});
     const autores = await AdministracionAutores.find({ESTADO: true}, {_id: 1, NOMBRE_AUTOR: 1});
-    const nivelEstudio = await AdministracionNivelEstudio.find({ESTADO: true}, {_id: 1, NIVEL_ESTUDIO: 1});
+    // const nivelEstudio = await AdministracionNivelEstudio.find({ESTADO: true}, {_id: 1, NIVEL_ESTUDIO: 1});
     const libro = await AdministracionMultimedia.findOne({_id: id_libro}).populate({ path: "ID_GRADO", populate: { path: "ID_NIVEL_ESTUDIO", FILE: id_libro ? 1 : -1 } }); 
 
     const arrCategoria = UtilComponents.CambiarNombreCampos(categorias, camposCategoria)
     const arrEtiqueta = UtilComponents.CambiarNombreCampos(etiquetas, camposEtiqueta)
     const arrAutores = UtilComponents.CambiarNombreCampos(autores, camposAutores)
-    const arrNivelEstudio = UtilComponents.CambiarNombreCampos(nivelEstudio, camposNivelEstudio)
+    // const arrNivelEstudio = UtilComponents.CambiarNombreCampos(nivelEstudio, camposNivelEstudio)
 
     res.status(201).json({
       error: false,
@@ -83,7 +84,7 @@ const listDataInitial = async (req, res) => {
         categoria: arrCategoria, 
         etiqueta: arrEtiqueta, 
         autores: arrAutores,
-        nivel_estudio: arrNivelEstudio,
+        // nivel_estudio: arrNivelEstudio,
         libro: libro
       }
     })
@@ -121,8 +122,8 @@ const listGrados = async (req, res) => {
 
 const store = async (req, res) => {
   try {
-    const { TITULO, ESTADO, CATEGORIA, ETIQUETA, AUTOR, GRADO, _id, TIPO, LINK, DESCRIPCION_LARGA, DESCRIPCION_CORTA, NOMBRE_FILE, PAGINAS, IMAGEN, DATA_IMAGEN, SUBIDA } = req.body;
-    const validData = UtilComponents.ValidarParametrosObligatorios({ TITULO, CATEGORIA, ETIQUETA, AUTOR, GRADO, DESCRIPCION_LARGA, DESCRIPCION_CORTA })
+    const { TITULO, ESTADO, CATEGORIA, ETIQUETA, AUTOR, _id, TIPO, LINK, DESCRIPCION_LARGA, DESCRIPCION_CORTA, NOMBRE_FILE, PAGINAS, IMAGEN, DATA_IMAGEN, SUBIDA } = req.body;
+    const validData = UtilComponents.ValidarParametrosObligatorios({ TITULO, CATEGORIA, ETIQUETA, AUTOR, DESCRIPCION_LARGA, DESCRIPCION_CORTA })
     let { BACKGROUND } = req.body;
     
     let filename, size;
@@ -144,14 +145,14 @@ const store = async (req, res) => {
     if (validData) throw(validData);
 
     if (_id) { // UPDATE
-      await AdministracionMultimedia.findOneAndUpdate({ _id }, { TITULO, ESTADO, ID_CATEGORIA: CATEGORIA.split(","), ID_ETIQUETA: ETIQUETA.split(","), ID_AUTOR: AUTOR.split(","), ID_GRADO: GRADO, FILE: filename, IMAGEN: dataImagen, TIPO, LINK, DESCRIPCION_LARGA, DESCRIPCION_CORTA, NOMBRE_FILE, PESO: size, PAGINAS, BACKGROUND })
+      await AdministracionMultimedia.findOneAndUpdate({ _id }, { TITULO, ESTADO, ID_CATEGORIA: CATEGORIA.split(","), ID_ETIQUETA: ETIQUETA.split(","), ID_AUTOR: AUTOR.split(","), FILE: filename, IMAGEN: dataImagen, TIPO, LINK, DESCRIPCION_LARGA, DESCRIPCION_CORTA, NOMBRE_FILE, PESO: size, PAGINAS, BACKGROUND })
       return res.status(201).json({
         error: false,
         status: 201,
         statusText: MessageConstants.MESSAGE_SUCCESS_UPDATE
       })
     } else { //  SAVE
-      const multimedia = new AdministracionMultimedia({ TITULO, ESTADO, ID_CATEGORIA: CATEGORIA.split(","), ID_ETIQUETA: ETIQUETA.split(","), ID_AUTOR: AUTOR.split(","), ID_GRADO: GRADO, filename, IMAGEN: dataImagen, TIPO, LINK, DESCRIPCION_LARGA, DESCRIPCION_CORTA, NOMBRE_FILE, size, PAGINAS, BACKGROUND });
+      const multimedia = new AdministracionMultimedia({ TITULO, ESTADO, ID_CATEGORIA: CATEGORIA.split(","), ID_ETIQUETA: ETIQUETA.split(","), ID_AUTOR: AUTOR.split(","), filename, IMAGEN: dataImagen, TIPO, LINK, DESCRIPCION_LARGA, DESCRIPCION_CORTA, NOMBRE_FILE, size, PAGINAS, BACKGROUND });
       await multimedia.save();
 
       return res.status(201).json({
@@ -161,7 +162,6 @@ const store = async (req, res) => {
       })
     }
   } catch (err) {
-    console.log(err)
     return res.status(err.status || 500).json({ ...err });
   }
 }
@@ -191,11 +191,76 @@ const del = async (req, res) => {
   }
 }
 
+/**
+ * @module Configuracion Grados 
+ */
+
+const findNivelEstudio = async (req, res) => {
+  try {
+    const { rowsPerPage, page } = req.body;
+    const { NIVEL_ESTUDIO, ESTADO } = req.body;
+    const dataFilter = UtilComponents.ValidarObjectForFilter({ NIVEL_ESTUDIO, ESTADO })
+    const nivelEstudio = await NivelEstudio.aggregate([{
+      $lookup: {
+        from: "administraciongrados",
+        localField: "_id",
+        foreignField: "ID_NIVEL_ESTUDIO",
+        as: "GRADOS"
+      }
+    }])
+    
+    res.status(201).json({
+      error: false,
+      status: 201,
+      statusText: MessageConstants.REQUEST_SUCCESS,
+      data: nivelEstudio,
+    })
+  } catch (err) {
+    return res.status(err.status || 500).json({ ...err });
+  }
+}
+
+const updateGradosByLibros = async (req, res) => {
+  try {
+    const {id} = req.params;
+    const states = req.body;
+    await AdministracionMultimedia.findByIdAndUpdate({ _id: id }, { ID_GRADO: states } )
+
+    return res.status(201).json({
+      error: false,
+      status: 201,
+      statusText: MessageConstants.MESSAGE_SUCCESS_UPDATE
+    })
+  } catch (err) {
+    return res.status(err.status || 500).json({ ...err });
+  }
+}
+
+const listGradosByLibro = async (req, res) => {
+  try {
+    const { id } = req.params;
+    const data = await AdministracionMultimedia.find({ _id: id }, { ID_GRADO: 1 });
+
+    res.status(201).json({
+      error: false,
+      status: 201,
+      statusText: MessageConstants.REQUEST_SUCCESS,
+      data
+    })
+
+  } catch (err) {
+    return res.status(err.status || 500).json({ ...err })
+  }
+}
+
 module.exports = {
   index,
   store,
   del,
   listDataInitial,
   listGrados,
-  uploadImage
+  uploadImage,
+  findNivelEstudio,
+  updateGradosByLibros,
+  listGradosByLibro
 };

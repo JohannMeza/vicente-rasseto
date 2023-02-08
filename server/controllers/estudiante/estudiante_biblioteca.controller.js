@@ -5,14 +5,26 @@ const CategoriasMultimedia = require("../../models/administracion/administracion
 const EtiquetasMultimedia = require("../../models/administracion/administracion_etiquetas.model");
 const AutoresMultimedia = require("../../models/administracion/administracion_autores.model");
 const UtilComponents = require("../../utils/UtilsComponents");
+const SeguridadUsuarios = require("../../models/seguridad/seguridad_usuarios.model");
 
 const index = async (req, res) => {
   try {
+    const { id } = req.body;
     let camposCategorias = { CATEGORIA: "label", _id: "value" };
     let camposEtiquetas = { ETIQUETA: "label", _id: "value" };
     let camposAutores = { NOMBRE_AUTOR: "label", _id: "value" };
 
-    const dataLibro = await AdministracionMultimedia.find({TIPO: "Libro",ESTADO: "Publicado"})
+    const user = await SeguridadUsuarios.findById({ _id: id })
+    
+    if (!user.ID_GRADO) {
+      throw ({
+        error: true,
+        status: 401,
+        statusText: "El Usuario no tiene un grado asignado"
+      })
+    }
+
+    const dataLibro = await AdministracionMultimedia.find({TIPO: "Libro",ESTADO: "Publicado", ID_GRADO: { $in: user.ID_GRADO }})
     const categorias = await CategoriasMultimedia.find({ESTADO: true}, { _id: 1, CATEGORIA: 1 });
     const etiquetas = await EtiquetasMultimedia.find({ESTADO: true}, { _id: 1, ETIQUETA: 1 });
     const autores = await AutoresMultimedia.find({ESTADO: true}, { _id: 1, NOMBRE_AUTOR: 1 });

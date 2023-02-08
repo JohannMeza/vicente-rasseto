@@ -27,7 +27,6 @@ const index = async (req, res) => {
       count: grados.totalDocs
     })
   } catch (err) {
-    console.log(err)
     return res.status(err.statusText || 500).json({...err}) 
   }
 }

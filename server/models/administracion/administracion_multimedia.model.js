@@ -19,7 +19,7 @@ const AdministracionMultimediaSchema = new Schema({
   },
   ID_GRADO: {
     ref: "AdministracionGrado",
-    type: Schema.Types.ObjectId,
+    type: [Schema.Types.ObjectId],
     required: true
   },
   TITULO: {
