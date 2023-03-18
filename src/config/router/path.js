@@ -86,8 +86,11 @@ export const pathServer = {
       INDEX: "/administracion/multimedia",
       DATA_INITIAL: "/administracion/multimedia/list_data_initial",
       LIST_GRADOS: "/administracion/multimedia/list_grados/",
+      LIST_ALL_GRADOS: "/administracion/multimedia/list_nivel_estudio",
+      LIST_GRADOS_SAVE: "/administracion/multimedia/list_grados_by_media/",
       NEW: "/administracion/multimedia/new/",
       DELETE: "/administracion/multimedia/delete/",
+      UPDATE_GRADOS: "/administracion/multimedia/update_grados/"
     }
   },
 

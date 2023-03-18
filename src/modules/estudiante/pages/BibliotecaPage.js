@@ -7,11 +7,12 @@ import { useNavigate } from "react-router-dom";
 import { pathFront } from "../../../config/router/pathFront";
 import { SaveRequestData } from "../../../helpers/helpRequestBackend";
 import { pathServer } from "../../../config/router/path";
-import { SERVICES_GET } from "../../../services/services.axios";
+import { SERVICES_POST } from "../../../services/services.axios";
 import { MessageUtil } from "../../../util/MessageUtil";
 import useLoaderContext from "../../../hooks/useLoaderContext";
 import { ICON } from "../../../framework/components/icons/Icon";
 import { useForm } from "../../../hooks/useForm";
+import useAuthContext from "../../../hooks/useAuthContext";
 
 const dataOrden = [
   { value: 1, label: "Nombre" },
@@ -50,13 +51,15 @@ const BibliotecaPage = () => {
   const [orden, ] = useState(dataOrden);
   const [dataSelect, setDataSelect] = useState(dataInitialSelect)
   const [search, handleInputChange] = useForm(dataInitial);
+  const { user } = useAuthContext()
 
   const getLibros = () => {
     setLoader(true);
 
     SaveRequestData({
       path: pathServer.ESTUDIANTE.BIBLIOTECA.INDEX,
-      fnRequest: SERVICES_GET,
+      body: { id: user.userAccess._id },
+      fnRequest: SERVICES_POST,
       success: (resp) => {
         let { libros, etiquetas, categorias, autores } = resp.data;
         setLibrosMain(libros || []);

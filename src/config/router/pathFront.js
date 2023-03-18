@@ -12,6 +12,7 @@ export const pathFront = {
   LIBROS_ADMIN: "/libros/admin",
   LIBROS_NEW:   "/libros/new",
   LIBROS_EDIT:  "/libros/update/",
+  LIBROS_GRADOS:  "/libros/grados/",
 
   SEGURIDAD: {
     PERFILES: {

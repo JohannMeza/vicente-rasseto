@@ -7,6 +7,7 @@ import { TextComponent } from './font/Typography';
 import { Title } from './font/Title';
 import TableComponents from './table/TableComponent';
 import TableSelectionComponent from './table/TableSelectionComponent';
+import TableCollapsibleComponent from './table/TableCollapsibleComponent';
 import Card from './card/Card';
 import Modal from './modal/Modal';
 import TabPanel from './util/TabPanel';
@@ -21,6 +22,7 @@ const Controls = {
   SearchComponent,
   TableComponents,
   TableSelectionComponent,
+  TableCollapsibleComponent,
   Title,
   Card,
   Modal,

@@ -8,10 +8,7 @@ export const useForm = (initialState = {}) => {
 
   const handleInputChange = ({ target }) => {
     const { name, type, checked, value } = target;
-    setData({
-      ...data,
-      [name]: type === "checkbox" || type === "radio" ? checked : value,
-    });
+    setData((data) => { return { ...data, [name]: type === "checkbox" || type === "radio" ? checked : value } });
   };
 
   return [data, handleInputChange, resetData, setData];

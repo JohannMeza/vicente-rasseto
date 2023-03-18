@@ -4,7 +4,7 @@ import TableContainer from '@mui/material/TableContainer';
 import TablePagination from '@mui/material/TablePagination';
 import { Grid } from '@mui/material';
 
-export default function TableComponents({ children, pagination, setPagination, fnPagination }) {
+export default function TableComponents({ children, pagination, setPagination, fnPagination, style }) {
   const handleChangePage = (event, newPage) => {
     let dataId = event.target.dataset.testid;
     if (dataId === "KeyboardArrowRightIcon") {
@@ -27,7 +27,7 @@ export default function TableComponents({ children, pagination, setPagination, f
 
   return (
     <>
-      <TableContainer sx={{ maxHeight: 440, overflow: "auto" }} className="style-table">
+      <TableContainer sx={{ maxHeight: 440, overflow: "auto", ...style }} className="style-table">
         {children}
       </TableContainer>      
       {pagination && 

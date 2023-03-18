@@ -54,7 +54,6 @@ const HeaderComponentEstudiante = () => {
 
   useEffect(() => {
     if (user) {
-      console.log(user)
       setRole(user.userAccess.ID_PERFILES.NOMBRE_PERFIL)
     }
   }, [user])

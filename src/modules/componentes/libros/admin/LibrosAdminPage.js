@@ -228,7 +228,7 @@ export default function LibrosAdminPage() {
               <TableCell>Autor/es</TableCell>
               <TableCell>Categoria</TableCell>
               <TableCell>Etiqueta</TableCell>
-              <TableCell>Operación</TableCell>
+              <TableCell align="center">Operación</TableCell>
             </TableRow>
           </TableHead>
           <TableBody>
@@ -252,7 +252,7 @@ export default function LibrosAdminPage() {
                     ))}
                   </TableCell>
                   <TableCell>
-                    <Stack direction="row" spacing={1}>
+                    <Stack direction="row" justifyContent="flex-end" spacing={1}>
                       {(el.LINK && el.LINK !== "") &&
                       <a href={el.LINK} target="_blank" rel="noreferrer">
                         <Controls.ButtonIconComponent
@@ -266,6 +266,12 @@ export default function LibrosAdminPage() {
                         title="Editar"
                         icon={ICON.EDIT}
                         onClick={() => navigate(pathFront.LIBROS_EDIT + el._id)}
+                      />
+
+                      <Controls.ButtonIconComponent
+                        title="Administrar Grados"
+                        icon={ICON.DEGREE}
+                        onClick={() => navigate(pathFront.LIBROS_GRADOS + el._id)}
                       />
 
                       <Controls.ButtonIconComponent

@@ -15,7 +15,6 @@ import { useReadLibroBase64, useReadLibroUrl } from '../../../../hooks/useReadLi
 import { SERVICES_GET, SERVICES_POST } from '../../../../services/services.axios';
 import { MessageUtil } from '../../../../util/MessageUtil';
 import { UploadFile } from '../../../../util/UploadFile';
-import Libro from '../../../../assets/upload/1674847546016.pdf';
 import { useForm } from '../../../../hooks/useForm';
 
 const estadoLibro = [
@@ -40,8 +39,6 @@ const dataInitial = {
   LINK: "",
   SUBIDA: "github",
   AUTOR: "",
-  GRADO: "",
-  NIVEL_ESTUDIO: "",
   FILE: {},
   IMAGEN: {},
   BACKGROUND: "#517ABF"
@@ -96,14 +93,10 @@ export default function LibrosDetailPage () {
       temp.AUTOR = fieldValues.AUTOR === "" ? "El campo Autor es requerido" : "";
     } 
 
-    if ("GRADO" in fieldValues) {
-      temp.GRADO = !fieldValues.GRADO ? "El campo Grado es requerido" : "";
-    } 
-
     if ("SUBIDA" in fieldValues) {
       if (!fieldValues.SUBIDA) {
         temp.SUBIDA = "El campo Subida es requerido";
-      } else if (fieldValues.SUBIDA !== "github") {
+      } else if (fieldValues.SUBIDA !== "github" && fieldValues.SUBIDA !== "cloudinary") {
         temp.SUBIDA = "La opcion elegida no esta habilitada";
       } else {
         temp.SUBIDA = "";
@@ -177,19 +170,16 @@ export default function LibrosDetailPage () {
       body: { id_libro: id },
       fnRequest: SERVICES_POST,
       success: async (resp) => {
-        let { categoria, etiqueta, autores, nivel_estudio, libro } = resp.data
+        let { categoria, etiqueta, autores, libro } = resp.data
         setListCategorias(categoria)
         setListEtiquetas(etiqueta)
         setListAutores(autores)
-        setListNivelEstudio(nivel_estudio)
         if (Object.entries(libro || {}).length > 0) {
           setData({
             ...libro,
             CATEGORIA: libro?.ID_CATEGORIA.join(","),
             ETIQUETA: libro?.ID_ETIQUETA.join(","),
             AUTOR: libro?.ID_AUTOR.join(","),
-            GRADO: libro?.ID_GRADO._id,
-            NIVEL_ESTUDIO: libro?.ID_GRADO.ID_NIVEL_ESTUDIO._id,
             SUBIDA: "github"
           })
           setCopyLibros({
@@ -209,29 +199,6 @@ export default function LibrosDetailPage () {
           }
         }
 
-        setLoader(false)
-      },
-      error: (err) => {
-        MessageUtil({ message: err.statusText, type: "error", seg: 10 });
-        setLoader(false)
-      }
-    })
-  }
-
-  const getDataGrados = (id) => {
-    if (id === 0) {
-      setData({ ...data, GRADO: "" })
-      setListGrados([])
-      return 
-    };
-
-    setLoader(true)
-    SaveRequestData({
-      path: pathServer.ADMINISTRACION.MULTIMEDIA.LIST_GRADOS + id,
-      body: data,
-      fnRequest: SERVICES_GET,
-      success: (resp) => {
-        setListGrados(resp.data)
         setLoader(false)
       },
       error: (err) => {
@@ -274,9 +241,6 @@ export default function LibrosDetailPage () {
 
   const handleChangeInput = (e) => {
     let { name, value } = e.target;
-    if (name === "NIVEL_ESTUDIO") {
-      getDataGrados(value)
-    }
 
     if (name === "FILE") {
       let reader = new FileReader();
@@ -398,13 +362,6 @@ export default function LibrosDetailPage () {
     }
   }, [libroBase64])
 
-  useEffect(() => {
-    if (data._id) {
-      setData({ ...data, GRADO: "" })
-      getDataGrados(data.NIVEL_ESTUDIO)
-    }
-  }, [data.NIVEL_ESTUDIO])
-
   return(
     <Box>
       <Stack direction="row" spacing={3}>
@@ -428,6 +385,7 @@ export default function LibrosDetailPage () {
                 <Controls.InputComponent 
                   label="Link del Libro"
                   name="LINK"
+                  multiline
                   onChange={handleChangeInput}
                   value={data.LINK}
                   error={errors.LINK}
@@ -541,29 +499,6 @@ export default function LibrosDetailPage () {
                   list={listAutores}
                   error={errors.AUTOR}
                   multiple
-                />
-              </Grid>
-            </Grid>
-          </Controls.Card>
-          <Controls.Card title="Grado del Libro">
-            <Grid container spacing={3}>
-              <Grid item xs={12}>
-                <Controls.SelectComponent
-                  label="Nivel del Estudio"
-                  value={data.NIVEL_ESTUDIO}
-                  name="NIVEL_ESTUDIO"
-                  onChange={handleChangeInput}
-                  list={listNivelEstudio}
-                />
-              </Grid>
-              <Grid item xs={12}>
-                <Controls.SelectComponent
-                  label="Grado"
-                  name="GRADO"
-                  value={data.GRADO}
-                  onChange={handleChangeInput}
-                  list={listGrados}
-                  error={errors.GRADO}
                 />
               </Grid>
             </Grid>
