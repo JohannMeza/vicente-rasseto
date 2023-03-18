@@ -37,7 +37,7 @@ const dataInitial = {
   CATEGORIA: "",
   ETIQUETA: "",
   LINK: "",
-  SUBIDA: "github",
+  SUBIDA: "cloudinary",
   AUTOR: "",
   FILE: {},
   IMAGEN: {},
@@ -51,8 +51,8 @@ const dataLibroCopy = {
   NOMBRE_FILE: ""
 }
 
-const descripcion_larga = 150;
-const descripcion_corta = 50;
+const descripcion_larga = 600;
+const descripcion_corta = 300;
 
 const coloresBase = [
   { color: "#517ABF", nombre: "Color Azul" },
@@ -136,8 +136,6 @@ export default function LibrosDetailPage () {
   const [listCategorias, setListCategorias] = useState([]);
   const [listEtiquetas, setListEtiquetas] = useState([]);
   const [listAutores, setListAutores] = useState([]);
-  const [listNivelEstudio, setListNivelEstudio] = useState([]);
-  const [listGrados, setListGrados] = useState([]);
   const {encodedFileBase64} = useBase64Encoded();
   
   // DATA DE LA IMAGEN
@@ -299,11 +297,14 @@ export default function LibrosDetailPage () {
     setFilename({})
     setStateCanvasInitial(false)
     setPdfBase64(null)
+    setCopyLibros(dataLibroCopy);
+    setData((data) => {return {...data, FILE: '', NOMBRE_FILE: '', PESO: '', PAGINAS: '', TITULO: '' } })
   }
 
   const saveData = () => {
-    if (validate()) {
+    if (validate()) { 
       let obj = { ...data, ...descripcionPdf, TIPO: "Libro", FILE_PATH: filename, IMAGEN: imagenBase64.IMAGEN, DATA_IMAGEN: JSON.stringify(dataImage) }
+      console.log(obj)
       const formData = UploadFile(obj);
       setLoader(true)
       SaveRequestData({

@@ -125,15 +125,13 @@ const store = async (req, res) => {
     const { TITULO, ESTADO, CATEGORIA, ETIQUETA, AUTOR, _id, TIPO, LINK, DESCRIPCION_LARGA, DESCRIPCION_CORTA, NOMBRE_FILE, PAGINAS, IMAGEN, DATA_IMAGEN, SUBIDA } = req.body;
     const validData = UtilComponents.ValidarParametrosObligatorios({ TITULO, CATEGORIA, ETIQUETA, AUTOR, DESCRIPCION_LARGA, DESCRIPCION_CORTA })
     let { BACKGROUND } = req.body;
-    
     let filename, size;
     let dataImagen = { url: IMAGEN, ...JSON.parse(DATA_IMAGEN || {}) }
-
+    
     if (SUBIDA === 'cloudinary') {
       cloudinary.config({ cloud_name: EnvConstant.APP_CLOUDINARY_NAME, api_key: EnvConstant.APP_CLOUDINARY_KEY, api_secret: EnvConstant.APP_CLOUDINARY_API_SECRET })
-      console.log(req.file)
       const fileUpload = await cloudinary.uploader.upload(req.file.path)
-      filename = fileUpload.secure_url
+      filename = fileUpload.url
       size = req.file.size
     } else if (SUBIDA === 'github') {
       filename = req.body.FILE
@@ -141,19 +139,20 @@ const store = async (req, res) => {
     }
     let arrEstadoValid = ["Publicado", "No Publicado"];
     
-    if (!arrEstadoValid.includes(ESTADO)) throw({error: true, status: 404, statusText: "Ocurrio un error, intente recargando la pagina o dentro de unos minutos"})
+    if (!arrEstadoValid.includes(ESTADO)) throw ({ error: true, status: 404, statusText: "Ocurrio un error, intente recargando la pagina o dentro de unos minutos" })
     if (!BACKGROUND || BACKGROUND === "") BACKGROUND = "#517ABF"
-    if (validData) throw(validData);
+    if (validData) throw (validData);
 
     if (_id) { // UPDATE
-      await AdministracionMultimedia.findOneAndUpdate({ _id }, { TITULO, ESTADO, ID_CATEGORIA: CATEGORIA.split(","), ID_ETIQUETA: ETIQUETA.split(","), ID_AUTOR: AUTOR.split(","), FILE: filename, IMAGEN: dataImagen, TIPO, LINK, DESCRIPCION_LARGA, DESCRIPCION_CORTA, NOMBRE_FILE, PESO: size, PAGINAS, BACKGROUND })
+    const { TITULO, ESTADO, CATEGORIA, ETIQUETA, AUTOR, _id, TIPO, LINK, DESCRIPCION_LARGA, DESCRIPCION_CORTA, NOMBRE_FILE, PAGINAS, IMAGEN, DATA_IMAGEN, SUBIDA } = req.body;
+      await AdministracionMultimedia.findOneAndUpdate({ _id }, { TITULO, ESTADO, ID_CATEGORIA: CATEGORIA.split(","), ID_ETIQUETA: ETIQUETA.split(","), ID_AUTOR: AUTOR.split(","), FILE: filename, IMAGEN: dataImagen, TIPO, LINK, DESCRIPCION_LARGA, DESCRIPCION_CORTA, NOMBRE_FILE, PESO: size, PAGINAS, BACKGROUND, SUBIDA })
       return res.status(201).json({
         error: false,
         status: 201,
         statusText: MessageConstants.MESSAGE_SUCCESS_UPDATE
       })
     } else { //  SAVE
-      const multimedia = new AdministracionMultimedia({ TITULO, ESTADO, ID_CATEGORIA: CATEGORIA.split(","), ID_ETIQUETA: ETIQUETA.split(","), ID_AUTOR: AUTOR.split(","), filename, IMAGEN: dataImagen, TIPO, LINK, DESCRIPCION_LARGA, DESCRIPCION_CORTA, NOMBRE_FILE, size, PAGINAS, BACKGROUND });
+      const multimedia = new AdministracionMultimedia({ TITULO, ESTADO, ID_CATEGORIA: CATEGORIA.split(","), ID_ETIQUETA: ETIQUETA.split(","), ID_AUTOR: AUTOR.split(","), filename, IMAGEN: dataImagen, TIPO, LINK, DESCRIPCION_LARGA, DESCRIPCION_CORTA, NOMBRE_FILE, size, PAGINAS, BACKGROUND, SUBIDA });
       await multimedia.save();
 
       return res.status(201).json({
@@ -162,7 +161,7 @@ const store = async (req, res) => {
         statusText: MessageConstants.MESSAGE_SUCCESS_SAVE
       })
     }
-  } catch (err) {
+  } catch (err) { 
     return res.status(err.status || 500).json({ ...err });
   }
 }

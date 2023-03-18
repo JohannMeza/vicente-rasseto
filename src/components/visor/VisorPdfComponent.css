@@ -1,3 +1,14 @@
+.webviewer {
+  width: 100%;
+  top: 64px;
+  left: 0;
+  position: absolute;
+  height: calc(100% - 64px); /* 100% - Header */
+  flex: 1;
+  -webkit-box-shadow: 1px 1px 10px #999;
+          box-shadow: 1px 1px 10px #999;
+}
+
 .visorPdf {
   width: 100%;
   position: absolute;

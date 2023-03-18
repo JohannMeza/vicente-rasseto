@@ -36,13 +36,13 @@ const AdministracionMultimediaSchema = new Schema({
     type: String,
     required: true,
     trim: true,
-    maxlength: 150
+    maxlength: 600
   },
   DESCRIPCION_CORTA: {
     type: String,
     required: true,
     trim: true,
-    maxlength: 50
+    maxlength: 300
   },
   TIPO: {
     type: String,
