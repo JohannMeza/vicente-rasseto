@@ -25,7 +25,6 @@ const VisorPdfComponent = () => {
       fnRequest: SERVICES_GET,
       success: (resp) => {
         setLoader(false)
-        console.log(resp.data)
         setPathFile(resp.data[0].FILE);
       },
       error: (err) => {
@@ -42,7 +41,7 @@ const VisorPdfComponent = () => {
   }, [])
 
   return (
-      <div className="webviewer" ref={canvas}></div>
+    <div className="webviewer" ref={canvas}></div>
   )
 }
 

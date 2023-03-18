@@ -11,8 +11,8 @@ import { SaveRequestData } from '../../../../helpers/helpRequestBackend';
 import { useBase64Encoded } from '../../../../hooks/useBase64File';
 import { useFormValidation } from '../../../../hooks/useFormValidation';
 import useLoaderContext from '../../../../hooks/useLoaderContext';
-import { useReadLibroBase64, useReadLibroUrl } from '../../../../hooks/useReadLibro';
-import { SERVICES_GET, SERVICES_POST } from '../../../../services/services.axios';
+import { useReadLibroBase64, useReadLibroUrl, useReadLibroPage } from '../../../../hooks/useReadLibro';
+import { SERVICES_POST } from '../../../../services/services.axios';
 import { MessageUtil } from '../../../../util/MessageUtil';
 import { UploadFile } from '../../../../util/UploadFile';
 import { useForm } from '../../../../hooks/useForm';
@@ -39,7 +39,7 @@ const dataInitial = {
   LINK: "",
   SUBIDA: "cloudinary",
   AUTOR: "",
-  FILE: {},
+  FILE: "",
   IMAGEN: {},
   BACKGROUND: "#517ABF"
 }
@@ -150,7 +150,7 @@ export default function LibrosDetailPage () {
   const [updateData, setUpdateData] = useState(false);
 
   const [filename, setFilename] = useState({})
-  let [canvas, numeroPaginas] = useReadLibroUrl(pdfPath, 1)
+  let [canvas, numeroPaginas] = useReadLibroPage(pdfPath, 1)
   let [canvas64] = useReadLibroBase64(pdfBase64, 1)
   let [stateCanvasInitial, setStateCanvasInitial] = useState(true)
   let [copyLibros, handleInputChange, , setCopyLibros] = useForm(dataLibroCopy)
@@ -186,6 +186,7 @@ export default function LibrosDetailPage () {
             PAGINAS: libro.PAGINAS,
             NOMBRE_FILE: libro.NOMBRE_FILE
           })
+          console.log(resp)
           if (libro?.FILE) {
             setPdfPath(libro.FILE)
           }
@@ -304,23 +305,44 @@ export default function LibrosDetailPage () {
   const saveData = () => {
     if (validate()) { 
       let obj = { ...data, ...descripcionPdf, TIPO: "Libro", FILE_PATH: filename, IMAGEN: imagenBase64.IMAGEN, DATA_IMAGEN: JSON.stringify(dataImage) }
-      console.log(obj)
-      const formData = UploadFile(obj);
-      setLoader(true)
-      SaveRequestData({
-        path: pathServer.ADMINISTRACION.MULTIMEDIA.NEW + data.SUBIDA,
-        body: formData,
-        fnRequest: SERVICES_POST,
-        success: (resp) => {
-          setLoader(false)
-          navigate(pathFront.LIBROS_ADMIN)
-          MessageUtil({ message: resp.statusText, type: "success", seg: 10 });
-        },
-        error: (err) => {
-          MessageUtil({ message: err.statusText, type: "error", seg: 10 });
-          setLoader(false)
-        }
-      })
+
+      if (obj.FILE === "") {
+        const formData = UploadFile(obj);
+        setLoader(true)
+        SaveRequestData({
+          path: pathServer.ADMINISTRACION.MULTIMEDIA.NEW + data.SUBIDA,
+          body: formData,
+          fnRequest: SERVICES_POST,
+          success: (resp) => {
+            setLoader(false)
+            navigate(pathFront.LIBROS_ADMIN)
+            MessageUtil({ message: resp.statusText, type: "success", seg: 10 });
+          },
+          error: (err) => {
+            MessageUtil({ message: err.statusText, type: "error", seg: 10 });
+            setLoader(false)
+          }
+        })
+      } else {
+        const formData = UploadFile(obj);
+        setLoader(true)
+        SaveRequestData({
+          path: pathServer.ADMINISTRACION.MULTIMEDIA.NEW_CLOUDINARY + data.SUBIDA,
+          body: formData,
+          fnRequest: SERVICES_POST,
+          success: (resp) => {
+            setLoader(false)
+            navigate(pathFront.LIBROS_ADMIN)
+            MessageUtil({ message: resp.statusText, type: "success", seg: 10 });
+          },
+          error: (err) => {
+            MessageUtil({ message: err.statusText, type: "error", seg: 10 });
+            setLoader(false)
+          }
+        })
+      }
+
+      
     }
   }
 
@@ -356,6 +378,10 @@ export default function LibrosDetailPage () {
   useEffect(() => {
     getDataInitial()
   }, [])
+
+  useEffect(() => {
+    console.log(pdfPath)
+  }, [pdfPath])
 
   useEffect(() => {
     if (libroBase64?.FILE) {
@@ -630,7 +656,7 @@ export default function LibrosDetailPage () {
             />
             
             <Box style={{ display: "flex", gridGap: "10px", flexWrap: "wrap" }}>
-              {imgFile && <img src="" alt="" style={styleImage} ref={imgFile} />}
+              {data.FILE ? <img src={data.FILE} alt="" style={styleImage} /> : <img src="" alt="" style={styleImage} ref={imgFile} />}
               <Box>
                 <Typography variant="text1" component="div"><b>Informacion de la Imagen</b></Typography>
                 <Typography variant="text2" component="div">Nombre: {dataImage.name}</Typography>
