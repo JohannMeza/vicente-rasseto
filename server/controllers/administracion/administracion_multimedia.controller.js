@@ -115,10 +115,55 @@ const listGrados = async (req, res) => {
  * 
  * @param {Object} req 
  * @param {Object} res 
- * @returns Guarda una multimedia (libro  o audio libro)
+ * @returns Guarda una multimedia (libro o audio libro)
+ * Sube a repositorio la imagen
  */
 
-const store = async (req, res) => {
+const store_new = async (req, res) => {
+  try {
+    const { TITULO, ESTADO, CATEGORIA, ETIQUETA, AUTOR, _id, TIPO, LINK, DESCRIPCION_LARGA, DESCRIPCION_CORTA, NOMBRE_FILE, PAGINAS, IMAGEN, DATA_IMAGEN, SUBIDA } = req.body;
+    const validData = UtilComponents.ValidarParametrosObligatorios({ TITULO, CATEGORIA, ETIQUETA, AUTOR, DESCRIPCION_LARGA, DESCRIPCION_CORTA })
+    let { BACKGROUND } = req.body;
+    let filename, size;
+    let dataImagen = { url: IMAGEN, ...JSON.parse(DATA_IMAGEN || {}) }
+    
+    let arrEstadoValid = ["Publicado", "No Publicado"];    
+    if (!arrEstadoValid.includes(ESTADO)) throw ({ error: true, status: 404, statusText: "Ocurrio un error, intente recargando la pagina o dentro de unos minutos" })
+    if (!BACKGROUND || BACKGROUND === "") BACKGROUND = "#517ABF"
+    if (validData) throw (validData);
+
+    if (_id) { // UPDATE
+      const { TITULO, ESTADO, CATEGORIA, ETIQUETA, AUTOR, _id, TIPO, LINK, DESCRIPCION_LARGA, DESCRIPCION_CORTA, NOMBRE_FILE, PAGINAS, IMAGEN, DATA_IMAGEN, SUBIDA } = req.body;
+      await AdministracionMultimedia.findOneAndUpdate({ _id }, { TITULO, ESTADO, ID_CATEGORIA: CATEGORIA.split(","), ID_ETIQUETA: ETIQUETA.split(","), ID_AUTOR: AUTOR.split(","), FILE: filename, IMAGEN: dataImagen, TIPO, LINK, DESCRIPCION_LARGA, DESCRIPCION_CORTA, NOMBRE_FILE, PESO: size, PAGINAS, BACKGROUND, SUBIDA })
+      return res.status(201).json({
+        error: false,
+        status: 201,
+        statusText: MessageConstants.MESSAGE_SUCCESS_UPDATE
+      })
+    } else { //  SAVE
+      const multimedia = new AdministracionMultimedia({ TITULO, ESTADO, ID_CATEGORIA: CATEGORIA.split(","), ID_ETIQUETA: ETIQUETA.split(","), ID_AUTOR: AUTOR.split(","), filename, IMAGEN: dataImagen, TIPO, LINK, DESCRIPCION_LARGA, DESCRIPCION_CORTA, NOMBRE_FILE, size, PAGINAS, BACKGROUND, SUBIDA });
+      await multimedia.save();
+
+      return res.status(201).json({
+        error: false,
+        status: 201,
+        statusText: MessageConstants.MESSAGE_SUCCESS_SAVE
+      })
+    }
+  } catch (err) { 
+    return res.status(err.status || 500).json({ ...err });
+  }
+}
+
+/**
+ * 
+ * @param {Object} req 
+ * @param {Object} res 
+ * @returns Guarda una multimedia (libro o audio libro)
+ * La multimedia ya existe en ele repositorio
+ */
+
+const store_upload = async (req, res) => {
   try {
     const { TITULO, ESTADO, CATEGORIA, ETIQUETA, AUTOR, _id, TIPO, LINK, DESCRIPCION_LARGA, DESCRIPCION_CORTA, NOMBRE_FILE, PAGINAS, IMAGEN, DATA_IMAGEN, SUBIDA } = req.body;
     const validData = UtilComponents.ValidarParametrosObligatorios({ TITULO, CATEGORIA, ETIQUETA, AUTOR, DESCRIPCION_LARGA, DESCRIPCION_CORTA })
@@ -142,7 +187,7 @@ const store = async (req, res) => {
     if (validData) throw (validData);
 
     if (_id) { // UPDATE
-    const { TITULO, ESTADO, CATEGORIA, ETIQUETA, AUTOR, _id, TIPO, LINK, DESCRIPCION_LARGA, DESCRIPCION_CORTA, NOMBRE_FILE, PAGINAS, IMAGEN, DATA_IMAGEN, SUBIDA } = req.body;
+      const { TITULO, ESTADO, CATEGORIA, ETIQUETA, AUTOR, _id, TIPO, LINK, DESCRIPCION_LARGA, DESCRIPCION_CORTA, NOMBRE_FILE, PAGINAS, IMAGEN, DATA_IMAGEN, SUBIDA } = req.body;
       await AdministracionMultimedia.findOneAndUpdate({ _id }, { TITULO, ESTADO, ID_CATEGORIA: CATEGORIA.split(","), ID_ETIQUETA: ETIQUETA.split(","), ID_AUTOR: AUTOR.split(","), FILE: filename, IMAGEN: dataImagen, TIPO, LINK, DESCRIPCION_LARGA, DESCRIPCION_CORTA, NOMBRE_FILE, PESO: size, PAGINAS, BACKGROUND, SUBIDA })
       return res.status(201).json({
         error: false,
@@ -150,7 +195,7 @@ const store = async (req, res) => {
         statusText: MessageConstants.MESSAGE_SUCCESS_UPDATE
       })
     } else { //  SAVE
-      const multimedia = new AdministracionMultimedia({ TITULO, ESTADO, ID_CATEGORIA: CATEGORIA.split(","), ID_ETIQUETA: ETIQUETA.split(","), ID_AUTOR: AUTOR.split(","), filename, IMAGEN: dataImagen, TIPO, LINK, DESCRIPCION_LARGA, DESCRIPCION_CORTA, NOMBRE_FILE, size, PAGINAS, BACKGROUND, SUBIDA });
+      const multimedia = new AdministracionMultimedia({ TITULO, ESTADO, ID_CATEGORIA: CATEGORIA.split(","), ID_ETIQUETA: ETIQUETA.split(","), ID_AUTOR: AUTOR.split(","), FILE: filename, IMAGEN: dataImagen, TIPO, LINK, DESCRIPCION_LARGA, DESCRIPCION_CORTA, NOMBRE_FILE, size, PAGINAS, BACKGROUND, SUBIDA });
       await multimedia.save();
 
       return res.status(201).json({
@@ -160,6 +205,7 @@ const store = async (req, res) => {
       })
     }
   } catch (err) { 
+    console.log(err)
     return res.status(err.status || 500).json({ ...err });
   }
 }
@@ -253,7 +299,8 @@ const listGradosByLibro = async (req, res) => {
 
 module.exports = {
   index,
-  store,
+  store_new,
+  store_upload,
   del,
   listDataInitial,
   listGrados,

@@ -26,7 +26,7 @@ const PreviewLibroPage = () => {
       fnRequest: SERVICES_GET,
       success: (resp) => {
         let arrCategoria = Array.from(resp.data[0].ID_CATEGORIA, el => el._id);
-
+        console.log(resp)
         setLibro(resp.data[0])
         getLibrosRelacionados(arrCategoria, resp.data[0]._id)
         setLoader(false)

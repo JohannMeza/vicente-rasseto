@@ -4,8 +4,9 @@ const UtilsComponents = require("../../utils/UtilsComponents");
 
 AdministracionMultimedia.post("/", AdministracionMultimediaController.index);
 
-AdministracionMultimedia.post("/new/cloudinary", UtilsComponents.cloudinary.single('FILE_PATH'), AdministracionMultimediaController.store);
-AdministracionMultimedia.post("/new/github", UtilsComponents.uploadFileTemp.single('FILE_PATH'), AdministracionMultimediaController.store);
+// Subida de Libro
+AdministracionMultimedia.post("/new", AdministracionMultimediaController.store_new);
+AdministracionMultimedia.post("/new/cloudinary", UtilsComponents.cloudinary.single('FILE_PATH'), AdministracionMultimediaController.store_upload);
 
 AdministracionMultimedia.delete("/delete/:id", AdministracionMultimediaController.del);
 AdministracionMultimedia.post("/list_data_initial", AdministracionMultimediaController.listDataInitial);

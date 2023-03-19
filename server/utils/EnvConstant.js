@@ -1,6 +1,5 @@
 const { config } = require("dotenv");
 config();
-
 // Desarrollo
 const APP_DEV_DATABASE_URI          = process.env.APP_DEV_DATABASE_URI;
 const APP_DEV_PATH_BACKEND          = process.env.APP_DEV_PATH_BACKEND;
