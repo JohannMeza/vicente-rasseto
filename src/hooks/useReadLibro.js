@@ -2,6 +2,7 @@ import { useEffect, useRef, useState } from 'react';
 import useLoaderContext from './useLoaderContext';
 import { AlertUtilRelease } from '../util/AlertUtil';
 import WebViewer from "@pdftron/pdfjs-express-viewer";
+import { EnvConstant } from '../util/EnvConstant';
 let pdfjsLib = window['pdfjs-dist/build/pdf'];
 pdfjsLib.GlobalWorkerOptions.workerSrc = '//mozilla.github.io/pdf.js/build/pdf.worker.js';
 
@@ -57,15 +58,17 @@ export const useReadLibroUrl = (pdfData) => {
   // if using a class, equivalent of componentDidMount
   useEffect(() => {
     if (canvasElement && pdfData) {
+      setLoader(true)
       WebViewer(
         {
           path: "/webviewer/lib",
           initialDoc: pdfData,
-          licenseKey: "VMeLR5MsW5lX3X9YfqQF",
+          licenseKey: EnvConstant.REACT_APP_PDFJS_KEY,
         },
         canvasElement.current
       ).then((instance) => {
         // now you can access APIs through the WebViewer instance
+        setLoader(false)
         const { Core, UI } = instance;
   
         // adding an event listener for when a document is loaded

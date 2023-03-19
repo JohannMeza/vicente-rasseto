@@ -3,13 +3,11 @@ const AdministracionMultimedia = require("../../models/administracion/administra
 const AdministracionCategoria = require("../../models/administracion/administracion_categorias.model");
 const AdministracionEtiqueta = require("../../models/administracion/administracion_etiquetas.model");
 const AdministracionAutores = require("../../models/administracion/administracion_autores.model");
-const AdministracionNivelEstudio = require("../../models/administracion/administracion_nivel_estudio.model");
 const AdministracionGrados = require("../../models/administracion/administracion_grados.model");
 const MessageConstants = require("../../constants/message");
 const UtilComponents = require("../../utils/UtilsComponents");
 const cloudinary = require("cloudinary");
 const EnvConstant = require("../../utils/EnvConstant");
-const AdministracionGrado = require("../../models/administracion/administracion_grados.model");
 const NivelEstudio = require("../../models/administracion/administracion_nivel_estudio.model");
 
 /**

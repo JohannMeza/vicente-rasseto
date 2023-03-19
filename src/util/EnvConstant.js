@@ -1,15 +1,22 @@
-const RASSETO_DEVELOPMENT       = true;
-
 // Desarrollo
-const RASSETO_DEV_PATH_UPLOAD   = "assets/upload/";
-const RASSETO_DEV_BASE_URL      = "http://localhost:4010/api"
+const REACT_APP_DEV_PATH_UPLOAD    = process.env.REACT_APP_DEV_PATH_UPLOAD;
+const REACT_APP_DEV_BASE_URL       = process.env.REACT_APP_DEV_BASE_URL;
+const REACT_APP_DEV_PDFJS_KEY      = process.env.REACT_APP_DEV_PDFJS_KEY;
 
 // Produccion
-const RASSETO_PROD_PATH_UPLOAD  = "media/";
-const RASSETO_PROD_BASE_URL     = "https://vicente-rasseto.onrender.com/api";
+const REACT_APP_PROD_PATH_UPLOAD     = process.env.REACT_APP_PROD_PATH_UPLOAD;
+const REACT_APP_PROD_BASE_URL        = process.env.REACT_APP_PROD_BASE_URL;
+const REACT_APP_PROD_PDFJS_KEY       = process.env.REACT_APP_DEV_PDFJS_KEY;
+
+const ValidarEntorno = (env) => {
+  if (env === 'desarrollo') return true
+  else if (env === 'produccion') return false
+  else return null
+}
 
 // Configuracion Rasseto
 export const EnvConstant = {
-    RASSETO_PATH_UPLOAD  : RASSETO_DEVELOPMENT  ?  RASSETO_DEV_PATH_UPLOAD  :  RASSETO_PROD_PATH_UPLOAD,
-    RASSETO_BASE_URL     : RASSETO_DEVELOPMENT  ?  RASSETO_DEV_BASE_URL     :  RASSETO_PROD_BASE_URL,
+  REACT_APP_PATH_UPLOAD  : ValidarEntorno(process.env.REACT_APP_ENV)  ?  REACT_APP_DEV_PATH_UPLOAD  :  REACT_APP_PROD_PATH_UPLOAD,
+  REACT_APP_BASE_URL     : ValidarEntorno(process.env.REACT_APP_ENV)  ?  REACT_APP_DEV_BASE_URL     :  REACT_APP_PROD_BASE_URL,
+  REACT_APP_PDFJS_KEY    : ValidarEntorno(process.env.REACT_APP_ENV)  ?  REACT_APP_DEV_PDFJS_KEY    :  REACT_APP_PROD_PDFJS_KEY,
 }
