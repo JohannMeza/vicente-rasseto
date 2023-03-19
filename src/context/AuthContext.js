@@ -32,9 +32,10 @@ export default function AuthContextProvider ({children}) {
 
   const logout = () => {
     localStorage.removeItem(TOKEN_BIBLIOTECA_VIRTUAL);
+    setIsAuthenticated(false);
     setUser(null);
-    window.location.reload()
-    // setIsAuthenticated(false);
+    
+    // window.location.reload()
   }
 
   const login = useCallback((token) => {
