@@ -36,7 +36,8 @@ const dataInitialFilter = {
   PATH: null,
   PATH_FILE: null,
   PATH_BASE: null,
-  ESTADO:  true
+  ESTADO: true,
+  ORDEN: 0
 }
 
 const paginate = {
@@ -73,6 +74,10 @@ export default function SubpaginasDetail() {
 
     if ("PATH_BASE" in fieldValues) {
       temp.PATH_BASE = !fieldValues.PATH_BASE ? "El campo Ruta Base es requerido" : "";
+    }     
+    
+    if ("ORDEN" in fieldValues) {
+      temp.ORDEN = fieldValues.ORDEN < 0 ? "El campo no puede ser menor a 0" : "";
     } 
     
     setErrors({...temp});
@@ -327,6 +332,16 @@ export default function SubpaginasDetail() {
               value={data.ESTADO}
               onChange={handleInputFormChange}
               error={errors.ESTADO}
+            />
+          </Grid>
+          <Grid item xs={12}>
+            <Controls.InputComponent
+              label="Orden"
+              type="number"
+              name="ORDEN"
+              value={data.ORDEN}
+              onChange={handleInputFormChange}
+              error={errors.ORDEN}
             />
           </Grid>
           <Grid item xs={12}>

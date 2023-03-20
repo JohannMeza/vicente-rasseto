@@ -3,16 +3,19 @@
   border-radius: 15px;
   min-height: 300px;
   display: grid;
-  grid-template-columns: 1fr 1fr;
+  grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
   gap: 25px
 }
 
 .card-main__img {
   background: white;
   border-radius: 15px;
+  overflow: hidden;
 }
 
 .card-main__img img {
   width: 100%;
-  max-width: 200px;
+  max-height: 250px;
+  min-height: 250px;
+  object-fit: cover;
 }

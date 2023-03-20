@@ -153,7 +153,7 @@ const isLogin = async (req, res) => {
     })
 
     const ID_PERFIL = userAccess.ID_PERFILES._id
-    const menusAndSubmenus = await SeguridadPerfilesMenuSubmenu.find({ ID_SEGURIDAD_PERFILES: ID_PERFIL }).populate("ID_CONFIGURACION_MENU").populate("ID_CONFIGURACION_SUBMENU")
+    const menusAndSubmenus = await SeguridadPerfilesMenuSubmenu.find({ ID_SEGURIDAD_PERFILES: ID_PERFIL }).populate("ID_CONFIGURACION_MENU").populate({path: 'ID_CONFIGURACION_SUBMENU', options: { sort: { ORDEN: 1 } }})
 
     let perfil = userAccess.ID_PERFILES.NOMBRE_PERFIL;
     if (perfil.toLowerCase() === "administrador") {

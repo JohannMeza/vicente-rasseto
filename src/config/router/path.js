@@ -89,7 +89,7 @@ export const pathServer = {
       LIST_ALL_GRADOS: "/administracion/multimedia/list_nivel_estudio",
       LIST_GRADOS_SAVE: "/administracion/multimedia/list_grados_by_media/",
       NEW: "/administracion/multimedia/new/",
-      NEW_CLOUDINARY: "/administracion/multimedia/new/cloudinary/",
+      NEW_CLOUDINARY: "/administracion/multimedia/new/",
       DELETE: "/administracion/multimedia/delete/",
       UPDATE_GRADOS: "/administracion/multimedia/update_grados/"
     }

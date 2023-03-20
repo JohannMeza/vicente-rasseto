@@ -31,7 +31,7 @@ const tipoSubida = [
 
 const dataInitial = {
   TITULO: "",
-  ESTADO: "Publicar",
+  ESTADO: "Publicado",
   DESCRIPCION_LARGA: "",
   DESCRIPCION_CORTA: "",
   CATEGORIA: "",
@@ -78,7 +78,7 @@ export default function LibrosDetailPage () {
     } 
 
     if ("ESTADO" in fieldValues) {
-      temp.ESTADO = fieldValues.ESTADO === "" ? "El campo Estado es requerido" : "";
+      temp.ESTADO = !fieldValues.ESTADO ? "El campo Estado es requerido" : "";
     } 
 
     if ("CATEGORIA" in fieldValues) {
@@ -178,7 +178,6 @@ export default function LibrosDetailPage () {
             CATEGORIA: libro?.ID_CATEGORIA.join(","),
             ETIQUETA: libro?.ID_ETIQUETA.join(","),
             AUTOR: libro?.ID_AUTOR.join(","),
-            SUBIDA: "github"
           })
           setCopyLibros({
             FILE: libro.FILE,
@@ -186,7 +185,6 @@ export default function LibrosDetailPage () {
             PAGINAS: libro.PAGINAS,
             NOMBRE_FILE: libro.NOMBRE_FILE
           })
-          console.log(resp)
           if (libro?.FILE) {
             setPdfPath(libro.FILE)
           }
@@ -305,12 +303,11 @@ export default function LibrosDetailPage () {
   const saveData = () => {
     if (validate()) { 
       let obj = { ...data, ...descripcionPdf, TIPO: "Libro", FILE_PATH: filename, IMAGEN: imagenBase64.IMAGEN, DATA_IMAGEN: JSON.stringify(dataImage) }
-
       if (obj.FILE === "") {
         const formData = UploadFile(obj);
         setLoader(true)
         SaveRequestData({
-          path: pathServer.ADMINISTRACION.MULTIMEDIA.NEW + data.SUBIDA,
+          path: pathServer.ADMINISTRACION.MULTIMEDIA.NEW_CLOUDINARY + data.SUBIDA,
           body: formData,
           fnRequest: SERVICES_POST,
           success: (resp) => {
@@ -324,11 +321,10 @@ export default function LibrosDetailPage () {
           }
         })
       } else {
-        const formData = UploadFile(obj);
         setLoader(true)
         SaveRequestData({
-          path: pathServer.ADMINISTRACION.MULTIMEDIA.NEW_CLOUDINARY + data.SUBIDA,
-          body: formData,
+          path: pathServer.ADMINISTRACION.MULTIMEDIA.NEW,
+          body: obj,
           fnRequest: SERVICES_POST,
           success: (resp) => {
             setLoader(false)
@@ -380,10 +376,6 @@ export default function LibrosDetailPage () {
   }, [])
 
   useEffect(() => {
-    console.log(pdfPath)
-  }, [pdfPath])
-
-  useEffect(() => {
     if (libroBase64?.FILE) {
       setPdfBase64(atob(libroBase64?.FILE))
     }
@@ -392,7 +384,7 @@ export default function LibrosDetailPage () {
   return(
     <Box>
       <Stack direction="row" spacing={3}>
-        <Controls.Title variant="h1" component="h1" title="Nuevo Libro" />
+        <Controls.Title variant="h1" component="h1" title={id ? "Editar Libro" : "Nuevo Libro"} />
       </Stack>
       <br />
       <Grid container spacing={3}>
@@ -656,7 +648,7 @@ export default function LibrosDetailPage () {
             />
             
             <Box style={{ display: "flex", gridGap: "10px", flexWrap: "wrap" }}>
-              {data.FILE ? <img src={data.FILE} alt="" style={styleImage} /> : <img src="" alt="" style={styleImage} ref={imgFile} />}
+              <img src="" alt="" style={styleImage} ref={imgFile} />
               <Box>
                 <Typography variant="text1" component="div"><b>Informacion de la Imagen</b></Typography>
                 <Typography variant="text2" component="div">Nombre: {dataImage.name}</Typography>

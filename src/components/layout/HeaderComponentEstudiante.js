@@ -17,6 +17,7 @@ import { Tooltip } from '@mui/material';
 import { useNavigate } from 'react-router-dom';
 import { pathFront } from '../../config/router/pathFront';
 import Controls from '../../framework/components/Controls';
+import { ICON } from '../../framework/components/icons/Icon';
 
 const drawerWidth = 296;
 const AppBar = styled(MuiAppBar, {
@@ -35,31 +36,53 @@ const AppBar = styled(MuiAppBar, {
     }),
   }),
 }));
+let mediaQuery = window.matchMedia("(max-width: 600px)");
 
 const HeaderComponentEstudiante = () => {
-  const theme = useTheme();
-  const { user } = useAuthContext()
+  const {user} = useAuthContext()
   const navigate = useNavigate()
   const [role, setRole] = React.useState(null);
-  const {open, setOpen} = useLayoutContext()
   const [openPerfil, setOpenPerfil] = useState(false)
+  const [openMenu, setOpenMenu] = useState(false)
 
-  const handleDrawerOpen = () => {
-    setOpen(true);
-  };
+  const ValidarScreen = () => {
+    if (mediaQuery.matches) return true
+    else return false
+  }
 
-  const handleDrawerClose = () => {
-    setOpen(false);
-  };
+  const HandleClickMenu = (value) => {
+    setOpenMenu(value)
+    setOpenPerfil(false)
+  }
+  
+  const HandleClickPerfil = (value) => {
+    if (ValidarScreen()) {
+      setOpenPerfil(value)
+      setOpenMenu(false)
+    } else {
+      setOpenPerfil(value)
+    }
+  }
+  
+  const HandleClickMenuItem = (callback) => {
+    if (ValidarScreen()) {
+      callback();
+      setOpenPerfil(false)
+      setOpenMenu(false)
+    } else {
+      callback();
+    }
+  } 
+
+  useEffect(() => (user) && setRole(user.userAccess.ID_PERFILES.NOMBRE_PERFIL), [user])
 
   useEffect(() => {
-    if (user) {
-      setRole(user.userAccess.ID_PERFILES.NOMBRE_PERFIL)
-    }
-  }, [user])
+    mediaQuery.addListener((event) => (event.matches) ? setOpenMenu(false) : setOpenMenu(true))
+    ValidarScreen() ? setOpenMenu(false) : setOpenMenu(true)
+  }, [])
 
   return (
-    <AppBar position="fixed" open={open} >
+    <AppBar position="fixed">
       <Toolbar className={
         (role && role === "Estudiante") 
         ? "background-green_500 content-header"
@@ -67,63 +90,28 @@ const HeaderComponentEstudiante = () => {
           ? "background-blue_700 content-header"
           : "background-white_100 content-header"}
       >
-        {/* <IconButton
-          color="inherit"
-          aria-label="open drawer"
-          onClick={handleDrawerOpen}
-          edge="start"
-          sx={{ mr: 2, ...(open && { display: 'none' }) }}
-        >
-          <MenuIcon />
-        </IconButton> */}
-
-        <div className="header__buttons">
-          <Tooltip title="Regresar" placement="bottom">
-            <div className="header__buttons__link" onClick={() => navigate(-1)}>
-              <img src={arrowPrevious} style={{ width: "15px" }} alt="" />
+        <Tooltip title="Menú" placement="bottom" className='header_buttons_menu' onClick={() => HandleClickMenu(!openMenu)}>
+          <div className='display-flex' style={{ gap: '15px' }}>
+            <div className="header__buttons__link">
+              {ICON.WIDGETS}
             </div>
-          </Tooltip>
+            <Typography className='header__buttons__link__label color-text' variant="h6" component="div">
+              Menú
+            </Typography>
+          </div>
+        </Tooltip>
 
-          <Tooltip title="Avanzar" placement="bottom">
-            <div className="header__buttons__link" onClick={() => navigate(1)}>
-              <img src={arrowNext} style={{ width: "15px" }} alt="" />
-            </div>
-          </Tooltip>
-
-          <Tooltip title="Inicio" placement="bottom">
-            <div className="header__buttons__link" onClick={() => navigate(pathFront.HOME)}>
-              <img src={iconHome} style={{ width: "35px" }} alt="" />
-            </div>
-          </Tooltip>
-
-          <Tooltip title="¿Tienes alguna pregunta?" placement="bottom">
-            <div className="header__buttons__link" onClick={() => navigate(pathFront.ESTUDIANTE_QUESTIONS)}>
-              <img src={iconInterrogacion} style={{ width: "50%" }} alt="" />
-            </div>
-          </Tooltip>
-
-          <Tooltip title="Busca por categoria" placement="bottom">
-            <div className="header__buttons__link" onClick={() => navigate(pathFront.ESTUDIANTE_BUSCAR_CATEGORIAS)}>
-              <img src={iconCategorias} style={{ width: "30px" }} alt="" />
-            </div>
-          </Tooltip>
-
-          <Tooltip title="Buscar..." placement="bottom">
-            <div className="header__buttons__link" onClick={() => navigate(pathFront.ESTUDIANTE_BUSCAR_LIBROS)}>
-              <img src={iconSearch} style={{ width: "50%" }} alt="" />
-            </div>
-          </Tooltip>
-        </div>
-
-        {/* {
-          open && 
-          <IconButton onClick={handleDrawerClose} sx={{ marginRight: "10px" }}>
-            {theme.direction === 'ltr' ? <ChevronLeftIcon sx={{ color: "#fff" }} /> : <ChevronRightIcon sx={{ color: "#fff" }} />}
-          </IconButton>
-        } */}
+        {openMenu && <div className="header_buttons_content header__buttons">
+          <MenuItemComponent title="Regresar" navigate={() => HandleClickMenuItem(() => navigate(-1))} label="Regresar" img={arrowPrevious} style={{ width: '40%' }} />
+          <MenuItemComponent title="Avanzar" navigate={() => HandleClickMenuItem(() => navigate(1))} label="Avanzar" img={arrowNext} style={{ width: '40%' }} />
+          <MenuItemComponent title="Inicio" navigate={() => HandleClickMenuItem(() => navigate(pathFront.HOME))} label="Inicio" img={iconHome} style={{ width: '90%' }} />
+          {/* <MenuItemComponent title="¿Tienes alguna pregunta?" navigate={() => HandleClickMenuItem(() => navigate(pathFront.ESTUDIANTE_QUESTIONS))} label="¿Tienes alguna pregunta?" img={iconInterrogacion} style={{ width: '60%' }} /> */}
+          {/* <MenuItemComponent title="Busca por categoria" navigate={() => HandleClickMenuItem(() => navigate(pathFront.ESTUDIANTE_QUESTIONS))} label="Busca por categoria" img={iconCategorias} style={{ width: '60%' }} /> */}
+          <MenuItemComponent title="Buscar...1" navigate={() => HandleClickMenuItem(() => navigate(pathFront.ESTUDIANTE_BUSCAR_LIBROS))} label="Buscar..." img={iconSearch} style={{ width: '60%' }} />
+        </div>}
         
         <div className="header__buttons">
-          <Tooltip title="Ver mi Perfil" placement="bottom" onClick={() => setOpenPerfil(!openPerfil)}>
+          <Tooltip title="Ver mi Perfil" placement="bottom" onClick={() => HandleClickPerfil(!openPerfil)}>
             <div className="header__buttons__link">
               <img src={iconUserNiño} style={{ width: "25px" }} alt="" />
             </div>
@@ -164,11 +152,25 @@ const HeaderComponentEstudiante = () => {
             </div>
           </div>
           }
-        </div>
-        
+        </div> 
       </Toolbar>
     </AppBar>
   );
+}
+
+const MenuItemComponent = ({ title, navigate, label, img, style }) => {
+  return (
+    <Tooltip title={title} placement="bottom">
+      <div className='display-flex color-text' style={{ gap: '15px' }}>
+        <div className="header__buttons__link" onClick={() => navigate()}>
+        <img src={img} style={style} alt="" />
+        </div>
+        <Typography className='header__buttons__link__label' variant="h6" component="div">
+          {label}
+        </Typography>
+      </div>
+    </Tooltip>
+  )
 }
 
 export default memo(HeaderComponentEstudiante)

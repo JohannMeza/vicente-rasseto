@@ -145,9 +145,10 @@ export default function LibrosAdminPage() {
           onClick={() => navigate(pathFront.LIBROS_NEW)}
         />
       </Stack>
-      <Stack direction="row" spacing={1} marginTop={1}>
+      <Stack direction="row" alignItems={"center"} spacing={1} marginTop={1}>
         <Controls.TextComponent
           variant="span3"
+          sx={{ padding: "5px 10px", cursor: "pointer", userSelect: "none" }}
           className={estadoActual === "" ? "color-blue_700" : "" }
           onClick={() => handleClickEstado("")}
         >
@@ -156,6 +157,7 @@ export default function LibrosAdminPage() {
         <span>|</span>
         <Controls.TextComponent 
           variant="span3"
+          sx={{ padding: "5px 10px", cursor: "pointer", userSelect: "none" }}
           className={estadoActual === "Publicado" ? "color-blue_700" : "" }
           onClick={() => handleClickEstado("Publicado")}
         >
@@ -164,6 +166,7 @@ export default function LibrosAdminPage() {
         <span>|</span>
         <Controls.TextComponent 
           variant="span3"
+          sx={{ padding: "5px 10px", cursor: "pointer", userSelect: "none" }}
           className={estadoActual === "No Publicado" ? "color-blue_700" : "" }
           onClick={() => handleClickEstado("No Publicado")}
         >

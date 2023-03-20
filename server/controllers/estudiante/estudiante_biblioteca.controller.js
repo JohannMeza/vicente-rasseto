@@ -67,7 +67,7 @@ const show = async (req, res) => {
 const previewLibro = async (req, res) => {
   try {
     const { id } = req.params;
-    const showLibro = await AdministracionMultimedia.find({ _id: id }, { NOMBRE_FILE: 1, PAGINAS: 1, TITULO: 1, DESCRIPCION_CORTA: 1, IMAGEN: 1, LINK: 1, BACKGROUND: 1 }).populate("ID_CATEGORIA").populate("ID_ETIQUETA").populate("ID_AUTOR");
+    const showLibro = await AdministracionMultimedia.find({ _id: id }, { NOMBRE_FILE: 1, PAGINAS: 1, TITULO: 1, DESCRIPCION_CORTA: 1, DESCRIPCION_LARGA: 1, IMAGEN: 1, LINK: 1, BACKGROUND: 1 }).populate("ID_CATEGORIA").populate("ID_ETIQUETA").populate("ID_AUTOR");
     res.status(201).json({
       error: false,
       status: 201,
@@ -81,7 +81,7 @@ const previewLibro = async (req, res) => {
 
 const showLibrosRelacionados = async (req, res) => {
   try {
-    const { categories, id } = req.body;
+    const { categories, id, id_grado } = req.body;
     if (!categories || categories.length === 0) {
       throw ({
         error: false,
@@ -90,7 +90,7 @@ const showLibrosRelacionados = async (req, res) => {
         data: []
       })
     };
-    const dataLibro = await AdministracionMultimedia.find({ ID_CATEGORIA: { $in: categories }, _id: {$ne: id} }, { NOMBRE_FILE: 1, PAGINAS: 1, TITULO: 1, DESCRIPCION_CORTA: 1, IMAGEN: 1, LINK: 1, BACKGROUND: 1 } ).limit(3);
+    const dataLibro = await AdministracionMultimedia.find({ ID_CATEGORIA: { $in: categories }, ID_GRADO: { $in: id_grado }, _id: {$ne: id} }, { NOMBRE_FILE: 1, PAGINAS: 1, TITULO: 1, DESCRIPCION_CORTA: 1, IMAGEN: 1, LINK: 1, BACKGROUND: 1 } ).limit(3);
     res.status(201).json({
       error: false,
       status: 201,

@@ -11,9 +11,12 @@
 .card-main-vertical__img {
   background: white;
   border-radius: 15px;
+  overflow: hidden;
 }
 
 .card-main-vertical__img img {
   width: 100%;
-  max-width: 200px;
+  max-height: 250px;
+  min-height: 250px;
+  object-fit: cover;
 }

@@ -27,7 +27,7 @@ const index = async (req, res) => {
         ID_AUTOR ? {ID_AUTOR: { $in: (ID_AUTOR || null) }} : {},
         ID_CATEGORIA ? {ID_CATEGORIA: { $in: (ID_CATEGORIA || null) }} : {},
         ID_ETIQUETA ? {ID_ETIQUETA: { $in: (ID_ETIQUETA || null) }} : {},
-        ESTADO ? {ESTADO: { $regex: ESTADO, $options: 1 }} : {},
+        ESTADO ? {ESTADO: { $in: ESTADO }} : {},
         {TITULO: { $regex: '.*' + TITULO + '.*', $options: 1 }},
       ]
     }, {limit: rowsPerPage, page, populate: [{path: 'ID_AUTOR'}, { path: "ID_CATEGORIA"}, { path: "ID_ETIQUETA" }]});
@@ -48,7 +48,6 @@ const index = async (req, res) => {
 }
 
 const uploadImage = (req, res) => {
-  console.log(req.file)
   res.send("Imagen cargada");
 }
 
@@ -170,7 +169,6 @@ const store_upload = async (req, res) => {
     let { BACKGROUND } = req.body;
     let filename, size;
     let dataImagen = { url: IMAGEN, ...JSON.parse(DATA_IMAGEN || {}) }
-    
     if (SUBIDA === 'cloudinary') {
       cloudinary.config({ cloud_name: EnvConstant.APP_CLOUDINARY_NAME, api_key: EnvConstant.APP_CLOUDINARY_KEY, api_secret: EnvConstant.APP_CLOUDINARY_API_SECRET })
       const fileUpload = await cloudinary.uploader.upload(req.file.path)
@@ -205,7 +203,6 @@ const store_upload = async (req, res) => {
       })
     }
   } catch (err) { 
-    console.log(err)
     return res.status(err.status || 500).json({ ...err });
   }
 }

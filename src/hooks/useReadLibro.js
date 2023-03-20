@@ -28,17 +28,17 @@ export const useReadLibroUrl = (pdfData) => {
         const { Core, UI } = instance;
   
         // adding an event listener for when a document is loaded
-        Core.documentViewer.addEventListener("documentLoaded", () => {
-          console.log("document loaded");
-        });
+        // Core.documentViewer.addEventListener("documentLoaded", () => {
+        //   console.log("document loaded");
+        // });
   
         // adding an event listener for when the page number has changed
-        Core.documentViewer.addEventListener(
-          "pageNumberUpdated",
-          (pageNumber) => {
-            console.log(`Page number is: ${pageNumber}`);
-          }
-        );
+        // Core.documentViewer.addEventListener(
+        //   "pageNumberUpdated",
+        //   (pageNumber) => {
+        //     console.log(`Page number is: ${pageNumber}`);
+        //   }
+        // );
   
         // adds a button to the header that on click sets the page to the next page
         UI.setHeaderItems((header) => {
@@ -94,7 +94,6 @@ export const useReadLibroPage = (pdfData, pageNumber = 1, scale = 1.5) => {
           })
           .catch(err => {
             setLoader(false)
-            console.error(err);
           });
         });
       }, function (reason) {

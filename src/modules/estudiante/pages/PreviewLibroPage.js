@@ -7,6 +7,7 @@ import { pathServer } from '../../../config/router/path';
 import { pathFront } from '../../../config/router/pathFront';
 import Controls from '../../../framework/components/Controls';
 import { SaveRequestData } from '../../../helpers/helpRequestBackend';
+import useAuthContext from '../../../hooks/useAuthContext';
 import useLoaderContext from '../../../hooks/useLoaderContext';
 import { SERVICES_GET, SERVICES_POST } from '../../../services/services.axios';
 import { MessageUtil } from '../../../util/MessageUtil';
@@ -17,8 +18,9 @@ const PreviewLibroPage = () => {
   const { id } = useParams();
   const navigate = useNavigate(); 
   const [librosRelacionados, setLibrosRelacionados] = useState([])
+  const { user } = useAuthContext()
 
-  const getLibro = () => {
+  const getLibro = (id) => {
     setLoader(true)
 
     SaveRequestData({
@@ -26,7 +28,6 @@ const PreviewLibroPage = () => {
       fnRequest: SERVICES_GET,
       success: (resp) => {
         let arrCategoria = Array.from(resp.data[0].ID_CATEGORIA, el => el._id);
-        console.log(resp)
         setLibro(resp.data[0])
         getLibrosRelacionados(arrCategoria, resp.data[0]._id)
         setLoader(false)
@@ -42,7 +43,7 @@ const PreviewLibroPage = () => {
     setLoader(true)
     SaveRequestData({
       path: pathServer.ESTUDIANTE.BIBLIOTECA.SHOW_RELACIONADO,
-      body: { categories: arrCategoria, id },
+      body: { categories: arrCategoria, id, id_grado: user.userAccess.ID_GRADO },
       fnRequest: SERVICES_POST,
       success: (resp) => {
         setLibrosRelacionados(resp.data)
@@ -55,8 +56,13 @@ const PreviewLibroPage = () => {
     })
   }
   
+  const handleClickLibroRelacionados = (id) => {
+    navigate(pathFront.BIBLIOTECA_LIBRO + id)
+    getLibro(id)
+  }
+
   useEffect(() => {
-    getLibro()
+    getLibro(id)
   // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [])
   
@@ -64,7 +70,7 @@ const PreviewLibroPage = () => {
     <Box>
       <Grid container spacing={4} sx={{ flexWrap: "wrap-reverse" }}>
         <Grid item xs={12} sm={12} md={6}>
-          <img src={`data:image;base64,${libro?.IMAGEN?.url}`} style={{ width: "100%", maxHeight: "750px" }} alt="" />
+          <img src={`data:image;base64,${libro?.IMAGEN?.url}`} style={{ width: "100%", maxHeight: "750px", objectFit: "cover", borderRadius: "15px", boxShadow: "0px 4px 4px rgba(0, 0, 0, 0.25)", background: "var(--white_100)" }} alt="" />
         </Grid>
         <Grid item xs={12} sm={12} md={6}>
           <Controls.Title title={libro?.TITULO} sx={{ color: "var(--blue_700)" }} />
@@ -196,9 +202,7 @@ const PreviewLibroPage = () => {
                       type="admin"
                       style={{ color: "inherit", width: "100%" }}
                       title="¡¡¡VAMOS!!!"
-                      onClick={() =>
-                        navigate(pathFront.BIBLIOTECA_LIBRO + libro._id)
-                      }
+                      onClick={() => handleClickLibroRelacionados(libro._id)}
                     />
                     {libro.LINK && (
                       <Box sx={{ textAlign: "center" }}>
