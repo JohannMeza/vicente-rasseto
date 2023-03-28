@@ -19,7 +19,8 @@ import { SaveRequestData } from "../../../../helpers/helpRequestBackend";
 import { useForm } from "../../../../hooks/useForm";
 import { useFormValidation } from "../../../../hooks/useFormValidation";
 import useLoaderContext from "../../../../hooks/useLoaderContext";
-import { SERVICES_POST } from "../../../../services/services.axios";
+import { SERVICES_DELETE, SERVICES_POST } from "../../../../services/services.axios";
+import { AlertUtilDelete } from "../../../../util/AlertUtil";
 import { MessageUtil } from "../../../../util/MessageUtil";
 
 const dataInitialFilter = {
@@ -41,12 +42,13 @@ const estadoList = [
 export default function GradosDetail() {
   const [dataForm, handleDataFormChange, resetData] = useForm(dataInitialFilter);
   const [pagination, setPagination] = useState(paginate);
-  const [grados, setGrados] = useState([]);
   const setLoader = useLoaderContext();
   const [open, setOpen] = useState(false)
   const [isDataToEdit, setIsDataToEdit] = useState(null)
-  const { id } = useParams()
   const navigate = useNavigate();
+  const [grados, setGrados] = useState([]);
+  const [grado, setGrado] = useState({});
+  const { id } = useParams()
 
   const getGrados = (rowsPerPage = 10, page = 1) => {
     setLoader(true);
@@ -81,6 +83,7 @@ export default function GradosDetail() {
         setLoader(false);
         setOpen(false);
         getGrados()
+        setGrado(dataInitialFilter)
         MessageUtil({ message: resp.statusText, type: "success", seg: 10 });
       },
       error: (err) => {
@@ -88,6 +91,44 @@ export default function GradosDetail() {
         MessageUtil({ message: err.statusText, type: "error", seg: 10 });
       },
     });
+  }
+
+  const deleteGrado = (id) => {
+    const config = {
+      title: "¿Estás seguro?",
+      text: "¡Al eliminar la página, no habrá vuelta atrás!",
+      icon: "warning",
+    };
+
+    const fnDeleteSubPage = () => {
+      setLoader(true);
+      SaveRequestData({
+        path: pathServer.ADMINISTRACION.GRADOS.DELETE + id,
+        fnRequest: SERVICES_DELETE,
+        success: (resp) => {
+          setLoader(false);          
+          getGrados();
+          MessageUtil({ message: resp.statusText, type: "success", seg: 10 });
+        },
+        error: (err) => {
+          setLoader(false);
+          MessageUtil({ message: err.statusText, type: "error", seg: 10 });
+        },
+      });
+    };
+
+    AlertUtilDelete(fnDeleteSubPage, { config });
+  }
+
+  const handleClickEdit = (data) => {
+    setOpen(true)
+    setIsDataToEdit(true)
+    setGrado(data)
+  }
+
+  const handleClickNew = () => {
+    setOpen(true)
+    setGrado(dataInitialFilter);
   }
 
   useEffect(() => {
@@ -103,7 +144,7 @@ export default function GradosDetail() {
           variant="primary-small"
           type="admin"
           title="Nuevo Grado"
-          onClick={() => setOpen(true)}
+          onClick={handleClickNew}
         />
       </Stack>
       <br />
@@ -159,10 +200,12 @@ export default function GradosDetail() {
                       <Controls.ButtonIconComponent
                         title="Ver"
                         icon={ICON.EDIT}
+                        onClick={() => handleClickEdit(el)}
                       />
                       <Controls.ButtonIconComponent
-                        title="Ver"
+                        title="Eliminar"
                         icon={ICON.DELETE}
+                        onClick={() => deleteGrado(el._id)}
                       />
                     </Stack>
                   </TableCell>
@@ -192,12 +235,14 @@ export default function GradosDetail() {
         saveGrado={saveGrado}
         isDataToEdit={isDataToEdit}
         setIsDataToEdit={setIsDataToEdit}
+        grado={grado}
+        setGrado={setGrado}
       />
     </Box>
   );
 }
 
-const ModalGrados = ({ open, setOpen, saveGrado, isDataToEdit, setIsDataToEdit }) => {
+const ModalGrados = ({ open, setOpen, saveGrado, isDataToEdit, setIsDataToEdit, grado, setGrado }) => {
   const validate = (fieldValues = data) =>  {
     let temp = {...errors};
     
@@ -220,9 +265,10 @@ const ModalGrados = ({ open, setOpen, saveGrado, isDataToEdit, setIsDataToEdit }
     resetForm()
     setOpen(false)
     setIsDataToEdit(null)
+    setGrado({})
   }
 
-  const guardarDatos = () => {
+  const guardarGrado = () => {
     if (validate()) {
       saveGrado(data)
       setIsDataToEdit(null)
@@ -230,10 +276,9 @@ const ModalGrados = ({ open, setOpen, saveGrado, isDataToEdit, setIsDataToEdit }
   }
 
   useEffect(() => {
-    if (isDataToEdit) {
-      setData(isDataToEdit)
-    }
-  }, [isDataToEdit, setData])
+    (isDataToEdit) && setData(isDataToEdit);
+    (Object.entries(grado).length > 0) && setData(grado)
+  }, [grado, isDataToEdit, setData])
 
   return (
     <Controls.Modal
@@ -279,7 +324,7 @@ const ModalGrados = ({ open, setOpen, saveGrado, isDataToEdit, setIsDataToEdit }
           variant="primary-normal"
           type="admin"
           icon={ICON.SAVE}
-          onClick={() => guardarDatos()}
+          onClick={() => guardarGrado()}
         />
       </Stack>
     </Controls.Modal>

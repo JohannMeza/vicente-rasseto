@@ -49,7 +49,7 @@ export const pathServer = {
     GRADOS: {
       INDEX: "/administracion/grado/",
       NEW: "/administracion/grado/new/",
-      DELETE: "/administracion/grado/"
+      DELETE: "/administracion/grado/delete/"
     },
     NIVEL_ESTUDIO: {
       INDEX: "/administracion/nivel_estudio",

@@ -41,18 +41,31 @@ const index = async (req, res) => {
 const store = async (req, res) => {
   try {
     const { id } = req.params;
-    const { GRADO, ESTADO } = req.body;
-    console.log(req.body)
-    const dataValid = UtilComponents.ValidarParametrosObligatorios({GRADO, ESTADO}) 
-    if (dataValid) throw(dataValid)
+    const { GRADO, ESTADO, _id } = req.body;
 
-    const administracionGrados = new AdministracionGrado({ID_NIVEL_ESTUDIO: id, GRADO, ESTADO})
-    await administracionGrados.save()
-    return res.status(201).json({
-      error: true,
-      status: 201,
-      statusText: MessageConstants.MESSAGE_SUCCESS_SAVE
-    })
+    if (_id) { // Editar
+      const dataValid = UtilComponents.ValidarParametrosObligatorios({GRADO, ESTADO}) 
+      if (dataValid) throw(dataValid)
+      await AdministracionGrado.findOneAndUpdate({_id}, {ID_NIVEL_ESTUDIO: id, GRADO, ESTADO})
+      return res.status(201).json({
+        error: true,
+        status: 201,
+        statusText: MessageConstants.MESSAGE_SUCCESS_UPDATE
+      })
+    } else { // Guardar
+      const dataValid = UtilComponents.ValidarParametrosObligatorios({GRADO, ESTADO}) 
+      if (dataValid) throw(dataValid)
+  
+      const administracionGrados = new AdministracionGrado({ID_NIVEL_ESTUDIO: id, GRADO, ESTADO})
+      await administracionGrados.save()
+      return res.status(201).json({
+        error: true,
+        status: 201,
+        statusText: MessageConstants.MESSAGE_SUCCESS_SAVE
+      })
+    }
+    
+    
   } catch (err) {
     return res.status(err.status || 500).json({...err})
   }
@@ -82,7 +95,7 @@ const del = async (req, res) => {
     return res.status(201).json({
       error: true,
       status: 201,
-      statusText: "Se elimino con éxito",
+      statusText: MessageConstants.MESSAGE_SUCCESS_DELETE,
     });
   } catch (err) {
     return res.status(500).json({ ...err });
