@@ -204,7 +204,7 @@ export default function DocentesAdminPage () {
                 <TableRow key={index}>
                   <TableCell>{el.NOMBRE_USUARIO}</TableCell>
                   <TableCell>{el.DNI}</TableCell>
-                  <TableCell>{el.ID_LOGIN.EMAIL}</TableCell>
+                  <TableCell>{el.ID_LOGIN?.EMAIL}</TableCell>
                   <TableCell>
                     <Stack direction="row" spacing={1}>
                       <Controls.ButtonIconComponent

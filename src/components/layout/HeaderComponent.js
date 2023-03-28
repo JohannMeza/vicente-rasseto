@@ -43,6 +43,7 @@ const HeaderComponent = () => {
   };
 
   useEffect(() => {
+    console.log(user)
     if (user) {
       setRole(user.userAccess.ID_PERFILES.NOMBRE_PERFIL)
     }
@@ -75,7 +76,7 @@ const HeaderComponent = () => {
         }
         
         <Typography variant="h6" noWrap component="div">
-          { user && user.NOMBRE_USUARIO }
+          Bienvenido { user && user?.userAccess?.NOMBRE_USUARIO }
         </Typography>
       </Toolbar>
     </AppBar>
