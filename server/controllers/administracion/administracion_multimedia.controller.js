@@ -172,7 +172,7 @@ const store_upload = async (req, res) => {
     if (SUBIDA === 'cloudinary') {
       cloudinary.config({ cloud_name: EnvConstant.APP_CLOUDINARY_NAME, api_key: EnvConstant.APP_CLOUDINARY_KEY, api_secret: EnvConstant.APP_CLOUDINARY_API_SECRET })
       const fileUpload = await cloudinary.uploader.upload(req.file.path)
-      filename = fileUpload.url
+      filename = fileUpload.secure_url
       size = req.file.size
     } else if (SUBIDA === 'github') {
       filename = req.body.FILE
