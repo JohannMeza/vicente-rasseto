@@ -8,7 +8,6 @@
 //       let base64 = reader.result;
 //       let arrBase64 = []
 //       arrBase64 = base64.split(",")
-//       console.log(arrBase64[1])
 //       return arrBase64[1]
 //     }
 //   })

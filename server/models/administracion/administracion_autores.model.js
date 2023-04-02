@@ -7,6 +7,16 @@ const AdministracionAutoresSchema = new Schema({
     required: true,
     trim: true
   },
+  NACIONALIDAD: {
+    type: String,
+    required: true,
+    trim: true
+  },
+  DESCRIPCION_AUTOR: {
+    type: String,
+    required: true,
+    trim: true
+  },
   LINK: {
     type: String,
     trim: true

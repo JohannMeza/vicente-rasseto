@@ -20,6 +20,8 @@ import AutoStoriesIcon from '@mui/icons-material/AutoStories';
 import SearchIcon from '@mui/icons-material/Search';
 import SignalCellularAltIcon from '@mui/icons-material/SignalCellularAlt';
 import WidgetsIcon from '@mui/icons-material/Widgets';
+import FilterListIcon from '@mui/icons-material/FilterList';
+import CleaningServicesIcon from '@mui/icons-material/CleaningServices';
 
 export const ICON = {
   CLOSE: <CloseIcon />,
@@ -44,4 +46,6 @@ export const ICON = {
   READ: <AutoStoriesIcon />,
   DEGREE: <SignalCellularAltIcon />,
   WIDGETS: <WidgetsIcon />,
+  FILTER: <FilterListIcon />,
+  LIMPIAR: <CleaningServicesIcon />,
 }

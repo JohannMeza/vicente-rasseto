@@ -60,7 +60,6 @@ const UtilComponents = require("../../utils/UtilsComponents");
       })
     }
   } catch (err) {
-    console.log(err)
     return res.status(err.status || 500).json({ ...err })
   }
 }

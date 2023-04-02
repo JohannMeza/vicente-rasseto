@@ -1,20 +1,10 @@
 import { Box, CssBaseline } from "@mui/material";
-import React, { Component, memo, useEffect } from "react";
+import React, { memo, useEffect } from "react";
 import HeaderComponent from "../../components/layout/HeaderComponent";
 import NavbarComponent from "../../components/layout/NavbarComponent";
 import { styled } from "@mui/material/styles";
 import { Route, Routes } from "react-router-dom";
 import useLayoutContext from "../../hooks/useLayoutContext";
-import PaginasRoutes from "../componentes/paginas/PaginasRoutes";
-import PerfilesRoutes from "../componentes/perfiles/PerfilesRoutes";
-import LibrosRoutes from "../componentes/libros/LibrosRoutes";
-import AutoresRoutes from "../componentes/autores/AutoresRoutes";
-import CategoriasRoutes from "../componentes/categorias/CategoriasRoutes";
-import EtiquetasRoutes from "../componentes/etiquetas/EtiquetasRoutes";
-import NivelEstudioRoutes from "../componentes/grados/NivelEstudioRoutes";
-import AlumnosRoutes from "../componentes/alumnos/AlumnosRoutes";
-import DocentesRoutes from "../componentes/docentes/DocentesRoutes";
-import AudiolibrosRoutes from "../componentes/audiolibros/AudiolibrosRoutes";
 import { useState } from "react";
 import { SaveRequestData } from "../../helpers/helpRequestBackend";
 import { pathServer } from "../../config/router/path";
@@ -31,10 +21,6 @@ const DrawerHeader = styled("div")(({ theme }) => ({
   ...theme.mixins.toolbar,
   justifyContent: "flex-end",
 }));
-
-// var geeval = eval;
-// let pagina = "PaginasRoutes";
-// console.log(geeval(pagina))
 
 const AdministradorRoutes = () => {
   const { open } = useLayoutContext();

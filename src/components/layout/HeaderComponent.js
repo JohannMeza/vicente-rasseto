@@ -33,21 +33,9 @@ const HeaderComponent = () => {
   const { user } = useAuthContext()
   const [role, setRole] = React.useState(null);
   const {open, setOpen} = useLayoutContext()
-
-  const handleDrawerOpen = () => {
-    setOpen(true);
-  };
-
-  const handleDrawerClose = () => {
-    setOpen(false);
-  };
-
-  useEffect(() => {
-    console.log(user)
-    if (user) {
-      setRole(user.userAccess.ID_PERFILES.NOMBRE_PERFIL)
-    }
-  }, [user])
+  const handleDrawerOpen = () => setOpen(true);
+  const handleDrawerClose = () => setOpen(false);
+  useEffect(() => { if (user) { setRole(user.userAccess.ID_PERFILES.NOMBRE_PERFIL) } }, [user])
 
   return (
     <AppBar position="fixed" open={open} >

@@ -1,4 +1,4 @@
-import { Grid, Stack, Table, TableBody, TableCell, TableHead, TableRow, Typography } from '@mui/material';
+import { Grid, Stack, Table, TableBody, TableCell, TableHead, TableRow } from '@mui/material';
 import { Box } from '@mui/system';
 import React, { useEffect, useState } from 'react';
 import { useRef } from 'react';
@@ -6,7 +6,7 @@ import ButtonsSearchComponent from '../../../../components/utilComponents/Button
 import { pathServer } from '../../../../config/router/path';
 import Controls from '../../../../framework/components/Controls';
 import { ICON } from '../../../../framework/components/icons/Icon';
-import { SaveRequestData, SaveRequestReport } from '../../../../helpers/helpRequestBackend';
+import { SaveRequestData } from '../../../../helpers/helpRequestBackend';
 import { useForm } from '../../../../hooks/useForm';
 import { useFormValidation } from '../../../../hooks/useFormValidation';
 import useLoaderContext from '../../../../hooks/useLoaderContext';
@@ -17,6 +17,8 @@ import { UploadFile } from '../../../../util/UploadFile';
 
 const dataInitialFilter = {  
   NOMBRE_AUTOR: "",
+  NACIONALIDAD: "",
+  DESCRIPCION_AUTOR: "",
   LINK: "",
   ESTADO: true
 }
@@ -34,7 +36,7 @@ const paginate = {
 
 export default function LibrosAdminPage () {
   const [open, setOpen] = useState(false);
-  const [data, handleInputChange, resetData, setData] = useForm(dataInitialFilter)
+  const [data, handleInputChange, resetData] = useForm(dataInitialFilter)
   const setLoader = useLoaderContext();
   const [pagination, setPagination] = useState(paginate);
   const [autores, setAutores] = useState([])
@@ -114,6 +116,7 @@ export default function LibrosAdminPage () {
 
   useEffect(() => {
     getAutores()
+  // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [])
 
   return(
@@ -230,12 +233,13 @@ export default function LibrosAdminPage () {
 const dataInitial = {  
   NOMBRE_AUTOR: "",
   LINK: "",
+  NACIONALIDAD: "",
+  DESCRIPCION_AUTOR: "",
   ESTADO: true
 }
 
 const ModalAutor = ({ open, setOpen, isDataToEdit, setIsDataToEdit, saveAutor }) => {
-  const setLoader = useLoaderContext();
-
+  const [title, setTitle] = useState(null);
   const validate = (fieldValues = data) =>  {
     let temp = {...errors};
     
@@ -270,17 +274,17 @@ const ModalAutor = ({ open, setOpen, isDataToEdit, setIsDataToEdit, saveAutor })
     }
   }
 
-  useEffect(() => {
-    if (isDataToEdit) {
-      setData(isDataToEdit)
-    }
-  }, [isDataToEdit])
+  // eslint-disable-next-line react-hooks/exhaustive-deps
+  useEffect(() => { if (isDataToEdit) setData(isDataToEdit) }, [isDataToEdit])
+  
+  // eslint-disable-next-line react-hooks/exhaustive-deps
+  useEffect(() => { if (open) setTitle(isDataToEdit ? 'Editar Autor' : 'Nuevo Autor')}, [open])
 
   return (
     <Controls.Modal
     open={open}
-    setOpen={setOpen}
-    title="Nuevo Autor"
+    setOpen={closeModal}
+    title={title}
     fullWidth
     maxWidth="sm"
   >
@@ -308,12 +312,21 @@ const ModalAutor = ({ open, setOpen, isDataToEdit, setIsDataToEdit, saveAutor })
       <Grid item xs={12}>
         <Controls.InputComponent 
           label="Nacionalidad"
+          onChange={handleInputFormChange}
+          name="NACIONALIDAD"
+          value={data.NACIONALIDAD}
+          error={errors.NACIONALIDAD}
         />
       </Grid>
       
       <Grid item xs={12}>
-        <Controls.InputComponent 
+          <Controls.InputComponent
           label="Descripcion del Autor"
+          onChange={handleInputFormChange}
+          name="DESCRIPCION_AUTOR"
+          value={data.DESCRIPCION_AUTOR}
+          error={errors.DESCRIPCION_AUTOR}
+          multiline
         />
       </Grid>
 

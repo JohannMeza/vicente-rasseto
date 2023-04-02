@@ -20,7 +20,7 @@ export default function ButtonsSearchComponent({ resetForm, filterForm }) {
         title="LIMPIAR"
         variant="secondary-small"
         type="admin"
-        icon={ICON.BACK}
+        icon={ICON.LIMPIAR}
         onClick={clearForm}
       />
 
@@ -28,7 +28,7 @@ export default function ButtonsSearchComponent({ resetForm, filterForm }) {
         title={"FILTRAR"}
         variant="primary-small"
         type="admin"
-        icon={ICON.SAVE}
+        icon={ICON.FILTER}
         onClick={saerchForm}
       />
     </Stack>

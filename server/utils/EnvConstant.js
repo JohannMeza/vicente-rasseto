@@ -1,4 +1,5 @@
 const { config } = require("dotenv");
+const { ValidarEntorno } = require("./UtilsComponents");
 config();
 // Desarrollo
 const APP_DEV_DATABASE_URI          = process.env.APP_DEV_DATABASE_URI;
@@ -20,12 +21,6 @@ const APP_PROD_REPOSITORIO_LIBROS   = process.env.APP_PROD_REPOSITORIO_LIBROS;
 const APP_CLOUDINARY_NAME        = process.env.APP_CLOUDINARY_NAME;
 const APP_CLOUDINARY_KEY         = process.env.APP_CLOUDINARY_KEY;
 const APP_CLOUDINARY_API_SECRET = process.env.APP_CLOUDINARY_API_SECRET;
-
-const ValidarEntorno = (env) => {
-  if (env === 'desarrollo') return true
-  else if (env === 'produccion') return false
-  else return null
-}
 
 // Configuracion Rasseto
 const EnvConstant = {

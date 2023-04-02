@@ -2,6 +2,12 @@
 const jwt = require("jsonwebtoken");
 const config = require("../config/config");
 
+/**
+ * 
+ * @param {Object} obj 
+ * @returns Valida al usuario si esta autenticado
+ */
+
 const auth = async (req, res, next) => {
   try { 
     const token = req.headers["authorization"];

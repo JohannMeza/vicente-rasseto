@@ -17,7 +17,7 @@ export default function LibrosAdminPage () {
         />
       </Stack>
       <Stack direction="row" spacing={1} marginTop={1}>
-        <Controls.TextComponent variant="span3" onClick={() => console.log("Hola")}>Todos</Controls.TextComponent>
+        <Controls.TextComponent variant="span3">Todos</Controls.TextComponent>
         <span>|</span>
         <Controls.TextComponent variant="span3">Publicadas</Controls.TextComponent>
         <span>|</span>

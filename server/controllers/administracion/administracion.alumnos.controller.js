@@ -142,7 +142,6 @@ const store = async (req, res) => {
       })
     }
   } catch (err) {
-    console.log(err)
     return res.status(err.status || 500).json({ ...err })
   }
 }
@@ -201,7 +200,6 @@ const reporteExcel = async (req, res) => {
 }
 
 const importarExcel = async (req, res) => {
-  console.log(req.body);
   res.send();
 }
 

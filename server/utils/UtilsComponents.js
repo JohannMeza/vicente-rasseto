@@ -4,6 +4,18 @@ const {StorageMulter, StorageMulterExcel, StorageMulterCloudinary, StorageMulter
 
 /**
  * 
+ * @param {Object} Env 
+ * @returns Valida ambiente actual
+ */
+
+const ValidarEntorno = (env) => {
+  if (env === 'desarrollo') return true
+  else if (env === 'produccion') return false
+  else return null
+}
+
+/**
+ * 
  * @param {Object} obj 
  * @returns Retorna false si lo la validacion es correcta de lo contrario devuelve la propiedad no valida
  */
@@ -21,6 +33,12 @@ const ValidarParametrosObligatorios = (obj = {}) => {
 
   return false
 }
+
+/**
+ * 
+ * @param {Object} obj 
+ * @returns Valida si el id de la schema es valido
+ */
 
 const ValidarObjectIdValido = (id) => {
   if(ObjectId.isValid(id)){
@@ -41,6 +59,12 @@ const ValidarObjectIdValido = (id) => {
     }
   }
 }
+
+/**
+ * 
+ * @param {Object} obj 
+ * @returns Valida si los campos estas incompletos
+ */
 
 const ValidarObjectForFilter = (obj) => {
   let dataFilter = { $and: [] };
@@ -72,6 +96,12 @@ const ValidarObjectForFilter = (obj) => {
   return dataFilter
 }
 
+/**
+ * 
+ * @param {Object} obj 
+ * @returns Cambia los campos de la data obtenida por el obj que se inserta
+ */
+
 const CambiarNombreCampos = (arrData, objCampos) => {
   let newArrData = [];
   arrData.forEach(data => {
@@ -100,6 +130,7 @@ const importarExcel = multer({ storage: StorageMulterExcel, limits: {fieldSize: 
 const cloudinary = multer({ storage: StorageMulterCloudinary, limits: {fieldSize: 25 * 1024 * 1024} })
 
 module.exports = {
+  ValidarEntorno,
   ValidarParametrosObligatorios,
   ValidarObjectIdValido,
   ValidarObjectForFilter,

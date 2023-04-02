@@ -39,21 +39,21 @@ const index = async (req, res) => {
 
 const store = async (req, res) => {
   try {
-    const { NOMBRE_AUTOR, LINK, ESTADO, _id } = req.body;
-    
+    const { NOMBRE_AUTOR, NACIONALIDAD, DESCRIPCION_AUTOR, LINK, ESTADO, _id } = req.body;
+
     if (_id) { // UPDATE
-      const validData = UtilComponents.ValidarParametrosObligatorios({ NOMBRE_AUTOR, LINK, ESTADO })
+      const validData = UtilComponents.ValidarParametrosObligatorios({ NOMBRE_AUTOR, LINK, ESTADO, NACIONALIDAD, DESCRIPCION_AUTOR })
       if (validData) throw(validData);
-      await AdministracionAutores.findByIdAndUpdate({ _id }, { NOMBRE_AUTOR, LINK, ESTADO})
+      await AdministracionAutores.findByIdAndUpdate({ _id }, { NOMBRE_AUTOR, LINK, ESTADO, NACIONALIDAD, DESCRIPCION_AUTOR})
       return res.status(201).json({
         error: false,
         status: 201,
         statusText: MessageConstants.MESSAGE_SUCCESS_UPDATE
       })
     } else {  // SAVE
-      const validData = UtilComponents.ValidarParametrosObligatorios({ NOMBRE_AUTOR, LINK, ESTADO })
+      const validData = UtilComponents.ValidarParametrosObligatorios({ NOMBRE_AUTOR, LINK, ESTADO, NACIONALIDAD, DESCRIPCION_AUTOR })
       if (validData) throw(validData);
-      const autorNew = new AdministracionAutores({ NOMBRE_AUTOR, LINK, ESTADO });
+      const autorNew = new AdministracionAutores({ NOMBRE_AUTOR, LINK, ESTADO, NACIONALIDAD, DESCRIPCION_AUTOR });
       await autorNew.save();
       return res.status(201).json({
         error: false,
@@ -63,7 +63,6 @@ const store = async (req, res) => {
     }
     
   } catch (err) {
-    console.log(err)
     return res.status(err.status || 500).json({ ...err });
   }
 }
@@ -92,6 +91,12 @@ const del = async (req, res) => {
     return res.status(err.status || 500).json({ ...err })
   }
 }
+
+/**
+ * 
+ * @param {req, res} 
+ * @returns Inserta Data masiva a través de una importacion de excel
+ */
 
 const importarExcel = async (req, res) => {
   try {
