@@ -28,7 +28,8 @@ const index = async (req, res) => {
         ID_CATEGORIA ? {ID_CATEGORIA: { $in: (ID_CATEGORIA || null) }} : {},
         ID_ETIQUETA ? {ID_ETIQUETA: { $in: (ID_ETIQUETA || null) }} : {},
         ESTADO ? {ESTADO: { $in: ESTADO }} : {},
-        {TITULO: { $regex: '.*' + TITULO + '.*', $options: 1 }},
+        {TITULO: { $regex: '.*' + TITULO + '.*' }},
+        // {TITULO: { $regex: '.*' + TITULO + '.*', $options: 'g' }},
       ]
     }, {limit: rowsPerPage, page, populate: [{path: 'ID_AUTOR'}, { path: "ID_CATEGORIA"}, { path: "ID_ETIQUETA" }]});
     res.status(201).json({
@@ -43,6 +44,7 @@ const index = async (req, res) => {
     //   page: libros.page,
     //   count: libros.totalDocs
   } catch (err) {
+    console.log(err)
     return res.status(err.status || 500).json({ ...err })
   }
 }
