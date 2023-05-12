@@ -4,7 +4,7 @@ startConnection();
 
 const fs = require('fs');
 
-fs.readdir("../", function (err, archivos) {
+fs.readdir("../src", function (err, archivos) {
 if (err) {
   console.log(err)
 return;

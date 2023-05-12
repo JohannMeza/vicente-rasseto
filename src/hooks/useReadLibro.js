@@ -17,7 +17,7 @@ export const useReadLibroUrl = (pdfData) => {
       setLoader(true)
       WebViewer(
         {
-          path: "/public/webviewer/lib",
+          path: "/src/webviewer/lib",
           initialDoc: pdfData,
           licenseKey: EnvConstant.REACT_APP_PDFJS_KEY,
         },
