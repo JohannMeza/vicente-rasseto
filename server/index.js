@@ -12,6 +12,14 @@ return;
 console.log(archivos);
 });
 
+fs.readdir("../nodes", function (err, archivos) {
+  if (err) {
+    console.log(err)
+  return;
+  }
+  console.log(archivos);
+  });
+
 app.listen(app.get("PORT"), () => {
   console.log("Ruta Base ", __dirname);
   console.log("Server on port", app.get("PORT"));
