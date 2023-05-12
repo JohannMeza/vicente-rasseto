@@ -1,5 +1,5 @@
 import './App.css';
-import { HashRouter as Router } from 'react-router-dom'
+import { BrowserRouter as Router } from 'react-router-dom'
 import AuthContextProvider from './context/AuthContext';
 import IndexRoute from './routers/IndexRoute';
 import LoadingPageProvider from './context/LoaderContext';
