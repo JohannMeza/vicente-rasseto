@@ -16,7 +16,7 @@ const EstudianteRoute = require("./routes/estudiante/estudiante.route")         
 // ### CONFIG ###
 app.set("PORT", config.database.PORT || 4000);
 app.use(cors());
-app.use(express.static(path.join(__dirname, "../build")));
+app.use(express.static(path.join(__dirname, "../")));
 app.use(morgan("dev"));
 app.use(bodyParser.urlencoded({
   parameterLimit: 100000,

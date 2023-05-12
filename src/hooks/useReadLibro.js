@@ -1,8 +1,8 @@
 import { useEffect, useRef, useState } from 'react';
 import useLoaderContext from './useLoaderContext';
 import { AlertUtilRelease } from '../util/AlertUtil';
-import WebViewer from "@pdftron/pdfjs-express";
 import { EnvConstant } from '../util/EnvConstant';
+import WebViewer from "@pdftron/pdfjs-express";
 let pdfjsLib = window['pdfjs-dist/build/pdf'];
 pdfjsLib.GlobalWorkerOptions.workerSrc = '//mozilla.github.io/pdf.js/build/pdf.worker.js';
 
