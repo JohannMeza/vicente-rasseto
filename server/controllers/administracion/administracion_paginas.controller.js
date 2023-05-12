@@ -2,7 +2,6 @@ const Administracion = require("../../models/administracion/administracion.model
 
 const index = async (req, res) => {
   const listAdmin = await Administracion.find();
-  console.log(listAdmin);
   res.send("Administracion de la paginas")
 }
 

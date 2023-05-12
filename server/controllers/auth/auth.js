@@ -59,7 +59,6 @@ const signIn = async (req, res) => {
       token
      })
   } catch (err) {
-    console.log(err)
     return res.status(err.status || 500).json({ ...err })
   }
 }
@@ -153,8 +152,9 @@ const isLogin = async (req, res) => {
     })
 
     const ID_PERFIL = userAccess.ID_PERFILES._id
-    const menusAndSubmenus = await SeguridadPerfilesMenuSubmenu.find({ ID_SEGURIDAD_PERFILES: ID_PERFIL }).populate("ID_CONFIGURACION_MENU").populate("ID_CONFIGURACION_SUBMENU")
-
+    const menusAndSubmenus = await SeguridadPerfilesMenuSubmenu.find({ ID_SEGURIDAD_PERFILES: ID_PERFIL }).populate({path: 'ID_CONFIGURACION_MENU', options: { sort: { ORDEN: -1 } }}).populate({path: 'ID_CONFIGURACION_SUBMENU', options: { sort: { ORDEN: 1 } }})
+    const menusOrdenados = menusAndSubmenus.sort((a, b) => a.ID_CONFIGURACION_MENU.ORDEN - b.ID_CONFIGURACION_MENU.ORDEN);
+    
     let perfil = userAccess.ID_PERFILES.NOMBRE_PERFIL;
     if (perfil.toLowerCase() === "administrador") {
       let user = userAccess._doc;
@@ -170,7 +170,7 @@ const isLogin = async (req, res) => {
       }
     }
 
-    res.status(201).json({ data: {userAccess, menusAndSubmenus} })
+    res.status(201).json({ data: {userAccess, menusAndSubmenus: menusOrdenados} })
   } catch (err) {
     return res.status(err.status || 500).json({ ...err })
   }

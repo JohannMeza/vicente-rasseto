@@ -30,6 +30,10 @@ const configuracionSubmenuSchema = new Schema({
   ESTADO: {
     type: Boolean,
     required: true
+  },
+  ORDEN: {
+    type: Number,
+    default: 0
   }
 },{
   versionKey: false,

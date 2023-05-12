@@ -1,4 +1,4 @@
-import { Box, Grid, Stack } from "@mui/material";
+import { Accordion, AccordionDetails, AccordionSummary, Box, Grid, Stack, Typography } from "@mui/material";
 import React, { useEffect, useRef, useState } from "react";
 import CardHorizontal from "../../../components/card/CardHorizontal";
 import Controls from "../../../framework/components/Controls";
@@ -114,8 +114,8 @@ const BibliotecaPage = () => {
         return libro.ID_ETIQUETA?.find(etiqueta => {
           return ETIQUETAS?.includes(etiqueta)
       })
-    }))
-
+      }))
+    
     setLibrosView(arrLibros)
     setLibrosFilter(arrLibros)
   // eslint-disable-next-line react-hooks/exhaustive-deps
@@ -123,16 +123,27 @@ const BibliotecaPage = () => {
 
   return (
     <Grid container spacing={2}>
-      <Grid item xs={12} sm={12} md={2}>
+      <Grid item xs={12} sm={12} md={3}>
         <Stack direction="column" spacing={2}>
-          <ItemComponent dataSelect={dataSelect} setDataSelect={setDataSelect} name="CATEGORIAS" data={categorias} title="Categorias" />
-          <ItemComponent dataSelect={dataSelect} setDataSelect={setDataSelect} name="ETIQUETAS" data={etiquetas} title="Etiquetas" />
-          <ItemComponent dataSelect={dataSelect} setDataSelect={setDataSelect} name="AUTORES" data={autores} title="Autores" />
-          <ItemComponent dataSelect={dataSelect} setDataSelect={setDataSelect} name="ORDEN" data={orden} title="Ordenar" />
+          <AccordionFilterComponent label="Categorias" >
+            <ItemComponent dataSelect={dataSelect} setDataSelect={setDataSelect} name="CATEGORIAS" data={categorias} title="Categorias" />
+          </AccordionFilterComponent>
+
+          <AccordionFilterComponent label="Etiquetas" >
+            <ItemComponent dataSelect={dataSelect} setDataSelect={setDataSelect} name="ETIQUETAS" data={etiquetas} title="Etiquetas" />
+          </AccordionFilterComponent>
+
+          <AccordionFilterComponent label="Autores" >
+            <ItemComponent dataSelect={dataSelect} setDataSelect={setDataSelect} name="AUTORES" data={autores} title="Autores" />
+          </AccordionFilterComponent>
+
+          <AccordionFilterComponent label="Orden" >
+            <ItemComponent dataSelect={dataSelect} setDataSelect={setDataSelect} name="ORDEN" data={orden} title="Ordenar" />
+          </AccordionFilterComponent>
         </Stack>
       </Grid>
 
-      <Grid item xs={12} sm={12} md={10}>
+      <Grid item xs={12} sm={12} md={9}>
         {/* <Box className="display-flex" sx={{ gap: "15px" }}>
           <LabelComponent label="Aventura" />
         </Box> */}
@@ -239,7 +250,7 @@ const BibliotecaPage = () => {
                     <Controls.ButtonComponent
                       variant="secondary-small"
                       type="admin"
-                      style={{ color: "inherit", width: "100%" }}
+                      style={{ color: "inherit", width: "100%", margin: "5px 0"}}
                       title="¡¡¡VAMOS!!!"
                       onClick={() =>
                         navigate(pathFront.BIBLIOTECA_LIBRO + libro._id)
@@ -272,7 +283,7 @@ const BibliotecaPage = () => {
   );
 };
 
-const ItemComponent = ({ dataSelect, setDataSelect, title, data, name }) => {
+const ItemComponent = ({ dataSelect, setDataSelect, data, name }) => {
   const InputSearchStyled = {
     width: "100%",
     display: "block",
@@ -347,7 +358,6 @@ const ItemComponent = ({ dataSelect, setDataSelect, title, data, name }) => {
 
   return (
     <Box sx={{ position: "relative", zIndex: "1000" }}>
-      <Controls.TextComponent variant="h3" component="div" children={title} />
       <InputSearchComponent />
 
       <Box sx={{ marginTop: "8px" }}>
@@ -374,5 +384,24 @@ const ItemComponent = ({ dataSelect, setDataSelect, title, data, name }) => {
     </Box>
   );
 };
+
+const AccordionFilterComponent = ({ label, children }) => {
+  const [expanded, setExpanded] = useState(false);
+  const handleChange = (panel) => (event, newExpanded) => setExpanded(newExpanded ? panel : false);
+
+  return (
+    <Accordion
+      expanded={expanded === label}
+      onChange={handleChange(label)}
+    >
+      <AccordionSummary aria-controls={`${label}-content`} id={`${label}-header`}>
+        <Typography>{ label }</Typography>
+      </AccordionSummary>
+      <AccordionDetails>
+        { children }
+      </AccordionDetails>
+    </Accordion>
+  )
+}
 
 export default BibliotecaPage;

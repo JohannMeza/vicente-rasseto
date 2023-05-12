@@ -12,33 +12,30 @@ export default function AuthContextProvider ({children}) {
   const [isAuthenticated, setIsAuthenticated] = useState(localStorage.getItem(TOKEN_BIBLIOTECA_VIRTUAL) ? true : false);
   const [user, setUser] = useState(null);
 
-  const getAccess = useCallback(() => {
-    const auth = () => {
-      SaveRequestData({
-        path: ACCESS,
-        body: localStorage.getItem(TOKEN_BIBLIOTECA_VIRTUAL),
-        fnRequest: authAccess,
-        success: (resp) => {
-          setUser(resp.data)
-          // setIsAuthenticated(true)
-        },
-        error: (err) => {
-          localStorage.removeItem(TOKEN_BIBLIOTECA_VIRTUAL);
-          window.location.reload()
-          // setIsAuthenticated(false)
-        }
-      })
-    }
-    
-    if (isAuthenticated) auth();
+  const getAccess = () => {
+    SaveRequestData({
+      path: ACCESS,
+      body: localStorage.getItem(TOKEN_BIBLIOTECA_VIRTUAL),
+      fnRequest: authAccess,
+      success: (resp) => {
+        setUser(resp.data)
+        // setIsAuthenticated(true)
+      },
+      error: (err) => {
+        localStorage.removeItem(TOKEN_BIBLIOTECA_VIRTUAL);
+        window.location.reload()
+        // setIsAuthenticated(false)
+      }
+    })
   // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [])
+  }
 
   const logout = () => {
     localStorage.removeItem(TOKEN_BIBLIOTECA_VIRTUAL);
+    setIsAuthenticated(false);
     setUser(null);
-    window.location.reload()
-    // setIsAuthenticated(false);
+    
+    // window.location.reload()
   }
 
   const login = useCallback((token) => {
@@ -55,8 +52,8 @@ export default function AuthContextProvider ({children}) {
   }), [isAuthenticated, login, user])
 
   useEffect(() => {
-    getAccess();
-  }, [getAccess])
+    if (isAuthenticated) getAccess()
+  }, [])
 
   return <AuthContext.Provider value={value}>{children}</AuthContext.Provider>
 }

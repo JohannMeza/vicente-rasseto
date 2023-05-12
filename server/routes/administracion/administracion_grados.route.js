@@ -4,6 +4,6 @@ const AdministracionGrado = require("../../controllers/administracion/administra
 
 router.post("/:id", AdministracionGrado.index)
 router.post("/new/:id", AdministracionGrado.store)
-router.put("/delete/:id", AdministracionGrado.del)
+router.delete("/delete/:id", AdministracionGrado.del)
 
 module.exports = router;

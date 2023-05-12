@@ -19,6 +19,9 @@ import DocumentScannerIcon from '@mui/icons-material/DocumentScanner';
 import AutoStoriesIcon from '@mui/icons-material/AutoStories';
 import SearchIcon from '@mui/icons-material/Search';
 import SignalCellularAltIcon from '@mui/icons-material/SignalCellularAlt';
+import WidgetsIcon from '@mui/icons-material/Widgets';
+import FilterListIcon from '@mui/icons-material/FilterList';
+import CleaningServicesIcon from '@mui/icons-material/CleaningServices';
 
 export const ICON = {
   CLOSE: <CloseIcon />,
@@ -41,5 +44,8 @@ export const ICON = {
   REMOVE: <RemoveIcon />,
   SCANNER: <DocumentScannerIcon />,
   READ: <AutoStoriesIcon />,
-  DEGREE: <SignalCellularAltIcon />
+  DEGREE: <SignalCellularAltIcon />,
+  WIDGETS: <WidgetsIcon />,
+  FILTER: <FilterListIcon />,
+  LIMPIAR: <CleaningServicesIcon />,
 }

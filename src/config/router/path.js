@@ -49,7 +49,7 @@ export const pathServer = {
     GRADOS: {
       INDEX: "/administracion/grado/",
       NEW: "/administracion/grado/new/",
-      DELETE: "/administracion/grado/"
+      DELETE: "/administracion/grado/delete/"
     },
     NIVEL_ESTUDIO: {
       INDEX: "/administracion/nivel_estudio",
@@ -89,7 +89,7 @@ export const pathServer = {
       LIST_ALL_GRADOS: "/administracion/multimedia/list_nivel_estudio",
       LIST_GRADOS_SAVE: "/administracion/multimedia/list_grados_by_media/",
       NEW: "/administracion/multimedia/new/",
-      NEW_CLOUDINARY: "/administracion/multimedia/new/cloudinary/",
+      NEW_CLOUDINARY: "/administracion/multimedia/new/",
       DELETE: "/administracion/multimedia/delete/",
       UPDATE_GRADOS: "/administracion/multimedia/update_grados/"
     }

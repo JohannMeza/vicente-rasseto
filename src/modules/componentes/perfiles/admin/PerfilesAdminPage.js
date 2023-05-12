@@ -11,7 +11,6 @@ import ButtonsSearchComponent from '../../../../components/utilComponents/Button
 import { SERVICES_POST } from '../../../../services/services.axios';
 import { MessageUtil } from '../../../../util/MessageUtil';
 import useLoaderContext from '../../../../hooks/useLoaderContext';
-import ValidateData from '../../../../hooks/useValidateData';
 import { pathFront } from '../../../../config/router/pathFront';
 import useAuthContext from '../../../../hooks/useAuthContext';
 
@@ -182,14 +181,15 @@ export default function PerfilesAdminPage () {
                   <TableCell>
                     <Stack direction="row" spacing={1}>
                       <Controls.ButtonIconComponent
-                        title="Editar"
+                        title={el.IS_MANAGEABLE || user.userAccess.ADMIN ? "Editar": null}
                         disabled={el.IS_MANAGEABLE || user.userAccess.ADMIN ? false : true}
                         icon={ICON.EDIT}
                         onClick={() => updatePerfil(el)}
-                      />
+                        />
 
                       <Controls.ButtonIconComponent
-                        title="Eliminar"
+                        title={el.IS_MANAGEABLE || user.userAccess.ADMIN ? "Eliminar": null}
+                        disabled={el.IS_MANAGEABLE || user.userAccess.ADMIN ? false : true}
                         icon={ICON.DELETE}
                       />
 

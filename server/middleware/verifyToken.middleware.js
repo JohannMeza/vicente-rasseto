@@ -1,3 +1,9 @@
+/**
+ * 
+ * @param {req, res, next} 
+ * @returns Valida si el token guardado en el cliente es valido
+ */
+
 const verifyToken = (req, res, next) => {
   const authorization_header = req.headers['authorization'];
   if (authorization_header) {

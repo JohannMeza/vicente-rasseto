@@ -1,7 +1,6 @@
-import { Container, CssBaseline, Grid, Box, Stack } from '@mui/material';
+import { CssBaseline, Grid, Box, Stack } from '@mui/material';
 import Controls from '../../framework/components/Controls';
-import React, { useRef } from 'react';
-import Logo from "../../assets/resources/logo.png"
+import React from 'react';
 import "./SignInPage.scss"
 import { authLogin } from '../../services/auth.axios';
 import { useForm } from '../../hooks/useForm';
@@ -10,7 +9,6 @@ import { SaveRequestData } from '../../helpers/helpRequestBackend';
 import { MessageUtil } from '../../util/MessageUtil';
 import useAuthContext from '../../hooks/useAuthContext';
 import useLoaderContext from '../../hooks/useLoaderContext';
-import { ICON } from '../../framework/components/icons/Icon';
 
 const dataInitial = {
   EMAIL: "",
@@ -20,7 +18,6 @@ const dataInitial = {
 export default function SignInPage() {
   const [data, handleInputChange, , setData] = useForm(dataInitial);
   const { login, setUser } = useAuthContext();
-  const inputPass = useRef(null);
   const setLoader = useLoaderContext()
 
   const loginUser = () => {
@@ -58,7 +55,7 @@ export default function SignInPage() {
             </Stack>
           </Grid> */}
           
-          <Grid item xs={8}>
+          <Grid item xs={12} lg={10}>
             <Stack direction="column" spacing={5}>
               <Controls.TextComponent 
                 children="Iniciar Sesión"
@@ -70,6 +67,7 @@ export default function SignInPage() {
 
               <Box>
                 <Controls.InputComponent
+                  id="email"
                   label="Usuario"
                   name="EMAIL"
                   value={data.EMAIL}
@@ -80,13 +78,13 @@ export default function SignInPage() {
 
               <Box>
                 <Controls.InputComponent
+                  id="password"
                   label="Contraseña"
                   type="password"
                   autoComplete='on'
                   name="PASSWORD"
                   value={data.PASSWORD}
                   onChange={handleInputChange}
-                  ref={inputPass}
                 />
               </Box>
             </Stack>

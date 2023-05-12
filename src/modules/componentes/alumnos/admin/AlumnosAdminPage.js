@@ -257,9 +257,9 @@ export default function AlumnosAdminPage () {
                 <TableRow key={index}>
                   <TableCell>{el.NOMBRE_USUARIO}</TableCell>
                   <TableCell>{el.DNI}</TableCell>
-                  <TableCell>{el.ID_LOGIN.EMAIL}</TableCell>
-                  <TableCell>{el.ID_GRADO.ID_NIVEL_ESTUDIO?.NIVEL_ESTUDIO}</TableCell>
-                  <TableCell>{el.ID_GRADO.GRADO}</TableCell>
+                  <TableCell>{el.ID_LOGIN?.EMAIL}</TableCell>
+                  <TableCell>{el.ID_GRADO?.ID_NIVEL_ESTUDIO?.NIVEL_ESTUDIO}</TableCell>
+                  <TableCell>{el.ID_GRADO?.GRADO}</TableCell>
                   <TableCell>
                     <Stack direction="row" spacing={1}>
                       <Controls.ButtonIconComponent

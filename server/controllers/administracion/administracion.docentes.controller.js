@@ -47,7 +47,7 @@ const index = async (req, res) => {
 const store = async (req, res) => {
   try {
     let { NOMBRE_USUARIO, ESTADO, DNI, EMAIL, _id, ID_GRADO, PASSWORD } = req.body;
-    const { _id: ID_LOGIN } = req.body.ID_LOGIN;
+    const { _id: ID_LOGIN } = req.body.ID_LOGIN ? req.body.ID_LOGIN : { _id: null };
     if (!PASSWORD) PASSWORD = DNI
     const validData = UtilComponents.ValidarParametrosObligatorios({ NOMBRE_USUARIO, ESTADO, DNI, PASSWORD })
     if (validData) throw(validData)    

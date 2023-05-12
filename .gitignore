@@ -13,6 +13,7 @@
 # /build
 /public
 /server/node_modules
+/server/.env
 /.vscode
 
 # misc

@@ -2,6 +2,7 @@ import { useEffect, useRef, useState } from 'react';
 import useLoaderContext from './useLoaderContext';
 import { AlertUtilRelease } from '../util/AlertUtil';
 import WebViewer from "@pdftron/pdfjs-express-viewer";
+import { EnvConstant } from '../util/EnvConstant';
 let pdfjsLib = window['pdfjs-dist/build/pdf'];
 pdfjsLib.GlobalWorkerOptions.workerSrc = '//mozilla.github.io/pdf.js/build/pdf.worker.js';
 
@@ -13,30 +14,31 @@ export const useReadLibroUrl = (pdfData) => {
   
   useEffect(() => {
     if (canvasElement && pdfData) {
-  console.log(pdfData)
+      setLoader(true)
       WebViewer(
         {
           path: "/webviewer/lib",
           initialDoc: pdfData,
-          licenseKey: "VMeLR5MsW5lX3X9YfqQF",
+          licenseKey: EnvConstant.REACT_APP_PDFJS_KEY,
         },
         canvasElement.current
       ).then((instance) => {
         // now you can access APIs through the WebViewer instance
+        setLoader(false)
         const { Core, UI } = instance;
   
         // adding an event listener for when a document is loaded
-        Core.documentViewer.addEventListener("documentLoaded", () => {
-          console.log("document loaded");
-        });
+        // Core.documentViewer.addEventListener("documentLoaded", () => {
+        //   console.log("document loaded");
+        // });
   
         // adding an event listener for when the page number has changed
-        Core.documentViewer.addEventListener(
-          "pageNumberUpdated",
-          (pageNumber) => {
-            console.log(`Page number is: ${pageNumber}`);
-          }
-        );
+        // Core.documentViewer.addEventListener(
+        //   "pageNumberUpdated",
+        //   (pageNumber) => {
+        //     console.log(`Page number is: ${pageNumber}`);
+        //   }
+        // );
   
         // adds a button to the header that on click sets the page to the next page
         UI.setHeaderItems((header) => {
@@ -92,7 +94,6 @@ export const useReadLibroPage = (pdfData, pageNumber = 1, scale = 1.5) => {
           })
           .catch(err => {
             setLoader(false)
-            console.error(err);
           });
         });
       }, function (reason) {

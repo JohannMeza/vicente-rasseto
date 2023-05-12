@@ -32,7 +32,7 @@ const HomePage = () => {
           >
             <Controls.Title title="Audio Libros" sx={{ color: "var(--white_100)" }} />
             <Controls.TextComponent variant="text1" component="p" sx={{ color: "var(--white_100)" }}> 
-              A aqui econtrarás contenidos de libros leídos en voz alta.
+              Quiero escuchar un libro hablado
             </Controls.TextComponent>
             <br />
             <Controls.ButtonComponent 
@@ -49,7 +49,7 @@ const HomePage = () => {
           >
             <Controls.Title title="Biblioteca" sx={{ color: "var(--white_100)" }} />
             <Controls.TextComponent variant="text1" component="p" sx={{ color: "var(--white_100)" }}> 
-              A aqui econtrarás contenidos de libros leídos en voz alta.
+              Quiero leer un libro
             </Controls.TextComponent>
             <br />
             <Controls.ButtonComponent 

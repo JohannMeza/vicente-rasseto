@@ -102,7 +102,6 @@ export default function PaginasConfiguracionPage() {
         setLoadingTable(false);
       },
       error: (err) => {
-        console.log(err)
         MessageUtil({ message: err.statusText, type: "error", seg: 10 });
       },
     });
@@ -211,10 +210,12 @@ export default function PaginasConfiguracionPage() {
 
   useEffect(() => {
     openModal && getSubPaginas();
+  // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [openModal]);
 
   useEffect(() => {
     searchSubPaginas();
+  // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
   return (

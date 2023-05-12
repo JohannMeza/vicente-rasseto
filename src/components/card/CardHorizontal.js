@@ -6,7 +6,7 @@ const CardHorizontal = ({ classNameColor, children, img, sx }) => {
   return (
     <Box className={`card-main ${classNameColor}`} sx={sx}>
       <Box className="display-flex display-flex-center-center card-main__img">
-        <img src={img} alt="" style={{ maxHeight: "250px", objectFit: "cover" }} />
+        <img src={img} alt="" />
       </Box>
       <Box item xs={6}>
         {children}

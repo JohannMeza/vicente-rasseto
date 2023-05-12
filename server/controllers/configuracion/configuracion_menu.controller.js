@@ -9,12 +9,10 @@ const index = async (req, res) => {
     const { rowsPerPage, page } = req.body;
     let { NOMBRE_MENU, PATH, ESTADO } = req.body
 
-    if (typeof ESTADO !== "boolean") {
-      ESTADO = true;
-    }
+    if (typeof ESTADO !== "boolean") ESTADO = true;
 
     const dataFilter = UtilComponents.ValidarObjectForFilter({ NOMBRE_MENU, PATH, ESTADO })
-    const data = await ConfiguracionMenu.paginate(dataFilter, {limit: rowsPerPage, page});
+    const data = await ConfiguracionMenu.paginate(dataFilter, {limit: rowsPerPage, page, sort: { ORDEN: 1 } });
     res.status(201).json({
       error: false,
       status: 201,
@@ -31,19 +29,19 @@ const index = async (req, res) => {
 
 const store = async (req, res) => {
   try {
-    const { NOMBRE_MENU, NOMBRE_ICON, _id, PATH, ESTADO } = req.body;
+    const { NOMBRE_MENU, NOMBRE_ICON, _id, PATH, ESTADO, ORDEN } = req.body;
     const validData = UtilComponents.ValidarParametrosObligatorios({NOMBRE_MENU, NOMBRE_ICON, PATH, ESTADO})
     if (validData) throw(validData)
 
     if (_id) { // EDITAR
-      await ConfiguracionMenu.findByIdAndUpdate({ _id }, { NOMBRE_MENU, NOMBRE_ICON, PATH, ESTADO })
+      await ConfiguracionMenu.findByIdAndUpdate({ _id }, { NOMBRE_MENU, NOMBRE_ICON, PATH, ESTADO, ORDEN })
       res.status(201).json({
         error: false,
         status: 201,
         statusText: MessageConstants.MESSAGE_SUCCESS_UPDATE
       })
     } else { // GUARDAR
-      const dataStore = new ConfiguracionMenu({ NOMBRE_MENU, NOMBRE_ICON, PATH, ESTADO })
+      const dataStore = new ConfiguracionMenu({ NOMBRE_MENU, NOMBRE_ICON, PATH, ESTADO, ORDEN })
       await dataStore.save();
       res.status(201).json({
         error: false,
@@ -51,61 +49,6 @@ const store = async (req, res) => {
         statusText: MessageConstants.MESSAGE_SUCCESS_SAVE
       })
     }
-
-
-   
-
-    // if (_id) {
-    //   // ### ACTUALIZAR
-    //   // const datosEliminados = await  
-    //   // console.log(SUBMENUS)
-    //   SUBMENUS.forEach(el => delete el._id)
-
-
-
-
-    //   Promise.all([
-    //     ConfiguracionMenu.findByIdAndUpdate({_id},{ NOMBRE_MENU, NOMBRE_ICON }),
-    //     // ConfiguracionSubmenu.deleteMany({}, SUBMENUS),
-    //     ConfiguracionSubmenu.updateMany(
-    //       { submenus: SUBMENUS },
-    //       { $set: 
-    //         { 
-    //           "PATH": SUBMENUS.PATH,
-    //           "NOMBRE_ICON": SUBMENUS.NOMBRE_ICON,
-    //         }
-    //       },
-    //       { arrayFilters: [ { "element._id": { $eq: _id } } ] }
-    //     )
-    //   ])
-    //   .then(async () => {
-    //     await ConfiguracionSubmenu.insertMany(SUBMENUS)
-    //     res.status(201).json({
-    //       error: false,
-    //       status: 201,
-    //       statusText: "La página se actualizó con éxito",
-    //     })
-    //   })
-    // } else {
-    //   // ### GUARDAR
-    //   const data = new ConfiguracionMenu({ NOMBRE_MENU, NOMBRE_ICON });
-    //   await data.save() 
-    //   const lastMenu = await ConfiguracionMenu.findOne({}, {_id: 1}).sort({ $natural: -1 }).limit(1)
-
-    //   SUBMENUS.forEach(el => {
-    //     el.ID_MENU = lastMenu._id
-    //     delete el._id
-    //   })
-
-    //   await ConfiguracionSubmenu.insertMany(SUBMENUS)
-
-    //   res.status(201).json({
-    //     error: false,
-    //     status: 201,
-    //     statusText: "La página se guardó con éxito",
-    //   })
-    // }
-
   } catch (err) {
     return res.status(err.status || 500).json({ ...err })
   }
@@ -116,8 +59,7 @@ const searchSubpaginas = async (req, res) => {
     const { id } = req.params;
     const validData = UtilComponents.ValidarParametrosObligatorios({id})
     if (validData) throw(validData)
-
-    const subpaginas = await ConfiguracionMenu.find({ _id: id }, {ID_CONFIGURACION_SUBMENU: 1, PATH: 1 }).populate('ID_CONFIGURACION_SUBMENU')
+    const subpaginas = await ConfiguracionMenu.find({ _id: id }, {ID_CONFIGURACION_SUBMENU: 1, PATH: 1 }).populate({path: 'ID_CONFIGURACION_SUBMENU', options: { sort: { ORDEN: 1 } }})
 
     res.status(201).json({
       error: false,

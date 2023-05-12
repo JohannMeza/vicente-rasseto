@@ -28,7 +28,6 @@ export  const SaveRequestData = (config) => {
     })
     .catch((err) => {
       let { response } = err
-      console.log(err)
       error(response.data)
     })
   }

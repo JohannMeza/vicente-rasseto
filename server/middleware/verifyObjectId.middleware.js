@@ -1,6 +1,12 @@
 /* eslint-disable no-throw-literal */
 const ObjectId = require('mongoose').Types.ObjectId;
 
+/**
+ * 
+ * @param {res, res, next}
+ * @returns Valida si el id de la schema es valido
+ */
+
 const verifyObjectId = (req, res, next) => {
   const { id } = req.params
   

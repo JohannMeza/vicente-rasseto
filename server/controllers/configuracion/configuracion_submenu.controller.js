@@ -26,18 +26,18 @@ const index = async (req, res) => {
 
 const store = async (req, res) => {
   try {
-    const { NOMBRE_SUBMENU, NOMBRE_ICON, PATH, PATH_FILE, PATH_BASE, ESTADO, _id } = req.body
+    const { NOMBRE_SUBMENU, NOMBRE_ICON, PATH, PATH_FILE, PATH_BASE, ESTADO, _id, ORDEN } = req.body
     const validData = UtilComponents.ValidarParametrosObligatorios({NOMBRE_SUBMENU, NOMBRE_ICON, PATH, PATH_FILE, PATH_BASE, ESTADO})
     if (validData) throw(validData);
     if (_id) { // EDITAR
-      await ConfiguracionSubmenu.findByIdAndUpdate({ _id }, { NOMBRE_SUBMENU, NOMBRE_ICON, PATH, PATH_FILE, PATH_BASE, ESTADO });
+      await ConfiguracionSubmenu.findByIdAndUpdate({ _id }, { NOMBRE_SUBMENU, NOMBRE_ICON, PATH, PATH_FILE, PATH_BASE, ESTADO, ORDEN });
       res.status(201).json({
         error: false,
         status: 201,
         statusText: MessageConstants.MESSAGE_SUCCESS_UPDATE
       })
     } else { // GUARDAR
-      const saveData = new ConfiguracionSubmenu({ NOMBRE_SUBMENU, NOMBRE_ICON, PATH, PATH_FILE, PATH_BASE, ESTADO });
+      const saveData = new ConfiguracionSubmenu({ NOMBRE_SUBMENU, NOMBRE_ICON, PATH, PATH_FILE, PATH_BASE, ESTADO, ORDEN });
       await saveData.save()
       res.status(201).json({
         error: false,

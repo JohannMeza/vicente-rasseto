@@ -3,13 +3,11 @@ const AdministracionMultimedia = require("../../models/administracion/administra
 const AdministracionCategoria = require("../../models/administracion/administracion_categorias.model");
 const AdministracionEtiqueta = require("../../models/administracion/administracion_etiquetas.model");
 const AdministracionAutores = require("../../models/administracion/administracion_autores.model");
-const AdministracionNivelEstudio = require("../../models/administracion/administracion_nivel_estudio.model");
 const AdministracionGrados = require("../../models/administracion/administracion_grados.model");
 const MessageConstants = require("../../constants/message");
 const UtilComponents = require("../../utils/UtilsComponents");
 const cloudinary = require("cloudinary");
 const EnvConstant = require("../../utils/EnvConstant");
-const AdministracionGrado = require("../../models/administracion/administracion_grados.model");
 const NivelEstudio = require("../../models/administracion/administracion_nivel_estudio.model");
 
 /**
@@ -29,8 +27,9 @@ const index = async (req, res) => {
         ID_AUTOR ? {ID_AUTOR: { $in: (ID_AUTOR || null) }} : {},
         ID_CATEGORIA ? {ID_CATEGORIA: { $in: (ID_CATEGORIA || null) }} : {},
         ID_ETIQUETA ? {ID_ETIQUETA: { $in: (ID_ETIQUETA || null) }} : {},
-        ESTADO ? {ESTADO: { $regex: ESTADO, $options: 1 }} : {},
-        {TITULO: { $regex: '.*' + TITULO + '.*', $options: 1 }},
+        ESTADO ? {ESTADO: { $in: ESTADO }} : {},
+        {TITULO: { $regex: '.*' + TITULO + '.*' }},
+        // {TITULO: { $regex: '.*' + TITULO + '.*', $options: 'g' }},
       ]
     }, {limit: rowsPerPage, page, populate: [{path: 'ID_AUTOR'}, { path: "ID_CATEGORIA"}, { path: "ID_ETIQUETA" }]});
     res.status(201).json({
@@ -45,12 +44,12 @@ const index = async (req, res) => {
     //   page: libros.page,
     //   count: libros.totalDocs
   } catch (err) {
+    console.log(err)
     return res.status(err.status || 500).json({ ...err })
   }
 }
 
 const uploadImage = (req, res) => {
-  console.log(req.file)
   res.send("Imagen cargada");
 }
 
@@ -172,11 +171,10 @@ const store_upload = async (req, res) => {
     let { BACKGROUND } = req.body;
     let filename, size;
     let dataImagen = { url: IMAGEN, ...JSON.parse(DATA_IMAGEN || {}) }
-    
     if (SUBIDA === 'cloudinary') {
       cloudinary.config({ cloud_name: EnvConstant.APP_CLOUDINARY_NAME, api_key: EnvConstant.APP_CLOUDINARY_KEY, api_secret: EnvConstant.APP_CLOUDINARY_API_SECRET })
       const fileUpload = await cloudinary.uploader.upload(req.file.path)
-      filename = fileUpload.url
+      filename = fileUpload.secure_url
       size = req.file.size
     } else if (SUBIDA === 'github') {
       filename = req.body.FILE
@@ -207,7 +205,6 @@ const store_upload = async (req, res) => {
       })
     }
   } catch (err) { 
-    console.log(err)
     return res.status(err.status || 500).json({ ...err });
   }
 }

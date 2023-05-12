@@ -1,7 +1,6 @@
 import { Box, Grid } from "@mui/material";
 import React, { useState } from "react";
 import Controls from "../../../framework/components/Controls";
-import imagelibro from "../../../assets/image/audiolibro-card.png";
 import LabelComponent from "../../../components/card/LabelComponent";
 import useLoaderContext from "../../../hooks/useLoaderContext";
 import { SaveRequestData } from "../../../helpers/helpRequestBackend";
@@ -36,7 +35,6 @@ const BusquedaLibrosPage = () => {
       fnRequest: SERVICES_POST,
       success: (resp) => {
         setLoader(false);
-        console.log(resp);
         setLibrosFiltrados(resp.data);
       },
       error: (err) => {

@@ -170,7 +170,8 @@ const dataInitialPaginas = {
   NOMBRE_MENU: null,
   NOMBRE_ICON: null,
   PATH: null,
-  ESTADO: true
+  ESTADO: true,
+  ORDEN: 0
 };
 
 const dataInitialFilter = {
@@ -201,6 +202,10 @@ export default function PaginasDetail() {
       temp.PATH = !fieldValues.PATH ? "El campo Ruta es requerido" : "";
     } 
     
+    if ("ORDEN" in fieldValues) {
+      temp.ORDEN = fieldValues.ORDEN < 0 ? "El campo no puede ser menor a 0" : "";
+    } 
+    
     setErrors({...temp});
     if (fieldValues === data) {
       return Object.values(temp).every((x) => x === '');
@@ -225,8 +230,7 @@ export default function PaginasDetail() {
       page,
       success: (resp) => {
         setLoader(false)
-        let {rowsPerPage, count, page} = resp;
-        --page 
+        let { rowsPerPage, count, page } = resp; --page; 
         setPaginas(resp.data);
         setPagination({rowsPerPage, count, page})
       },
@@ -238,44 +242,51 @@ export default function PaginasDetail() {
   };
 
   const agregarPagina = () => {
-    setLoader(true);
-    if (data._id) {
-      SaveRequestData({ // editar
-        path: pathServer.CONFIGURACION.MENU.NEW,
-        body: {...data},
-        fnRequest: SERVICES_POST,
-        success: (resp) => {
-          resetForm()
-          getPaginas()
-          MessageUtil({ message: resp.statusText, type: "success", seg: 10 });
-          setOpenModal(false)
-          setLoader(false)
-        },
-        error: (err) => {
-          resetForm()
-          setLoader(false)
-          MessageUtil({ message: err.statusText, type: "error", seg: 10 });
-        }
-      })
-    } else {
-      SaveRequestData({ // save
-        path: pathServer.CONFIGURACION.MENU.NEW,
-        body: {...data},
-        fnRequest: SERVICES_POST,
-        success: (resp) => {
-          resetForm()
-          getPaginas()
-          MessageUtil({ message: resp.statusText, type: "success", seg: 10 });
-          setOpenModal(false)
-          setLoader(false)
-        },
-        error: (err) => {
-          resetForm()
-          setLoader(false)
-          MessageUtil({ message: err.statusText, type: "error", seg: 10 });
-        }
-      })
+    if (validate()) {
+      setLoader(true);
+      if (data._id) {
+        SaveRequestData({ // editar
+          path: pathServer.CONFIGURACION.MENU.NEW,
+          body: {...data},
+          fnRequest: SERVICES_POST,
+          success: (resp) => {
+            resetForm()
+            getPaginas()
+            MessageUtil({ message: resp.statusText, type: "success", seg: 10 });
+            setOpenModal(false)
+            setLoader(false)
+          },
+          error: (err) => {
+            resetForm()
+            setLoader(false)
+            MessageUtil({ message: err.statusText, type: "error", seg: 10 });
+          }
+        })
+      } else {
+        SaveRequestData({ // save
+          path: pathServer.CONFIGURACION.MENU.NEW,
+          body: {...data},
+          fnRequest: SERVICES_POST,
+          success: (resp) => {
+            resetForm()
+            getPaginas()
+            MessageUtil({ message: resp.statusText, type: "success", seg: 10 });
+            setOpenModal(false)
+            setLoader(false)
+          },
+          error: (err) => {
+            resetForm()
+            setLoader(false)
+            MessageUtil({ message: err.statusText, type: "error", seg: 10 });
+          }
+        })
+      }
     }
+  }
+
+  const handleBtnBack = () => {
+    setOpenModal(false)
+    resetForm()
   }
 
   const deletePagina = (id) => {
@@ -455,13 +466,23 @@ export default function PaginasDetail() {
             />
           </Grid>
           <Grid item xs={12}>
+            <Controls.InputComponent
+              label="Orden"
+              name="ORDEN"
+              type="number"
+              value={data.ORDEN}
+              onChange={handleInputFormChange}
+              error={errors.ORDEN}
+            />
+          </Grid>
+          <Grid item xs={12}>
             <Stack direction="row" spacing={3} justifyContent="center">
               <Controls.ButtonComponent
                 title="VOLVER"
                 variant="secondary-normal"
                 type="admin"
                 icon={ICON.BACK}
-                onClick={() => setOpenModal(false)}
+                onClick={handleBtnBack}
               />
 
               <Controls.ButtonComponent
