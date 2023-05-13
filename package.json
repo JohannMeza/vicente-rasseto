@@ -8,6 +8,7 @@
     "@mui/icons-material": "^5.8.4",
     "@mui/material": "^5.8.4",
     "@mui/x-data-grid": "^5.16.0",
+    "@pdftron/pdfjs-express": "^8.7.3",
     "@pdftron/pdfjs-express-viewer": "^8.7.1",
     "@testing-library/jest-dom": "^5.16.4",
     "@testing-library/react": "^13.3.0",
