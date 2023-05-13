@@ -3,6 +3,8 @@ import useLoaderContext from './useLoaderContext';
 import { AlertUtilRelease } from '../util/AlertUtil';
 import { EnvConstant } from '../util/EnvConstant';
 import WebViewer from "@pdftron/pdfjs-express";
+// import Path from ;
+
 let pdfjsLib = window['pdfjs-dist/build/pdf'];
 pdfjsLib.GlobalWorkerOptions.workerSrc = '//mozilla.github.io/pdf.js/build/pdf.worker.js';
 
@@ -17,7 +19,7 @@ export const useReadLibroUrl = (pdfData) => {
       setLoader(true)
       WebViewer(
         {
-          path: "/webviewer/lib",
+          path: "../webviewer/lib",
           initialDoc: pdfData,
           licenseKey: EnvConstant.REACT_APP_PDFJS_KEY,
         },
