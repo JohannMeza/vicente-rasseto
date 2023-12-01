@@ -336,9 +336,7 @@ export default function LibrosDetailPage () {
             setLoader(false)
           }
         })
-      }
-
-      
+      }   
     }
   }
 

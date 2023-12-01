@@ -22,6 +22,7 @@ import { SERVICES_GET } from "../../services/services.axios";
 import { MessageUtil } from "../../util/MessageUtil";
 import useLoaderContext from "../../hooks/useLoaderContext";
 import useAuthContext from "../../hooks/useAuthContext";
+import { DashboardAdmin } from '../componentes/dashboard/admin/DashboardAdmin';
 
 const drawerWidth = 296;
 const DrawerHeader = styled('div')(({ theme }) => ({
@@ -80,6 +81,7 @@ export default function AdministradorAdminPage () {
               });
           });
         })
+        arrFileComponents.push({url: '/', component: <DashboardAdmin />})
         setArrData(arrFileComponents);
       },
       error: (err) => {

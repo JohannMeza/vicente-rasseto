@@ -104,8 +104,18 @@ const importarExcel = async (req, res) => {
     const workbookSheets = workbook.SheetNames;
     const sheet = workbookSheets[0];
     const dataExcel = XLSX.utils.sheet_to_json(workbook.Sheets[sheet]);
+    const dataParser = dataExcel.map(el => {
+      let objReturn = {}
+      
+      for (let value in el) {
+        if (value.toLowerCase() === 'estado') objReturn[value] = el[value] === 'true' ? true : false;
+        else objReturn[value] = el[value];
+      }
 
-    await AdministracionAutores.insertMany(dataExcel)
+      return objReturn;
+    })
+
+    await AdministracionAutores.insertMany(dataParser)
 
     return res.status(201).json({
       error: false,

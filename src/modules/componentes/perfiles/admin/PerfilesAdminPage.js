@@ -221,7 +221,7 @@ export default function PerfilesAdminPage () {
         minWidth={600}
         fullWidth={true}
         maxWidth="sm"
-        title="Nuevo Perfil"
+        title={data.NOMBRE_PERFIL ? "Editar Perfil" : "Nuevo Perfil"}
       >
         <Grid container spacing={3}>
           <Grid item xs={12}>

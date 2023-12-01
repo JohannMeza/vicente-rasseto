@@ -224,7 +224,7 @@ const ModalEtiquetas = ({ open, setOpen, isDataToEdit, setIsDataToEdit, saveData
     minWidth={600}
     fullWidth={true}
     maxWidth="sm"
-    title="Nueva Categoría"
+    title={isDataToEdit ? "Editar Etiqueta" : "Nueva Etiqueta"}
     >
       <Grid container spacing={3}>
         <Grid item xs={12}>

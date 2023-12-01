@@ -3,10 +3,15 @@ import useLoaderContext from './useLoaderContext';
 import { AlertUtilRelease } from '../util/AlertUtil';
 import { EnvConstant } from '../util/EnvConstant';
 import WebViewer from "@pdftron/pdfjs-express";
+import { pdfjs as pdfjsLib } from "react-pdf";
+import pdfjsWorker from "pdfjs-dist/build/pdf.worker.entry";
+
 // import Path from ;
 
-let pdfjsLib = window['pdfjs-dist/build/pdf'];
-pdfjsLib.GlobalWorkerOptions.workerSrc = '//mozilla.github.io/pdf.js/build/pdf.worker.js';
+// let pdfjsLib = window['pdfjs-dist/build/pdf'];
+// pdfjsLib.GlobalWorkerOptions.workerSrc = '//mozilla.github.io/pdf.js/build/pdf.worker.js';
+
+pdfjsLib.GlobalWorkerOptions.workerSrc = pdfjsWorker;
 
 // Leer Libro - Todas las paginas
 export const useReadLibroUrl = (pdfData) => {

@@ -287,7 +287,7 @@ const ModalGrados = ({ open, setOpen, saveGrado, isDataToEdit, setIsDataToEdit, 
     minWidth={600}
     fullWidth={true}
     maxWidth="sm"
-    title="Nuevo Grado"
+    title={isDataToEdit ? "Editar Grado" : "Nuevo Grado"}
     >
       <Grid container spacing={3}>
         <Grid item xs={12}>

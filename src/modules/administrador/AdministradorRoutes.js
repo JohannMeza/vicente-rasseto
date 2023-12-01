@@ -1,17 +1,18 @@
+import { createElement, memo, useEffect } from "react";
 import { Box, CssBaseline } from "@mui/material";
-import React, { memo, useEffect } from "react";
-import HeaderComponent from "../../components/layout/HeaderComponent";
-import NavbarComponent from "../../components/layout/NavbarComponent";
 import { styled } from "@mui/material/styles";
 import { Route, Routes } from "react-router-dom";
-import useLayoutContext from "../../hooks/useLayoutContext";
 import { useState } from "react";
 import { SaveRequestData } from "../../helpers/helpRequestBackend";
 import { pathServer } from "../../config/router/path";
 import { SERVICES_GET } from "../../services/services.axios";
 import { MessageUtil } from "../../util/MessageUtil";
+import { DashboardAdmin } from "../componentes/dashboard/admin/DashboardAdmin";
+import useLayoutContext from "../../hooks/useLayoutContext";
 import useLoaderContext from "../../hooks/useLoaderContext";
 import useAuthContext from "../../hooks/useAuthContext";
+import HeaderComponent from "../../components/layout/HeaderComponent";
+import NavbarComponent from "../../components/layout/NavbarComponent";
 
 const drawerWidth = 296;
 const DrawerHeader = styled("div")(({ theme }) => ({
@@ -62,13 +63,14 @@ const AdministradorRoutes = () => {
             if (el.PATH_FILE === "") return;
             import(`../${el.PATH_FILE}`)
             .then((module) => {
-              arrFileComponents.push({url: el.PATH_BASE, component: React.createElement(module.default)})
-              })
-              .catch((err) => {
-                console.log(err);
-              });
+              arrFileComponents.push({url: el.PATH_BASE, component: createElement(module.default)})
+            })
+            .catch((err) => {
+              console.log(err);
+            });
           });
         })
+        arrFileComponents.push({url: '/', component: <DashboardAdmin />})
         setArrData(arrFileComponents);
       },
       error: (err) => {

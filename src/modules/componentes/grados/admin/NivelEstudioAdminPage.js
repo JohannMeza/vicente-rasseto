@@ -229,7 +229,7 @@ const ModalNivelEstudioSave = ({ open, setOpen, saveNivelEstudio, isDataToEdit, 
     minWidth={600}
     fullWidth={true}
     maxWidth="sm"
-    title="Nuevo Nivel Estudio"
+    title={isDataToEdit ? "Editar Nivel Estudio" : "Nuevo Nivel Estudio"}
     >
       <Grid container spacing={3}>
         <Grid item xs={12}>

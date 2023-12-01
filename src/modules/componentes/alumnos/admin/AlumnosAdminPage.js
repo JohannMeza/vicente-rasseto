@@ -394,7 +394,7 @@ const ModalAlumno = ({ open, setOpen, isDataToEdit, setIsDataToEdit, saveData, l
     minWidth={600}
     fullWidth={true}
     maxWidth="sm"
-    title="Nuevo Alumno"
+    title={isDataToEdit ? "Editar Alumno" : "Nuevo Alumno"}
     >
       <Grid container spacing={3}>
         <Grid item xs={12} sm={12} md={6}>

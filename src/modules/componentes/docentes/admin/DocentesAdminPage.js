@@ -300,7 +300,7 @@ const ModalDocente = ({ open, setOpen, isDataToEdit, setIsDataToEdit, saveData, 
     minWidth={600}
     fullWidth={true}
     maxWidth="sm"
-    title="Nuevo Docente"
+    title={isDataToEdit ? "Editar Docente" : "Nuevo Docente"}
     >
       <Grid container spacing={3}>
         <Grid item xs={12} sm={12} md={6}>
