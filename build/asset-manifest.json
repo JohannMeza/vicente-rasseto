@@ -1,7 +1,7 @@
 {
   "files": {
-    "main.css": "/static/css/main.ba3227dd.css",
-    "main.js": "/static/js/main.ba375dfe.js",
+    "main.css": "/static/css/main.b4e16b50.css",
+    "main.js": "/static/js/main.a7588927.js",
     "static/js/654.92f6a813.chunk.js": "/static/js/654.92f6a813.chunk.js",
     "static/js/787.74fe51f3.chunk.js": "/static/js/787.74fe51f3.chunk.js",
     "static/media/logo.png": "/static/media/logo.86f0c1d8c5898026a419.png",
@@ -12,12 +12,12 @@
     "static/media/user-niño.png": "/static/media/user-niño.30f31831956d3935c0f0.png",
     "static/media/audiolibro-card.png": "/static/media/audiolibro-card.5be71d19ce1a49d4bc83.png",
     "index.html": "/index.html",
-    "main.ba3227dd.css.map": "/static/css/main.ba3227dd.css.map",
-    "main.ba375dfe.js.map": "/static/js/main.ba375dfe.js.map",
+    "main.b4e16b50.css.map": "/static/css/main.b4e16b50.css.map",
+    "main.a7588927.js.map": "/static/js/main.a7588927.js.map",
     "787.74fe51f3.chunk.js.map": "/static/js/787.74fe51f3.chunk.js.map"
   },
   "entrypoints": [
-    "static/css/main.ba3227dd.css",
-    "static/js/main.ba375dfe.js"
+    "static/css/main.b4e16b50.css",
+    "static/js/main.a7588927.js"
   ]
 }
