@@ -6,6 +6,6 @@ router.post("/", AdministracionAlumnosController.index)
 router.post("/new", AdministracionAlumnosController.store)
 router.post("/grados_label", AdministracionAlumnosController.getGradosLabel)
 router.post("/reporte", AdministracionAlumnosController.reporteExcel)
-router.post("/importar", AdministracionAlumnosController.reporteExcel)
+router.post("/importar", AdministracionAlumnosController.importarExcel)
 
 module.exports = router;

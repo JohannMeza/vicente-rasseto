@@ -53,6 +53,7 @@ const show = async (req, res) => {
   try {
     const { id } = req.params;
     const showLibro = await AdministracionMultimedia.find({ _id: id }).populate("ID_CATEGORIA").populate("ID_ETIQUETA").populate("ID_AUTOR");
+    console.log("showLibro")
     res.status(201).json({
       error: false,
       status: 201,

@@ -9,6 +9,7 @@ const UtilComponents = require("../../utils/UtilsComponents");
 const cloudinary = require("cloudinary");
 const EnvConstant = require("../../utils/EnvConstant");
 const NivelEstudio = require("../../models/administracion/administracion_nivel_estudio.model");
+const XLSX = require('xlsx');
 
 /**
  * 
@@ -36,7 +37,12 @@ const index = async (req, res) => {
       error: false,
       status: 201,
       statusText: MessageConstants.REQUEST_SUCCESS,
-      data: libros
+      data: {
+        ...libros,
+        rowsPerPage: libros.limit,
+        page: libros.page,
+        count: libros.totalDocs
+      }
     })
 
     // .docs,
@@ -134,8 +140,8 @@ const store_new = async (req, res) => {
     if (validData) throw (validData);
 
     if (_id) { // UPDATE
-      const { TITULO, ESTADO, CATEGORIA, ETIQUETA, AUTOR, _id, TIPO, LINK, DESCRIPCION_LARGA, DESCRIPCION_CORTA, NOMBRE_FILE, PAGINAS, IMAGEN, DATA_IMAGEN, SUBIDA } = req.body;
-      await AdministracionMultimedia.findOneAndUpdate({ _id }, { TITULO, ESTADO, ID_CATEGORIA: CATEGORIA.split(","), ID_ETIQUETA: ETIQUETA.split(","), ID_AUTOR: AUTOR.split(","), FILE: filename, IMAGEN: dataImagen, TIPO, LINK, DESCRIPCION_LARGA, DESCRIPCION_CORTA, NOMBRE_FILE, PESO: size, PAGINAS, BACKGROUND, SUBIDA })
+      const { TITULO, ESTADO, CATEGORIA, ETIQUETA, AUTOR, _id, TIPO, LINK, DESCRIPCION_LARGA, DESCRIPCION_CORTA, NOMBRE_FILE, PAGINAS, SUBIDA, FILE } = req.body;
+      await AdministracionMultimedia.findOneAndUpdate({ _id }, { TITULO, ESTADO, ID_CATEGORIA: CATEGORIA.split(","), ID_ETIQUETA: ETIQUETA.split(","), ID_AUTOR: AUTOR.split(","), FILE, IMAGEN: dataImagen, TIPO, LINK, DESCRIPCION_LARGA, DESCRIPCION_CORTA, NOMBRE_FILE, PESO: size, PAGINAS, BACKGROUND, SUBIDA })
       return res.status(201).json({
         error: false,
         status: 201,
@@ -296,6 +302,39 @@ const listGradosByLibro = async (req, res) => {
   }
 }
 
+/**
+ * 
+ * @param {req, res} 
+ * @returns Inserta Data masiva a través de una importacion de excel
+ */
+
+const importarExcel = async (req, res) => {
+  try {
+    const workbook = XLSX.readFile(req.file.path);
+    const workbookSheets = workbook.SheetNames;
+    const sheet = workbookSheets[0];
+    const dataExcel = XLSX.utils.sheet_to_json(workbook.Sheets[sheet]);
+    const dataParser = dataExcel.map(el => ({ 
+      ...el, 
+      ID_CATEGORIA: el.ID_CATEGORIA.split(','), 
+      ID_ETIQUETA: el.ID_ETIQUETA.split(','), 
+      ID_AUTOR: el.ID_AUTOR.split(','),
+      ID_GRADO: el.ID_GRADO.split(',')
+    }));
+    
+    await AdministracionMultimedia.insertMany(dataParser)
+
+    return res.status(201).json({
+      error: false,
+      status: 201,
+      statusText: MessageConstants.MESSAGE_IMPORT_DATA
+    })
+  } catch (err) {
+    console.log(err)
+    return res.status(err.status || 500).json({ statusText: "Error en la importacion", ...err })
+  }
+}
+
 module.exports = {
   index,
   store_new,
@@ -306,5 +345,6 @@ module.exports = {
   uploadImage,
   findNivelEstudio,
   updateGradosByLibros,
-  listGradosByLibro
+  listGradosByLibro,
+  importarExcel
 };

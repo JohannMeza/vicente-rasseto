@@ -12,6 +12,7 @@ AdministracionMultimedia.delete("/delete/:id", AdministracionMultimediaControlle
 AdministracionMultimedia.post("/list_data_initial", AdministracionMultimediaController.listDataInitial);
 AdministracionMultimedia.get("/list_grados/:id", AdministracionMultimediaController.listGrados);
 AdministracionMultimedia.post("/upload-image", UtilsComponents.uploadImage.single('FILE_PATH'), AdministracionMultimediaController.uploadImage);
+AdministracionMultimedia.post("/importar", UtilsComponents.importarExcel.single('FILE_PATH'), AdministracionMultimediaController.importarExcel);
 
 // Pagina de Configuracion de Grados
 AdministracionMultimedia.post("/list_nivel_estudio", AdministracionMultimediaController.findNivelEstudio);

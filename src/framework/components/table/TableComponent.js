@@ -3,10 +3,9 @@ import Paper from '@mui/material/Paper';
 import TableContainer from '@mui/material/TableContainer';
 import TablePagination from '@mui/material/TablePagination';
 import { Grid } from '@mui/material';
-
 export default function TableComponents({ children, pagination, setPagination, fnPagination, style }) {
   const handleChangePage = (event, newPage) => {
-    let dataId = event.target.dataset.testid;
+    let dataId = event.target?.dataset.testid || event.target.querySelector("svg")?.dataset.testid || event.target.parentNode.dataset.testid;
     if (dataId === "KeyboardArrowRightIcon") {
       setPagination({ ...pagination, page: newPage })
       let { rowsPerPage, page } = pagination;
@@ -16,7 +15,7 @@ export default function TableComponents({ children, pagination, setPagination, f
     if (dataId === "KeyboardArrowLeftIcon") {
       setPagination({ ...pagination, page: newPage })
       let { rowsPerPage, page } = pagination;
-      fnPagination && fnPagination(rowsPerPage, page - 2)
+      fnPagination && fnPagination(rowsPerPage, page)
     }
   };
 

@@ -1,6 +1,6 @@
 import { Button, Grid, Stack, Table, TableBody, TableCell, TableHead, TableRow, TextareaAutosize, Typography } from '@mui/material';
 import { Box } from '@mui/system';
-import React, { useEffect, useState } from 'react';
+import React, { useCallback, useEffect, useState } from 'react';
 import { useRef } from 'react';
 import { useNavigate, useParams } from 'react-router-dom';
 import { pathServer } from '../../../../config/router/path';
@@ -249,17 +249,20 @@ export default function LibrosDetailPage () {
       reader.onloadend = function () {
         let regExp = new RegExp("count [0-9]", "ig")
         let count = reader.result.match(regExp)?.length > 0 ? reader.result.match(regExp)[0].split(" ")[1] : 0
+        
         setDescripcionPdf({ 
           PAGINAS: numeroPaginas === 0 || count,
           NOMBRE_FILE: file.name,
           PESO: sizeFile(file)
-        })
+        });
+
+        changeImageLoadLibro();
       }
 
       // pdfFile.current.data = _URL.createObjectURL(e.target.files[0])
-      setFilename(file)
-      setStateCanvasInitial(false)
-      encodedFileBase64(libroBase64, setLibroBase64, e)
+      setFilename(file);
+      setStateCanvasInitial(false);
+      encodedFileBase64(libroBase64, setLibroBase64, e);
       return
     }
 
@@ -282,6 +285,18 @@ export default function LibrosDetailPage () {
 
     handleInputFormChange(e)
   }
+
+  const changeImageLoadLibro = useCallback(() => {
+    setTimeout(() => {
+      let canvasCurrent = canvas64.current || canvas.current;
+
+      if (canvasCurrent?.toDataURL) {
+        setImagenBase64((imagenBase64) => ({ ...imagenBase64, IMAGEN: canvasCurrent.toDataURL() }));
+        setDataImage(dataImage => ({...dataImage, url: canvasCurrent.toDataURL().split(',')[1]}))
+        imgFile.current.src = canvasCurrent.toDataURL();
+      }
+    }, 500)
+  }, [canvas64])
 
   const borrarImagen = () => {
     imgFile.current.src = "";
@@ -307,7 +322,7 @@ export default function LibrosDetailPage () {
         const formData = UploadFile(obj);
         setLoader(true)
         SaveRequestData({
-          path: pathServer.ADMINISTRACION.MULTIMEDIA.NEW_CLOUDINARY + data.SUBIDA,
+          path: pathServer.ADMINISTRACION.MULTIMEDIA.NEW_CLOUDINARY,
           body: formData,
           fnRequest: SERVICES_POST,
           success: (resp) => {
@@ -363,10 +378,11 @@ export default function LibrosDetailPage () {
   }
 
   const handleUpdateDataLibro = () => {
-    setData((data) => { return { ...data, ...copyLibros, TITULO: copyLibros.NOMBRE_FILE }})
-    setDescripcionPdf({ PAGINAS: copyLibros.PAGINAS || 0, NOMBRE_FILE: copyLibros.NOMBRE_FILE, PESO: copyLibros.PESO, FILE: copyLibros.FILE })
-    setPdfPath(copyLibros.FILE)
-    setUpdateData(false)
+    setData((data) => { return { ...data, ...copyLibros, TITULO: copyLibros.NOMBRE_FILE }});
+    setDescripcionPdf({ PAGINAS: copyLibros.PAGINAS || 0, NOMBRE_FILE: copyLibros.NOMBRE_FILE, PESO: copyLibros.PESO, FILE: copyLibros.FILE });
+    setPdfPath(copyLibros.FILE);
+    setUpdateData(false);
+    changeImageLoadLibro();
   }
 
   useEffect(() => {

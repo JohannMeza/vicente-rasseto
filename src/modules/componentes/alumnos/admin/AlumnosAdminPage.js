@@ -11,6 +11,7 @@ import { useFormValidation } from '../../../../hooks/useFormValidation';
 import useLoaderContext from '../../../../hooks/useLoaderContext';
 import { SERVICES_POST } from '../../../../services/services.axios';
 import { MessageUtil } from '../../../../util/MessageUtil';
+import { AlertUtilRelease } from '../../../../util/AlertUtil';
 
 const estadoList = [
   { label: "Activo", value: true },
@@ -55,6 +56,8 @@ export default function AlumnosAdminPage () {
         setAlumnos(resp.data.alumnos);
         setListNivelEstudio(resp.data.perfiles)
         setLoader(false)
+        let { rowsPerPage, count, page } = resp;
+        setPagination({ rowsPerPage, count, page });
       },
       error: (err) => {
         MessageUtil({ message: err.statusText, type: "error", seg: 10 });
@@ -126,6 +129,24 @@ export default function AlumnosAdminPage () {
     })
   }
 
+  const importarExcel = (e) => {
+    setLoader(true)
+    SaveRequestData({
+      path: pathServer.ADMINISTRACION.ALUMNOS.IMPORTAR,
+      fnRequest: SERVICES_POST,
+      success: (resp) => {
+        e.target.value = null;
+        setLoader(false);
+        MessageUtil({ message: resp.statusText, type: "success", seg: 10 });
+      },
+      error: (err) => {
+        e.target.value = null
+        setLoader(false)
+        AlertUtilRelease({ title: "Error", text: err.statusText, icon: "error" })
+      }
+    })
+  }
+  
   useEffect(() => {
     getAlumnos()
   }, [])
@@ -238,7 +259,11 @@ export default function AlumnosAdminPage () {
         />
       </Box>
       <br />
-      <Controls.TableComponents>
+      <Controls.TableComponents
+        pagination={pagination}
+        setPagination={setPagination}
+        fnPagination={getAlumnos}
+      >
         <Table stickyHeader aria-label="sticky table">
           <TableHead>
             <TableRow>

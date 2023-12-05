@@ -20,7 +20,7 @@ export const useReadLibroUrl = (pdfData) => {
 
   
   useEffect(() => {
-    if (canvasElement && pdfData) {
+    if (canvasElement.current && pdfData) {
       setLoader(true)
       WebViewer(
         {
@@ -79,7 +79,7 @@ export const useReadLibroPage = (pdfData, pageNumber = 1, scale = 1.5) => {
   let canvasElement = useRef(null);
 
   useEffect(() => {
-    if (pdfData && canvasElement) {
+    if (pdfData && canvasElement.current) {
       setLoader(true)
 
       var loadingTask = pdfjsLib.getDocument(pdfData);
@@ -88,6 +88,7 @@ export const useReadLibroPage = (pdfData, pageNumber = 1, scale = 1.5) => {
         setNumeroPaginas(pdf._pdfInfo.numPages)
         pdf.getPage(pageNumber).then(function(page) {
           var viewport = page.getViewport({scale: scale});
+
           var canvas = canvasElement.current;
           var context = canvas.getContext('2d');
           canvas.height = viewport.height;
@@ -132,7 +133,7 @@ export const useReadLibroBase64 = (pdfData, pageNumber = 1) => {
   let canvasElement = useRef(null);
   
   useEffect(() => {
-    if (pdfData && canvasElement) {
+    if (pdfData && canvasElement.current) {
       setLoader(true)
       pdfjsLib.getDocument({data: pdfData}).promise
       .then(function(pdf) {

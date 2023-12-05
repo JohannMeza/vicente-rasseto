@@ -8,7 +8,7 @@ import {
   TableRow,
 } from "@mui/material";
 import { Box } from "@mui/system";
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useRef, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import ButtonsSearchComponent from "../../../../components/utilComponents/ButtonsSearchComponent";
 import { pathServer } from "../../../../config/router/path";
@@ -19,8 +19,9 @@ import { SaveRequestData } from "../../../../helpers/helpRequestBackend";
 import { useForm } from "../../../../hooks/useForm";
 import useLoaderContext from "../../../../hooks/useLoaderContext";
 import { SERVICES_DELETE, SERVICES_GET, SERVICES_POST } from "../../../../services/services.axios";
-import { AlertUtilDelete } from "../../../../util/AlertUtil";
+import { AlertUtilDelete, AlertUtilRelease } from "../../../../util/AlertUtil";
 import { MessageUtil } from "../../../../util/MessageUtil";
+import { UploadFile } from "../../../../util/UploadFile";
 
 const estadoLibro = [
   { label: 'Publicar', value: "Publicado" },
@@ -51,6 +52,7 @@ export default function LibrosAdminPage() {
   const [listAutores, setListAutores] = useState([]);
   const [pagination, setPagination] = useState(paginate);
   const [estadoActual, setEstadoActual] = useState("");
+  const inputFile = useRef(null);
 
   const getDataLibros = (rowsPerPage = 10, page = 1) => {
     setLoader(true);
@@ -64,6 +66,8 @@ export default function LibrosAdminPage() {
       success: (resp) => {
         setLoader(false);
         setLibros(resp.data.docs)
+        let { rowsPerPage, count, page } = resp.data; --page;
+        setPagination({ rowsPerPage, count, page });
       },
       error: (err) => {
         MessageUtil({ message: err.statusText, type: "error", seg: 10 });
@@ -125,6 +129,30 @@ export default function LibrosAdminPage() {
     getDataLibros()
   }
 
+  const importarExcel = (e) => {
+    setLoader(true)
+    
+    let obj = { FILE_PATH: e.target.files[0]}
+    const formData = UploadFile(obj);
+    setLoader(true)
+    SaveRequestData({
+      path: pathServer.ADMINISTRACION.MULTIMEDIA.IMPORTAR,
+      body: formData,
+      fnRequest: SERVICES_POST,
+      success: (resp) => {
+        e.target.value = null;
+        setLoader(false);
+        getDataLibros();
+        MessageUtil({ message: resp.statusText, type: "success", seg: 10 });
+      },
+      error: (err) => {
+        e.target.value = null
+        setLoader(false)
+        AlertUtilRelease({ title: "Error", text: err.statusText, icon: "error" })
+      }
+    })
+  }
+
   useEffect(() => {
     getDataInitial()
   }, []);
@@ -137,13 +165,24 @@ export default function LibrosAdminPage() {
     <Box>
       <Stack direction="row" spacing={3}>
         <Controls.Title variant="h1" component="h1" title="Libros" />
-
-        <Controls.ButtonComponent
-          variant="primary-small"
-          type="admin"
-          title="Nuevo Libro"
-          onClick={() => navigate(pathFront.LIBROS_NEW)}
-        />
+        <Stack direction="row" spacing={2}>
+          <Controls.ButtonComponent
+            variant="primary-small"
+            type="admin"
+            title="Nuevo Libro"
+            onClick={() => navigate(pathFront.LIBROS_NEW)}
+          />
+          <Box>
+            <input type="file" ref={inputFile} onChange={importarExcel} style={{ display: "none" }} accept=".xlsx" />
+            <Controls.ButtonComponent
+              variant="secondary-small"
+              type="admin"
+              title="Importar"
+              style={{ width: "100%" }}
+              onClick={() => inputFile.current.click()}
+            />
+          </Box>
+        </Stack>
       </Stack>
       <Stack direction="row" alignItems={"center"} spacing={1} marginTop={1}>
         <Controls.TextComponent
@@ -223,7 +262,11 @@ export default function LibrosAdminPage() {
         />
       </Box>
       <br />
-      <Controls.TableComponents>
+      <Controls.TableComponents
+        pagination={pagination}
+        setPagination={setPagination}
+        fnPagination={getDataLibros}
+      >
         <Table>
           <TableHead>
             <TableRow>

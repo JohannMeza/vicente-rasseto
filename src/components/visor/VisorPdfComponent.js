@@ -22,9 +22,11 @@ const VisorPdfComponent = () => {
       fnRequest: SERVICES_GET,
       success: (resp) => {
         setLoader(false)
+        console.log(resp.data[0].FILE)
         setPathFile(resp.data[0].FILE);
       },
       error: (err) => {
+        console.log(err)
         setLoader(false)
         MessageUtil({ message: err.statusText, type: "error", seg: 10 });
       }
@@ -33,6 +35,8 @@ const VisorPdfComponent = () => {
 
   
   useEffect(() => {
+    console.log("hola")
+
     getLibro()
   // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [])

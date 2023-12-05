@@ -16,14 +16,23 @@ const index = async (req, res) => {
     const dataFilter = UtilComponents.ValidarObjectForFilter({ NOMBRE_USUARIO, ESTADO, DNI })
 
     const perfilDocente = await SeguridadPerfiles.findOne({ NOMBRE_PERFIL: { $in: [/docente/i ] }});
-    let dataAlumnos = await SeguridadUsuarios.paginate({...dataFilter, ID_PERFILES: perfilDocente._id }, { limit: rowsPerPage, page, populate: [{path: 'ID_LOGIN'}] })
-
-    let arrFilterDocentes = dataAlumnos.docs
+    // let dataAlumnos = await SeguridadUsuarios.paginate({...dataFilter, ID_PERFILES: perfilDocente._id }, { limit: rowsPerPage, page, populate: [{path: 'ID_LOGIN'}] })
+    // let arrFilterDocentes = dataAlumnos.docs
+    let dataAlumnos = await SeguridadUsuarios.find({...dataFilter, ID_PERFILES: perfilDocente._id }).populate("ID_LOGIN")
+    let arrFilterDocentes = dataAlumnos
 
     if (EMAIL) {
       arrFilterDocentes = arrFilterDocentes.filter(el => el.ID_LOGIN.EMAIL === EMAIL )
     }
 
+    const pagination = {
+      limit: rowsPerPage,
+      page: page - 1,
+      totalDocs: arrFilterDocentes.length
+    }
+
+    arrFilterDocentes = arrFilterDocentes.slice(pagination.page * rowsPerPage, pagination.page * rowsPerPage + rowsPerPage)
+    
     const perfilLabel = await AdministracionNivelEstudio.find({ ESTADO: true }, { NIVEL_ESTUDIO: 1, _id: 1 })
     const arrPerfil = UtilComponents.CambiarNombreCampos(perfilLabel, campos)
 
@@ -35,9 +44,9 @@ const index = async (req, res) => {
         docentes: arrFilterDocentes,
         perfiles: arrPerfil
       },
-      rowsPerPage: dataAlumnos.limit,
-      page: dataAlumnos.page,
-      count: dataAlumnos.totalDocs
+      rowsPerPage: pagination.limit,
+      page: pagination.page,
+      count: pagination.totalDocs
     })
   } catch (err) {
     return res.status(err.status || 500).json({ ...err })
@@ -123,8 +132,10 @@ const reporteExcel = async (req, res) => {
     const dataFilter = UtilComponents.ValidarObjectForFilter({ NOMBRE_USUARIO, ESTADO, DNI })
     const perfilDocente = await SeguridadPerfiles.findOne({ NOMBRE_PERFIL: { $in: [/docente/i ] }});
 
-    let dataAlumnos = await SeguridadUsuarios.paginate({...dataFilter, ID_PERFILES: perfilDocente._id }, { populate: [{path: 'ID_LOGIN'}] })
-    let arrFilterDocentes = dataAlumnos.docs
+    // let dataAlumnos = await SeguridadUsuarios.paginate({...dataFilter, ID_PERFILES: perfilDocente._id }, { populate: [{path: 'ID_LOGIN'}] })
+    // let arrFilterDocentes = dataAlumnos.docs
+    let dataAlumnos = await SeguridadUsuarios.find({...dataFilter, ID_PERFILES: perfilDocente._id }).populate("ID_LOGIN")
+    let arrFilterDocentes = dataAlumnos
 
     if (EMAIL) arrFilterDocentes = arrFilterDocentes.filter(el => el.ID_LOGIN.EMAIL === EMAIL)
 

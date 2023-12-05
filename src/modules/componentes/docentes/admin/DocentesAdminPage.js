@@ -51,8 +51,10 @@ export default function DocentesAdminPage () {
       page,
       success: (resp) => {
         setDocentes(resp.data.docentes);
-        setListNivelEstudio(resp.data.perfiles)
-        setLoader(false)
+        setListNivelEstudio(resp.data.perfiles);
+        setLoader(false);
+        let { rowsPerPage, count, page } = resp;
+        setPagination({ rowsPerPage, count, page });
       },
       error: (err) => {
         MessageUtil({ message: err.statusText, type: "error", seg: 10 });
@@ -187,7 +189,11 @@ export default function DocentesAdminPage () {
         />
       </Box>
       <br />
-      <Controls.TableComponents>
+      <Controls.TableComponents
+        pagination={pagination}
+        setPagination={setPagination}
+        fnPagination={getDocentes}
+      >
         <Table stickyHeader aria-label="sticky table">
           <TableHead>
             <TableRow>
