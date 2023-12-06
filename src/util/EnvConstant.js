@@ -1,5 +1,5 @@
 // Configuracion / desarrollo / produccion
-const REACT_APP_ENV                = "desarrollo"
+const REACT_APP_ENV                = "produccion"
 // Desarrollo
 const REACT_APP_DEV_PATH_UPLOAD    = "assets/upload/";
 const REACT_APP_DEV_BASE_URL       = "http://localhost:4010/api";
